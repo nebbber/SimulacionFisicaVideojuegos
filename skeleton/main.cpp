@@ -46,6 +46,7 @@ void initPhysics(bool interactive)
 
 	gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
+
 	// For Solid Rigids +++++++++++++++++++++++++++++++++++++
 	PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f);
@@ -54,6 +55,17 @@ void initPhysics(bool interactive)
 	sceneDesc.filterShader = contactReportFilterShader;
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
+
+
+	//crear esfera
+	PxSphereGeometry geo = PxSphereGeometry(); //creamos geometria
+	geo.radius = 5;
+	PxShape* sphere = CreateShape(geo, gMaterial);//creamos forma
+
+
+	PxTransform* tr = new PxTransform(PxVec3(0, 0, 0));//creamos posicion y rotacion
+	RenderItem* item = new RenderItem(sphere, tr, Vector4(1, 1, 1, 1));//renderizamos item
+	RegisterRenderItem(item);//registramos el item a renderizar
 	}
 
 

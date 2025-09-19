@@ -7,7 +7,7 @@
 #include "core.hpp"
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
-
+#include "Vector3D.h"
 #include <iostream>
 
 std::string display_text = "This is a test";
@@ -29,7 +29,10 @@ PxPvd*                  gPvd        = NULL;
 PxDefaultCpuDispatcher*	gDispatcher = NULL;
 PxScene*				gScene      = NULL;
 ContactReportCallback gContactReportCallback;
-
+RenderItem* item1;
+RenderItem* item2;
+RenderItem* item3;
+RenderItem* item;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -56,15 +59,35 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
+	//creamos ejes
+	PxSphereGeometry geo1 = PxSphereGeometry(); //creamos geometria
+	geo1.radius = 2;
+	PxShape* sphere1 = CreateShape(geo1, gMaterial);//creamos forma
+
+	Vector3D v1(10, -5, 0);
+	Vector3D v2(0, 10, 0);
+	Vector3D v3(-10, -5, 0);
+
+
+	PxTransform* tr1 = new PxTransform(PxVec3(v1.getX(), v1.getY(), v1.getZ()));
+	PxTransform* tr2 = new PxTransform(PxVec3(v2.getX(), v2.getY(), v2.getZ()));
+	PxTransform* tr3 = new PxTransform(PxVec3(v3.getX(), v3.getY(), v3.getZ()));
+
+	item1 = new RenderItem(sphere1,tr1 , Vector4(1, 0, 0, 1));//renderizamos item
+	item2 = new RenderItem(sphere1, tr2, Vector4(0, 1, 0, 1));//renderizamos item
+	item3 = new RenderItem(sphere1, tr3, Vector4(0, 0, 1, 1));//renderizamos item
+	RegisterRenderItem(item1);//registramos el item a renderizar
+	RegisterRenderItem(item2);//registramos el item a renderizar
+	RegisterRenderItem(item3);//registramos el item a renderizar
+
 
 	//crear esfera
 	PxSphereGeometry geo = PxSphereGeometry(); //creamos geometria
 	geo.radius = 5;
 	PxShape* sphere = CreateShape(geo, gMaterial);//creamos forma
 
-
 	PxTransform* tr = new PxTransform(PxVec3(0, 0, 0));//creamos posicion y rotacion
-	RenderItem* item = new RenderItem(sphere, tr, Vector4(1, 1, 1, 1));//renderizamos item
+	item = new RenderItem(sphere, tr, Vector4(1, 1, 1, 1));//renderizamos item
 	RegisterRenderItem(item);//registramos el item a renderizar
 	}
 
@@ -96,6 +119,12 @@ void cleanupPhysics(bool interactive)
 	transport->release();
 	
 	gFoundation->release();
+
+	DeregisterRenderItem(item);
+	DeregisterRenderItem(item1);
+	DeregisterRenderItem(item2);
+	DeregisterRenderItem(item3);
+
 	}
 
 // Function called when a key is pressed

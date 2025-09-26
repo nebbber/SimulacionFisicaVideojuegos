@@ -64,9 +64,9 @@ void initPhysics(bool interactive)
 	geo1.radius = 2;
 	PxShape* sphere1 = CreateShape(geo1, gMaterial);//creamos forma
 
-	Vector3D v1(10, -5, 0);
-	Vector3D v2(0, 10, 0);
-	Vector3D v3(-10, -5, 0);
+	Vector3D v1(10, 0, 0);
+	Vector3D v2(0,10, 0);
+	Vector3D v3(0, 0, 10);
 
 
 	PxTransform* tr1 = new PxTransform(PxVec3(v1.getX(), v1.getY(), v1.getZ()));

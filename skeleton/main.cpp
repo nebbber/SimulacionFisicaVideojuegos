@@ -8,6 +8,8 @@
 #include "RenderUtils.hpp"
 #include "callbacks.hpp"
 #include "Vector3D.h"
+#include "Particle.h"
+#include "Proyectil.h"
 #include <iostream>
 
 std::string display_text = "This is a test";
@@ -33,6 +35,7 @@ RenderItem* item1;
 RenderItem* item2;
 RenderItem* item3;
 RenderItem* item;
+Particle* particle;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -82,23 +85,32 @@ void initPhysics(bool interactive)
 
 
 	//crear esfera
-	PxSphereGeometry geo = PxSphereGeometry(); //creamos geometria
+	/*	PxSphereGeometry geo = PxSphereGeometry(); //creamos geometria
 	geo.radius = 5;
 	PxShape* sphere = CreateShape(geo, gMaterial);//creamos forma
 
 	PxTransform* tr = new PxTransform(PxVec3(0, 0, 0));//creamos posicion y rotacion
 	item = new RenderItem(sphere, tr, Vector4(1, 1, 1, 1));//renderizamos item
-	RegisterRenderItem(item);//registramos el item a renderizar
+	RegisterRenderItem(item);//registramos el item a renderizar*/
+
+
+	 
+	//crear particula
+	//BALA DE PISTOLA, BULLET
+	//Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mR, float gravedad
+	//particle= new Particle (Vector3(5.0f,0.0f,0.0f), Vector3(0.0f, 0.9f, 0.0f), Vector3(0.0f, 250.0f, 0.0f),
+	//	Vector3(0.0f, 0.4f, 0.0f),0.4f, 5.0f,0.6f);
+	
 	}
 
 
 // Function to configure what happens in each step of physics
 // interactive: true if the game is rendering, false if it offline
 // t: time passed since last call in milliseconds
-void stepPhysics(bool interactive, double t)
+void stepPhysics(bool interactive, double t) //ES EL UPDATE
 {
 	PX_UNUSED(interactive);
-
+	//particle->integrate(t);//pasar el timepo a segundos
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 }
@@ -120,7 +132,7 @@ void cleanupPhysics(bool interactive)
 	
 	gFoundation->release();
 
-	DeregisterRenderItem(item);
+	//DeregisterRenderItem(item);
 	DeregisterRenderItem(item1);
 	DeregisterRenderItem(item2);
 	DeregisterRenderItem(item3);
@@ -138,6 +150,17 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	//case ' ':	break;
 	case ' ':
 	{
+		break;
+	}
+	case 'P':
+	{
+		Proyectil* pro= new Proyectil();
+		Camera* cam = GetCamera();
+	
+		//la pos de la camara como pos inicial de la particula
+		//cam->getEye();
+		pro->shoot(Vector3(5.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 250.0f, 0.0f),
+			Vector3(0.0f, 0.4f, 0.0f), 0.4f, 5.0f, 0.6f, cam->getDir());
 		break;
 	}
 	default:

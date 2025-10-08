@@ -6,11 +6,13 @@ using namespace physx;
 class Proyectil
 {
 private:
-	vector<Particle> particulas;
-	
+	vector<Particle*> bullets;
+	bool empty;
 public:
 	Proyectil();
-	void shoot(Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mR, float g, PxVec3 dir);
-
+	void createBullet(Vector3 Pos, double VelS, Vector3 VelR, Vector3 Acc, float d, float mR, PxVec3 dir, Vector4 color);
+	bool isEmpty();
+	void shot(double t);
+	~Proyectil();
 };
 

@@ -1,17 +1,44 @@
 #include "Proyectil.h"
-
+#include <iostream>
 Proyectil::Proyectil()
 {
+	empty = false;
 }
 
-void Proyectil::shoot(Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mR, float g, PxVec3 dir)
+void Proyectil::createBullet(Vector3 Pos, double VelS, Vector3 VelR, Vector3 Acc, float d, float mR, PxVec3 dir, Vector4 color)
 {
 	double energiaR = 0.5 * mR * pow(VelR.magnitude(),2);
 	//pq Es=Er
 	float masaS = energiaR / pow(VelR.magnitude(), 2) * 2;
 
-	//Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mS, float mR, float g
-	Particle* p= new Particle(Pos,VelS,VelR,Acc,d,masaS,mR,g);
-	//p->integrate();
+	Vector3	vel(dir*VelS);
+	Particle* p= new Particle(Pos,vel,VelR,Acc,d,masaS,mR,color);
+	bullets.push_back(p);
 
 }
+
+bool Proyectil::isEmpty()
+{
+	return bullets.empty();
+}
+
+void Proyectil::shot(double t)
+{
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		bullets[i]->integrate(t);
+	}
+}
+
+Proyectil::~Proyectil()
+{
+	for (Particle *p: bullets)
+	{
+		delete p;
+	}
+	
+	bullets.clear();
+}
+
+
+

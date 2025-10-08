@@ -36,6 +36,7 @@ RenderItem* item2;
 RenderItem* item3;
 RenderItem* item;
 Particle* particle;
+Proyectil* proyectil;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -82,6 +83,7 @@ void initPhysics(bool interactive)
 	RegisterRenderItem(item1);//registramos el item a renderizar
 	RegisterRenderItem(item2);//registramos el item a renderizar
 	RegisterRenderItem(item3);//registramos el item a renderizar
+	proyectil = new Proyectil();
 
 
 	//crear esfera
@@ -110,7 +112,11 @@ void initPhysics(bool interactive)
 void stepPhysics(bool interactive, double t) //ES EL UPDATE
 {
 	PX_UNUSED(interactive);
-	//particle->integrate(t);//pasar el timepo a segundos
+	if (!proyectil->isEmpty())
+	{
+		//llamar al integrate de cada bala
+		proyectil->shot(t);
+	}
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 }
@@ -154,13 +160,35 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 	case 'P':
 	{
-		Proyectil* pro= new Proyectil();
+		//bala de cañon
+		
 		Camera* cam = GetCamera();
-	
+		Vector4 color(1,0,0,1);
 		//la pos de la camara como pos inicial de la particula
-		//cam->getEye();
-		pro->shoot(Vector3(5.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f), Vector3(0.0f, 250.0f, 0.0f),
-			Vector3(0.0f, 0.4f, 0.0f), 0.4f, 5.0f, 0.6f, cam->getDir());
+		proyectil->createBullet(cam->getTransform().p, 20.0, Vector3(0.0f, 250.0f, 0.0f),
+			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 15.0f, cam->getDir(),color);
+		break;
+	}
+	case 'O':
+	{
+		//bala de tanque
+
+		Camera* cam = GetCamera();
+		Vector4 color(0, 1, 0, 1);
+		std::cout << "Camera position: " << cam->getTransform().p.x << ", " << cam->getTransform().p.y << ", " << cam->getTransform().p.z << std::endl;
+		//la pos de la camara como pos inicial de la particula
+		proyectil->createBullet(cam->getTransform().p, 10.0, Vector3(0.0f, 1800.0f, 0.0f),
+			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
+		break;
+	}
+	case 'I':
+	{
+		//bala de pistola
+	
+		Camera* cam = GetCamera();
+		Vector4 color(0, 0, 1, 1);
+		proyectil->createBullet(cam->getTransform().p, 30.0, Vector3(0.0f, 330.0f, 0.0f),
+			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
 		break;
 	}
 	default:

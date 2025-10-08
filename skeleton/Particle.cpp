@@ -1,20 +1,18 @@
 #include "Particle.h"
 #include <iostream>
 
-using namespace std;
-using namespace physx;
 
-Particle::Particle(Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mS, float mR, float g)
+Particle::Particle(Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mS, float mR, Vector4 color)
 {
 	pose = new PxTransform(Pos);
-	velS = VelS;
-	velR = VelR;
+	std::cout << "pos" << pose->p.x << " " << pose->p.y << " " << pose->p.z << " " << endl;
+	velR =  VelR;
 
 	PxSphereGeometry geo = PxSphereGeometry(); //creamos geometria
 	geo.radius = 5;
 	PxShape* sphere = CreateShape(geo);//creamos forma
 
-	renderItem = new RenderItem(sphere, pose, Vector4(1, 1, 1, 1));//renderizamos item
+	renderItem = new RenderItem(sphere, pose, color);//renderizamos item
 	RegisterRenderItem(renderItem);//registramos el item a renderizar
 
 	acc = Acc;
@@ -23,8 +21,7 @@ Particle::Particle(Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d
 
 	masaR = mR;
 	masaS = mS;
-	gravedad = g;
-	
+	velS = VelS;
 }
 
 Particle::~Particle()

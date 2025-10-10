@@ -165,7 +165,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		Camera* cam = GetCamera();
 		Vector4 color(1,0,0,1);
 		//la pos de la camara como pos inicial de la particula
-		proyectil->createBullet(cam->getTransform().p, 20.0, Vector3(0.0f, 250.0f, 0.0f),
+		proyectil->createBullet(cam->getTransform().p, 300.0, Vector3(0.0f, 250.0f, 0.0f),
 			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 15.0f, cam->getDir(),color);
 		break;
 	}
@@ -175,9 +175,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 
 		Camera* cam = GetCamera();
 		Vector4 color(0, 1, 0, 1);
-		std::cout << "Camera position: " << cam->getTransform().p.x << ", " << cam->getTransform().p.y << ", " << cam->getTransform().p.z << std::endl;
+	
 		//la pos de la camara como pos inicial de la particula
-		proyectil->createBullet(cam->getTransform().p, 10.0, Vector3(0.0f, 1800.0f, 0.0f),
+		proyectil->createBullet(cam->getTransform().p, 100.0, Vector3(0.0f, 1800.0f, 0.0f),
 			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
 		break;
 	}
@@ -187,7 +187,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	
 		Camera* cam = GetCamera();
 		Vector4 color(0, 0, 1, 1);
-		proyectil->createBullet(cam->getTransform().p, 30.0, Vector3(0.0f, 330.0f, 0.0f),
+		proyectil->createBullet(cam->getTransform().p, 1000.0, Vector3(0.0f, 330.0f, 0.0f),
 			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
 		break;
 	}

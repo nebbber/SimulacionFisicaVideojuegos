@@ -5,7 +5,6 @@
 Particle::Particle(Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mS, float mR, Vector4 color)
 {
 	pose = new PxTransform(Pos);
-	std::cout << "pos" << pose->p.x << " " << pose->p.y << " " << pose->p.z << " " << endl;
 	velR =  VelR;
 
 	PxSphereGeometry geo = PxSphereGeometry(); //creamos geometria

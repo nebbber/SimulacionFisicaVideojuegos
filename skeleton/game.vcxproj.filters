@@ -13,6 +13,9 @@
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Proyectil.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="GaussianGen.cpp" />
+    <ClCompile Include="ParticleGen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -27,6 +30,9 @@
     <ClInclude Include="Vector3D.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Proyectil.h" />
+    <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="ParticleGen.h" />
+    <ClInclude Include="GaussianGen.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

@@ -17,14 +17,16 @@ private:
 	RenderItem* renderItem;
 	Vector3 initialPose;
 	float dumping;
+	bool alive;
+	double time;
 public:
-	Particle(Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mS, float mR, Vector4 color);
+	Particle(double time,Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mS, float mR, Vector4 color);
 	~Particle();
 
 	void integrate(double t);
 	void semi(double t);
 	void verlet(double t);
-
+	bool isAlive();
 
 };
 

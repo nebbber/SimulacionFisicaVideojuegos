@@ -9,6 +9,7 @@
 #include "callbacks.hpp"
 #include "Vector3D.h"
 #include "Particle.h"
+#include "ParticleSystem.h"
 #include "Proyectil.h"
 #include <iostream>
 
@@ -37,6 +38,7 @@ RenderItem* item3;
 RenderItem* item;
 Particle* particle;
 Proyectil* proyectil;
+ParticleSystem* particlesys;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -84,24 +86,9 @@ void initPhysics(bool interactive)
 	RegisterRenderItem(item2);//registramos el item a renderizar
 	RegisterRenderItem(item3);//registramos el item a renderizar
 	proyectil = new Proyectil();
+	particlesys = new ParticleSystem();
 
 
-	//crear esfera
-	/*	PxSphereGeometry geo = PxSphereGeometry(); //creamos geometria
-	geo.radius = 5;
-	PxShape* sphere = CreateShape(geo, gMaterial);//creamos forma
-
-	PxTransform* tr = new PxTransform(PxVec3(0, 0, 0));//creamos posicion y rotacion
-	item = new RenderItem(sphere, tr, Vector4(1, 1, 1, 1));//renderizamos item
-	RegisterRenderItem(item);//registramos el item a renderizar*/
-
-
-	 
-	//crear particula
-	//BALA DE PISTOLA, BULLET
-	//Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mR, float gravedad
-	//particle= new Particle (Vector3(5.0f,0.0f,0.0f), Vector3(0.0f, 0.9f, 0.0f), Vector3(0.0f, 250.0f, 0.0f),
-	//	Vector3(0.0f, 0.4f, 0.0f),0.4f, 5.0f,0.6f);
 	
 	}
 
@@ -117,6 +104,8 @@ void stepPhysics(bool interactive, double t) //ES EL UPDATE
 		//llamar al integrate de cada bala
 		proyectil->shot(t);
 	}
+	particlesys->update(t);
+	
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 }

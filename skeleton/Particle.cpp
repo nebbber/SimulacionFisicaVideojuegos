@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-Particle::Particle(Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mS, float mR, Vector4 color)
+Particle::Particle(double Time,Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d, float mS, float mR, Vector4 color)
 {
 	pose = new PxTransform(Pos);
 	velR =  VelR;
@@ -14,28 +14,43 @@ Particle::Particle(Vector3 Pos, Vector3 VelS, Vector3 VelR, Vector3 Acc, float d
 	renderItem = new RenderItem(sphere, pose, color);//renderizamos item
 	RegisterRenderItem(renderItem);//registramos el item a renderizar
 
-	acc = Acc;
+	this->acc = Acc;
 	initialPose = Pos - VelS;
 	dumping = d;//de 0 a 1
 
 	masaR = mR;
 	masaS = mS;
 	velS = VelS;
+	alive = true;
+	time = Time;
 }
 
 Particle::~Particle()
 {
-	DeregisterRenderItem(renderItem);
+	
+	DeregisterRenderItem(renderItem);  
+	delete pose;  
+
 	//recordad que tendréis que deregistrar el objeto RenderItem de la escena en el destructor de la partícula.
 }
 
 void Particle::integrate(double t)
 {
 	//EULER
+
+	
 	pose->p = pose->p + t * velS;
 	velS = velS + t * acc;
 
 	velS = velS * pow(dumping,t); //v=v*d elevado a el t
+
+
+	time -= t;
+
+	
+	if (time <= 0.0) {
+		alive = false;
+	}
 }
 
 void Particle::semi(double t)
@@ -53,4 +68,9 @@ void Particle::verlet(double t)
 	Vector3 now = pose->p;
 	pose->p = 2 * pose->p - initialPose +t * t * acc;
 	initialPose = now;
+}
+
+bool Particle::isAlive()
+{
+	return alive;
 }

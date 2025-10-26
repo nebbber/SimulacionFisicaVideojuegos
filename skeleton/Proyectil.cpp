@@ -12,7 +12,8 @@ void Proyectil::createBullet(Vector3 Pos, double VelS, Vector3 VelR, Vector3 Acc
 	float masaS = energiaR / pow(VelR.magnitude(), 2) * 2;
 
 	Vector3	vel(dir*VelS);
-	Particle* p= new Particle(0.0,Pos,vel,VelR,Acc,d,masaS,mR,color);
+	Particle* p= new Particle(0.0,Pos,vel,Acc,d,masaS,color,1.0f);
+	p->setGeometry();
 	bullets.push_back(p);
 
 }

@@ -11,6 +11,9 @@
 #include "Particle.h"
 #include "ParticleSystem.h"
 #include "Proyectil.h"
+#include "GaussianGen.h"
+#include "ParticleGen.h"
+#include "UniformGen.h"
 #include <iostream>
 
 std::string display_text = "This is a test";
@@ -39,6 +42,14 @@ RenderItem* item;
 Particle* particle;
 Proyectil* proyectil;
 ParticleSystem* particlesys;
+UniformGen* fuente;
+GaussianGen* fuego;
+GaussianGen* nieve;
+Particle* modeloFuente;
+PxTransform* tr4;
+PxTransform* tr2;
+PxTransform* tr3;
+
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -75,18 +86,94 @@ void initPhysics(bool interactive)
 	Vector3D v3(0, 0, 10);
 
 
-	PxTransform* tr1 = new PxTransform(PxVec3(v1.getX(), v1.getY(), v1.getZ()));
-	PxTransform* tr2 = new PxTransform(PxVec3(v2.getX(), v2.getY(), v2.getZ()));
-	PxTransform* tr3 = new PxTransform(PxVec3(v3.getX(), v3.getY(), v3.getZ()));
+	 tr4 = new PxTransform(PxVec3(v1.getX(), v1.getY(), v1.getZ()));
+	 tr2 = new PxTransform(PxVec3(v2.getX(), v2.getY(), v2.getZ()));
+	tr3 = new PxTransform(PxVec3(v3.getX(), v3.getY(), v3.getZ()));
 
-	item1 = new RenderItem(sphere1,tr1 , Vector4(1, 0, 0, 1));//renderizamos item
+	item1 = new RenderItem(sphere1,tr4 , Vector4(1, 0, 0, 1));//renderizamos item
 	item2 = new RenderItem(sphere1, tr2, Vector4(0, 1, 0, 1));//renderizamos item
 	item3 = new RenderItem(sphere1, tr3, Vector4(0, 0, 1, 1));//renderizamos item
 	RegisterRenderItem(item1);//registramos el item a renderizar
 	RegisterRenderItem(item2);//registramos el item a renderizar
 	RegisterRenderItem(item3);//registramos el item a renderizar
+
 	proyectil = new Proyectil();
 	particlesys = new ParticleSystem();
+
+	fuente = new UniformGen();
+	
+	//me creo la particula modelo
+	modeloFuente = new Particle(
+		7.0,
+		Vector3(0.0f, 0.0f, 0.0f),
+		Vector3(0.0f, 0.0f, 0.0f),
+		Vector3(0.0f, -9.8f, 0.0f),
+		0.4f,
+		0.0f,
+		Vector4(0.0, 1.0, 1.0, 1.0),0.02f
+	);
+	//modeloFuente->setGeometry();
+	fuente->setModelo(modeloFuente);
+
+	// Configuración de la fuente
+	fuente->setNumParticles(5);
+	fuente->setDurMedia(1.0);
+	fuente->setPosMedia(Vector3(25.0f, 0.0f, 0.0f)); // punto de la fuente
+	fuente->setVelMedia(Vector3(0.0f, 40.0f, 0.0f));
+	fuente->setDesP(Vector3(1.0f,0.0f,1.0f));
+	fuente->setDesV(Vector3(10.0f, 10.0f, 10.0f));
+	fuente->setProbGen(0.2);
+	particlesys->addGenerator(fuente);
+	
+
+	fuego = new GaussianGen();
+
+	//me creo la particula modelo
+	Particle* modeloFuego= new Particle(
+		7.0,
+		Vector3(0.0f, 0.0f, 0.0f),
+		Vector3(0.0f, 0.0f, 0.0f),
+		Vector3(0.0f, -9.8f, 0.0f),
+		0.4f,
+		0.0f,
+		Vector4(1.0, 0.0, 0.0, 1.0), 0.2f
+	);
+	//modeloFuente->setGeometry();
+	fuego->setModelo(modeloFuego);
+
+	// Configuración de la fuente
+	fuego->setNumParticles(20);
+	fuego->setDurMedia(1.0);
+	fuego->setPosMedia(Vector3(-25.0f, 0.0f, 0.0f)); 
+	fuego->setVelMedia(Vector3(10.0f, 10.0f, 10.0f));
+	fuego->setDesP(Vector3(0.4f, 0.0f, 0.4f));
+	fuego->setDesV(Vector3(20.0f, 20.0f, 20.0f));
+	fuego->setProbGen(0.2);
+	particlesys->addGenerator(fuego);
+
+	nieve = new GaussianGen();
+	//me creo la particula modelo
+	Particle* modelonieve = new Particle(
+		7.0,
+		Vector3(0.0f, 0.0f, 0.0f),
+		Vector3(0.0f, 0.0f, 0.0f),
+		Vector3(0.0f, -9.8f, 0.0f),
+		0.4f,
+		0.0f,
+		Vector4(1.0, 1.0, 1.0, 1.0), 0.2f
+	);
+	//modeloFuente->setGeometry();
+	nieve->setModelo(modelonieve);
+
+	// Configuración de la fuente
+	nieve->setNumParticles(5);
+	nieve->setDurMedia(0.2);
+	nieve->setPosMedia(Vector3(0.0f, 0.0f, 0.0f));
+	nieve->setVelMedia(Vector3(1.0f, 1.0f, 1.0f));
+	nieve->setDesP(Vector3(20.0f, 20.0f, 20.0f));
+	nieve->setDesV(Vector3(5.0f, 5.0f, 5.0f));
+	nieve->setProbGen(0.2);
+	particlesys->addGenerator(nieve);
 
 
 	
@@ -104,10 +191,12 @@ void stepPhysics(bool interactive, double t) //ES EL UPDATE
 		//llamar al integrate de cada bala
 		proyectil->shot(t);
 	}
-	particlesys->update(t);
 	
+	particlesys->update(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);
+
+	
 }
 
 // Function to clean data
@@ -127,11 +216,17 @@ void cleanupPhysics(bool interactive)
 	
 	gFoundation->release();
 
+	
 	//DeregisterRenderItem(item);
 	DeregisterRenderItem(item1);
 	DeregisterRenderItem(item2);
 	DeregisterRenderItem(item3);
-
+	delete tr4;
+	delete tr2;
+	delete tr3;
+	
+	delete proyectil;
+	delete particlesys;
 	}
 
 // Function called when a key is pressed

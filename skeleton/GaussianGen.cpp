@@ -1,34 +1,54 @@
 #include "GaussianGen.h"
-
-GaussianGen::GaussianGen()
+#include <algorithm> // para std::max
+GaussianGen::GaussianGen() : _d(0.0, 1.0) // media 0, desviación 1
 {
-	posMedia = { 30.0f, 0.0f, 0.0f };    
-	velMedia = { 0.0f, 100.0f, 0.0f };   
-	durMedia = 10.0f;                     
+    desvP = { 0.0f,0.0f,0.0f }; 
+    desvV = { 0.0f,0.0f,0.0f };
+    desvD = 0.5f;
 
-	desvP = { 5.0f, 1.0f, 5.0f };        
-	desvV = { 15.0f, 30.0f, 15.0f };     
-	desvD = 1.0f;
+}
 
-	n_particles = 80;
+GaussianGen::~GaussianGen()
+{
+    delete modelo;
+}
+
+void GaussianGen::setDesP( Vector3 p)
+{
+    desvP = p;
+}
+
+void GaussianGen::setDesV(Vector3 v)
+{
+    desvV = v;
 }
 
 list<Particle*> GaussianGen::generateP()
 {
-    list<Particle*> newParticles;  // lista local para nuevas partículas
+    list<Particle*> newParticles;  // lista para nuevas partículas
 
     for (int i = 0; i < n_particles; i++)
     {
-        if (_u(_mt) > 0.5)
+        if (_u(_mt) <probGen)
         {
-            pos = posMedia + desvP * _d(_mt);
-            vel = velMedia + desvV * _d(_mt);
+            modelo = pModelo->clone();
+            //la pos es la de la particula que luego tengo que hacer un set
+            Vector3 pos,vel;
+            double dur;
+            pos.x = posMedia.x + desvP.x * _d(_mt);
+            pos.y = posMedia.y + desvP.y * _d(_mt);
+            pos.z = posMedia.z + desvP.z * _d(_mt);
+
+            vel.x = velMedia.x + desvV.x * _d(_mt);
+            vel.y = velMedia.y + desvV.y * _d(_mt);
+            vel.z = velMedia.z + desvV.z * _d(_mt);
+
             dur = durMedia + desvD * _d(_mt);
 
-             modelo = new Particle(dur, pos, vel, Vector3(0.0f, 1800.0f, 0.0f),
-                Vector3(0.0f, -9.8f, 0.0f), 0.4f, 0.0f, 0.0f,
-                Vector4(0, 1, 0, 1));
-
+            modelo->setPos(pos);
+            modelo->setDur(dur);
+            modelo->setVel(vel);
+           
             newParticles.push_back(modelo);
         }
     }

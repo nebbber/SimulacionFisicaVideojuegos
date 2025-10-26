@@ -1,27 +1,14 @@
-#include "ParticleSystem.h"
+﻿#include "ParticleSystem.h"
 #include <iostream>
 using namespace std;
 
 ParticleSystem::ParticleSystem()
 {
-	pg = new GaussianGen();
-	_generators.push_back(pg);
 	
-	for (ParticleGen* gen : _generators)
-	{
-		auto g = gen->generateP();
-
-		for (Particle* p : g)
-		{
-			_particles.push_back(p);
-		}
-
-	}
 }
 
 ParticleSystem::~ParticleSystem()
 {
-	delete pg;
 
 	for (Particle* p : _particles)
 	{
@@ -40,32 +27,42 @@ ParticleSystem::~ParticleSystem()
 
 void ParticleSystem::update(double t)
 {
-	//me recorro las particulas para ver la sque tengo que eliminar
-	for (auto it = _particles.begin(); it != _particles.end(); )
+
+
+	for (ParticleGen* gen : _generators)
 	{
-		if (!(*it)->isAlive())
+		auto g = gen->generateP();
+
+		for (Particle* p : g)
 		{
-			//std::cout << "muerta?" << endl;
-			delete* it;            // liberamos memoria
-			it = _particles.erase(it); // borramos puntero de la lista y avanzamos iterador
+			p->setGeometry();
+			_particles.push_back(p);
 		}
-		else
-		{
+
+	}
+
+
+	//me recorro las particulas para ver la sque tengo que eliminar
+	auto it = _particles.begin();
+	while (it != _particles.end()) {
+		Particle* p = *it;
+
+		if (!p->isAlive()) {
+			delete p;
+			it = _particles.erase(it);
+		}
+		else {
+			p->integrate(t);
 			++it;
 		}
 	}
-	//me recorro los generadores y me saco las lista de partuclas que tenga
-	//luego me paso los de esa lista a la lista de particulas
 
 	
-	//integro las particulas
-	for (Particle* p : _particles)
-	{
-		p->integrate(t);
-	}
+}
 
-
-
+void ParticleSystem::addGenerator(ParticleGen* g)
+{
+	_generators.push_back(g);
 }
 
 

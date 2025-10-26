@@ -3,12 +3,11 @@
 #include "Particle.h"
 #include <random>
 #include <list>
-class GaussianGen:public ParticleGen
+class UniformGen :public ParticleGen
 {
 private:
 
-	std::normal_distribution <double> _d; //prob de duracion pos, vel ...  y para la prob de generar particula es
-	//la uniforme
+	std::uniform_real_distribution<double> _r;
 	list<Particle*> particles;
 
 	Vector3 desvP;//cuanto de esparcido
@@ -17,12 +16,11 @@ private:
 	double time;
 	Particle* modelo;
 public:
-	GaussianGen();
-	~GaussianGen();
+	UniformGen();
+	~UniformGen();
 	void setDesP(Vector3 p);
-	 void setDesV(Vector3 v);
+	void setDesV(Vector3 v);
 	list<Particle*> generateP() override;
 
 
 };
-

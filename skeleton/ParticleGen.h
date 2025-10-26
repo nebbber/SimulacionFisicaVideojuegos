@@ -12,21 +12,33 @@ protected:
 	std::mt19937 _mt;
 	std::uniform_real_distribution<double> _u; //de 0 a 1 porb de generar particula lo tienen todas en la uniforme utiliza
 	//tambien esta para la vel, pos...
-	Vector3 pos;
-	Vector3 vel;
-	double dur;
+	// esto tiene que ir en la particula y se le asigna cuendo creas en generate p
+	//Vector3 pos;
+	//Vector3 vel;
+	//double dur;
 	double probGen;
+	int n_particles;
+	Vector3 posMedia;
+	Vector3 velMedia;
+	double durMedia;
+	Particle* pModelo;
 
 public:
+	ParticleGen();
+	~ParticleGen();
 	virtual list<Particle*> generateP() = 0;
-	void setPos( Vector3 p);
-	void setVel(Vector3 v);
-	void setDur(double d); //duracion
+	void setPosMedia( Vector3 p);
+	void setVelMedia(Vector3 v);
+	void setDurMedia(double d); //duracion
 	void setProbGen(double pg);//probabilidad de generacion
+	void setNumParticles(int n);
 
-	Vector3 getPos();
-	Vector3 getVel();
-	double getDur();
+	void setModelo(Particle* p);
+	//poner setters y geter del num de particulas
+	int getNumParticles();
+	Vector3 getPosMedia();
+	Vector3 getVelMedia();
+	double getDurMedia();
 	double getProbGen();
 
 };

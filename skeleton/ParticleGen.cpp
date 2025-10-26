@@ -1,18 +1,26 @@
 #include "ParticleGen.h"
 
-void ParticleGen::setPos(Vector3 p)
+ParticleGen::ParticleGen() : _u(0.0, 1.0), pModelo(nullptr)
 {
-	pos = p;
+	_mt = std::mt19937(std::random_device{}());
+}
+ParticleGen::~ParticleGen()
+{
+
+}
+void ParticleGen::setPosMedia(Vector3 p)
+{
+	posMedia = p;
 }
 
-void ParticleGen::setVel(Vector3 v)
+void ParticleGen::setVelMedia(Vector3 v)
 {
-	vel = v;
+	velMedia = v;
 }
 
-void ParticleGen::setDur(double d)
+void ParticleGen::setDurMedia(double d)
 {
-	dur = d;
+	durMedia = d;
 }
 
 void ParticleGen::setProbGen(double pg)
@@ -20,19 +28,35 @@ void ParticleGen::setProbGen(double pg)
 	probGen = pg;
 }
 
-Vector3 ParticleGen::getPos()
+void ParticleGen::setNumParticles(int n)
 {
-	return pos;
+	n_particles = n;
 }
 
-Vector3 ParticleGen::getVel()
+void ParticleGen::setModelo(Particle* p)
 {
-	return vel;
+	if (pModelo != nullptr) { delete pModelo; }
+	pModelo = p;
 }
 
-double ParticleGen::getDur()
+int ParticleGen::getNumParticles()
 {
-	return dur;
+	return n_particles;
+}
+
+Vector3 ParticleGen::getPosMedia()
+{
+	return posMedia;
+}
+
+Vector3 ParticleGen::getVelMedia()
+{
+	return velMedia;
+}
+
+double ParticleGen::getDurMedia()
+{
+	return durMedia;
 }
 
 double ParticleGen::getProbGen()

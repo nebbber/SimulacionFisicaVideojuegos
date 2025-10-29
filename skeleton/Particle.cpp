@@ -8,20 +8,13 @@ Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, f
 	pose = new PxTransform(Pos);
 	
 
-	/*PxSphereGeometry geo = PxSphereGeometry(); //creamos geometria
-	geo.radius = 5;
-	PxShape* sphere = CreateShape(geo);//creamos forma
-
 	
-	renderItem = new RenderItem(sphere, pose, color);//renderizamos item
-	RegisterRenderItem(renderItem);//registramos el item a renderizar
-	*/
 	color = Color;
 	this->acc = Acc;
 	initialPose = Pos - Vel;
 	dumping = d;//de 0 a 1
 
-
+	fuerzaAcum = { 0,0,0 };
 	masa = m;
 	vel = Vel;
 	alive = true;
@@ -39,6 +32,7 @@ void Particle::integrate(double t)
 {
 	//EULER
 
+	acc = fuerzaAcum / masa;
 	
 	pose->p = pose->p + t * vel;
 	vel = vel + t * acc;
@@ -51,6 +45,8 @@ void Particle::integrate(double t)
 	if (dur <= 0.0) {
 		alive = false;
 	}
+
+	//fuerzaAcum = { 0,0,0 };
 }
 
 void Particle::semi(double t)
@@ -118,8 +114,18 @@ Particle::Particle(const Particle& other) :
 
 void Particle::setGeometry()
 {
-	if (renderItem == nullptr) {
-		PxShape* shShape = CreateShape(PxSphereGeometry(1));
-		renderItem = new RenderItem(shShape, pose, color);
-	}
+	PxShape* shShape = CreateShape(PxSphereGeometry(1));
+	renderItem = new RenderItem(shShape, pose, color);
+		
 }
+
+float Particle::getMasa() const
+{
+	return masa;
+}
+
+void Particle::addForce(Vector3 f)
+{
+	fuerzaAcum += f;
+}
+

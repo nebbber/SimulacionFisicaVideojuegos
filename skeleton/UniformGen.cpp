@@ -12,7 +12,7 @@ UniformGen::UniformGen():_r(-1.0, 1.0)
 
 UniformGen::~UniformGen()
 {
-    delete modelo;
+   
 }
 
 void UniformGen::setDesP(Vector3 p)
@@ -33,7 +33,7 @@ list<Particle*> UniformGen::generateP()
     {
         if (_u(_mt) < probGen)
         {
-            modelo = pModelo->clone();
+           Particle* modelo = pModelo->clone();
             //la pos es la de la particula que luego tengo que hacer un set
             Vector3 pos, vel;
             double dur;

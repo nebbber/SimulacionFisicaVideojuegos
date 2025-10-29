@@ -14,6 +14,8 @@
 #include "GaussianGen.h"
 #include "ParticleGen.h"
 #include "UniformGen.h"
+#include "Gravity.h"
+#include "ForceRegistry.h"
 #include <iostream>
 
 std::string display_text = "This is a test";
@@ -49,7 +51,9 @@ Particle* modeloFuente;
 PxTransform* tr4;
 PxTransform* tr2;
 PxTransform* tr3;
-
+Gravity* gravity;
+Gravity* softGravity;
+ForceRegistry* registro;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -109,7 +113,7 @@ void initPhysics(bool interactive)
 		Vector3(0.0f, 0.0f, 0.0f),
 		Vector3(0.0f, -9.8f, 0.0f),
 		0.4f,
-		0.0f,
+		20.0f,
 		Vector4(0.0, 1.0, 1.0, 1.0),0.02f
 	);
 	//modeloFuente->setGeometry();
@@ -175,8 +179,11 @@ void initPhysics(bool interactive)
 	nieve->setProbGen(0.2);
 	particlesys->addGenerator(nieve);
 
-
 	
+	gravity = new Gravity(Vector3(0.0f, -9.8f, 0.0f));
+	softGravity = new Gravity(Vector3(0.0f, -2.8f, 0.0f));
+
+	registro = new ForceRegistry();
 	}
 
 
@@ -185,10 +192,13 @@ void initPhysics(bool interactive)
 // t: time passed since last call in milliseconds
 void stepPhysics(bool interactive, double t) //ES EL UPDATE
 {
+	
+	registro->updateForces(t);
 	PX_UNUSED(interactive);
 	if (!proyectil->isEmpty())
 	{
 		//llamar al integrate de cada bala
+		
 		proyectil->shot(t);
 	}
 	
@@ -250,7 +260,10 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		Vector4 color(1,0,0,1);
 		//la pos de la camara como pos inicial de la particula
 		proyectil->createBullet(cam->getTransform().p, 300.0, Vector3(0.0f, 250.0f, 0.0f),
-			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 15.0f, cam->getDir(),color);
+			Vector3(0.0f, 0.0f, 0.0f), 0.4f, 15.0f, cam->getDir(),color);
+		auto vb = proyectil->getBullets();
+		Particle* p = vb[vb.size() - 1];
+		registro->addGeneratorToParticle(gravity, p);
 		break;
 	}
 	case 'O':
@@ -263,6 +276,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		//la pos de la camara como pos inicial de la particula
 		proyectil->createBullet(cam->getTransform().p, 100.0, Vector3(0.0f, 1800.0f, 0.0f),
 			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
+		auto vb = proyectil->getBullets();
+		Particle* p = vb[vb.size() - 1];
+		registro->addGeneratorToParticle(softGravity, p);
 		break;
 	}
 	case 'I':
@@ -273,6 +289,9 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		Vector4 color(0, 0, 1, 1);
 		proyectil->createBullet(cam->getTransform().p, 1000.0, Vector3(0.0f, 330.0f, 0.0f),
 			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
+		auto vb = proyectil->getBullets();
+		Particle* p = vb[vb.size() - 1];
+		registro->addGeneratorToParticle(softGravity, p);
 		break;
 	}
 	default:

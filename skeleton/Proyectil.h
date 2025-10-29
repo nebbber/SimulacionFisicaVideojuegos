@@ -13,6 +13,7 @@ public:
 	void createBullet(Vector3 Pos, double VelS, Vector3 VelR, Vector3 Acc, float d, float mR, PxVec3 dir, Vector4 color);
 	bool isEmpty();
 	void shot(double t);
+	vector<Particle*> getBullets() const;
 	~Proyectil();
 };
 

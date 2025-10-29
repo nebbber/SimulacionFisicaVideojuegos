@@ -20,6 +20,7 @@ private:
 	double dur;
 	Vector4 color;
 	float size;
+	Vector3 fuerzaAcum;
 public:
 	Particle(const Particle& other);
 	Particle(double time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color, float size);
@@ -35,6 +36,8 @@ public:
 	void setVel(Vector3 v);
 	void setDur(double t);
 	void setGeometry();
+	float getMasa() const;
+	void addForce(Vector3 f);
 	Particle* clone() const;
 };
 

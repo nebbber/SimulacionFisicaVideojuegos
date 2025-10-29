@@ -31,6 +31,11 @@ void Proyectil::shot(double t)
 	}
 }
 
+vector<Particle*> Proyectil::getBullets() const
+{
+	return bullets;
+}
+
 Proyectil::~Proyectil()
 {
 	for (Particle *p: bullets)

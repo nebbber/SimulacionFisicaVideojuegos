@@ -14,7 +14,6 @@ private:
 	Vector3 desvV;
 	double desvD;
 	double time;
-	Particle* modelo;
 public:
 	UniformGen();
 	~UniformGen();

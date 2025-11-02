@@ -20,6 +20,6 @@ public:
 	void setDesP(Vector3 p);
 	void setDesV(Vector3 v);
 	list<Particle*> generateP() override;
-
+	std::list<Particle*> getParticles() const;
 
 };

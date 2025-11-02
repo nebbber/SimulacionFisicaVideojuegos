@@ -37,6 +37,8 @@ public:
 	void setDur(double t);
 	void setGeometry();
 	float getMasa() const;
+	Vector3 getVel() const;
+	Vector3 getPos() const;
 	void addForce(Vector3 f);
 	Particle* clone() const;
 };

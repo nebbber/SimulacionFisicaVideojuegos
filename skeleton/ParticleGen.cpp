@@ -35,7 +35,7 @@ void ParticleGen::setNumParticles(int n)
 
 void ParticleGen::setModelo(Particle* p)
 {
-	if (pModelo != nullptr) { delete pModelo; }
+	//if (pModelo != nullptr) { delete pModelo; }
 	pModelo = p;
 }
 

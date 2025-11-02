@@ -1,5 +1,6 @@
 #pragma once
 #include <math.h>
+#include <PxPhysicsAPI.h>
 class Vector3D
 {
 private:
@@ -26,6 +27,7 @@ public:
 	Vector3D& operator+(Vector3D& vect);
 	Vector3D& operator-(Vector3D& vect);
 	Vector3D& operator*(Vector3D& vect);
+
 
 };
 

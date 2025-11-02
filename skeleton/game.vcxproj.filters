@@ -19,6 +19,10 @@
     <ClCompile Include="Gravity.cpp" />
     <ClCompile Include="UniformGen.cpp" />
     <ClCompile Include="ForceRegistry.cpp" />
+    <ClCompile Include="WindGenerator.cpp" />
+    <ClCompile Include="Whirlwind.cpp" />
+    <ClCompile Include="ScenePractica.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -40,6 +44,11 @@
     <ClInclude Include="Gravity.h" />
     <ClInclude Include="UniformGen.h" />
     <ClInclude Include="ForceRegistry.h" />
+    <ClInclude Include="WindGenerator.h" />
+    <ClInclude Include="Whirlwind.h" />
+    <ClInclude Include="BaseScene.h" />
+    <ClInclude Include="ScenePractica.h" />
+    <ClInclude Include="SceneManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

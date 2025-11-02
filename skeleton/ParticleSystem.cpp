@@ -1,10 +1,14 @@
 ﻿#include "ParticleSystem.h"
+#include "Gravity.h"
+#include "ForceRegistry.h"
+#include "WindGenerator.h"
+#include "Whirlwind.h"
 #include <iostream>
 using namespace std;
 
-ParticleSystem::ParticleSystem()
+ParticleSystem::ParticleSystem(ForceRegistry* registry)
 {
-	
+	_registry = registry;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -23,11 +27,31 @@ ParticleSystem::~ParticleSystem()
 	}
 
 	_generators.clear();
+	delete _gravity;
+	delete _wind;
+	delete _whril;
 }
+void ParticleSystem::setGravity(Gravity* g)
+{
+	if (_gravity) delete _gravity;
+	_gravity = g;
+}
+
+void ParticleSystem::setWind(WindGenerator* w)
+{
+	if (_wind) delete _wind;
+	_wind = w;
+}
+
+void ParticleSystem::setWhril(Whirlwind* ww)
+{
+	if (_whril) delete _whril;
+	_whril = ww;
+}
+
 
 void ParticleSystem::update(double t)
 {
-
 
 	for (ParticleGen* gen : _generators)
 	{
@@ -37,11 +61,21 @@ void ParticleSystem::update(double t)
 		{
 			p->setGeometry();
 			_particles.push_back(p);
+
+			/**if (_whril)
+				_registry->addGeneratorToParticle(_whril, p);
+			if (_wind)*/
+				_registry->addGeneratorToParticle(_wind, p);
+			if (_gravity)
+				_registry->addGeneratorToParticle(_gravity, p);
+			
+
+
 		}
 
 	}
 
-
+	
 	//me recorro las particulas para ver la sque tengo que eliminar
 	auto it = _particles.begin();
 	while (it != _particles.end()) {
@@ -57,7 +91,8 @@ void ParticleSystem::update(double t)
 		}
 	}
 
-	
+
+
 }
 
 void ParticleSystem::addGenerator(ParticleGen* g)

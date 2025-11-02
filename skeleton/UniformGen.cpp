@@ -1,5 +1,5 @@
 #include "UniformGen.h"
-#include <algorithm> // para std::max
+#include <iostream>
 UniformGen::UniformGen():_r(-1.0, 1.0)
 {
     
@@ -25,6 +25,10 @@ void UniformGen::setDesV(Vector3 v)
     desvV = v;
 }
 
+std::list<Particle*> UniformGen::getParticles() const
+{
+    return particles;
+}
 list<Particle*> UniformGen::generateP()
 {
     list<Particle*> newParticles;  // lista para nuevas partículas
@@ -34,6 +38,7 @@ list<Particle*> UniformGen::generateP()
         if (_u(_mt) < probGen)
         {
            Particle* modelo = pModelo->clone();
+          
             //la pos es la de la particula que luego tengo que hacer un set
             Vector3 pos, vel;
             double dur;

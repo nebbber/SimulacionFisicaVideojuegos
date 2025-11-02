@@ -1,21 +1,18 @@
 #include "Particle.h"
 #include <iostream>
 
-
-Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color,float size)
+Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color,float size):size(size), masa(m), fuerzaAcum (0,0,0)
 
 {
 	pose = new PxTransform(Pos);
 	
-
 	
 	color = Color;
 	this->acc = Acc;
 	initialPose = Pos - Vel;
 	dumping = d;//de 0 a 1
 
-	fuerzaAcum = { 0,0,0 };
-	masa = m;
+	
 	vel = Vel;
 	alive = true;
 	dur = Time;
@@ -46,11 +43,12 @@ void Particle::integrate(double t)
 		alive = false;
 	}
 
-	//fuerzaAcum = { 0,0,0 };
+	fuerzaAcum = { 0,0,0 };
 }
 
 void Particle::semi(double t)
 {
+	
 	//SEMI-IMPLICITO
 	vel = vel + t * acc;
 	pose->p = pose->p + t * vel;
@@ -103,10 +101,10 @@ Particle::Particle(const Particle& other) :
 	dur(other.dur),
 	renderItem(nullptr),  
 	color(other.color),
-	masa(other.masa),
 	size(other.size)
 {
-	
+	fuerzaAcum = other.fuerzaAcum;
+	masa = other.masa;
 	pose = new PxTransform(other.pose->p);
 	
 	initialPose = other.initialPose;
@@ -121,7 +119,21 @@ void Particle::setGeometry()
 
 float Particle::getMasa() const
 {
+	if (masa == 0.0f)
+	{
+		std::cout << "MASA 0" << endl;
+	}
 	return masa;
+}
+
+Vector3 Particle::getVel() const
+{
+	return vel;
+}
+
+Vector3 Particle::getPos() const
+{
+	return Vector3(pose->p.x, pose->p.y, pose->p.z);
 }
 
 void Particle::addForce(Vector3 f)

@@ -16,6 +16,8 @@
 #include "UniformGen.h"
 #include "Gravity.h"
 #include "ForceRegistry.h"
+#include "WindGenerator.h"
+#include "Whirlwind.h"
 #include <iostream>
 
 std::string display_text = "This is a test";
@@ -54,6 +56,8 @@ PxTransform* tr3;
 Gravity* gravity;
 Gravity* softGravity;
 ForceRegistry* registro;
+WindGenerator* wind;
+Whirlwind* whril;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -101,9 +105,23 @@ void initPhysics(bool interactive)
 	RegisterRenderItem(item2);//registramos el item a renderizar
 	RegisterRenderItem(item3);//registramos el item a renderizar
 
-	proyectil = new Proyectil();
-	particlesys = new ParticleSystem();
 
+	gravity = new Gravity(Vector3(0.0f, -9.8f, 0.0f));
+	softGravity = new Gravity(Vector3(0.0f, -2.8f, 0.0f));
+
+
+	wind = new WindGenerator(Vector3(1000.0f,100.0f,100.0f),0.5f,0.0f);
+	
+	// ALGUNAS COSAS FALLAN
+	//whril = new Whirlwind(0.7f,Vector3(15.0f,0.0f,0.0f),Vector3(10.0f, 0.0f, 0.0f), 0.5f, 0.0f);
+
+	registro = new ForceRegistry();
+	proyectil = new Proyectil();
+	particlesys = new ParticleSystem(registro);
+
+	particlesys->setGravity(gravity); // aplicar gravedad hacia abajo
+	particlesys->setWind(wind);
+	particlesys->setWhril(whril);
 	fuente = new UniformGen();
 	
 	//me creo la particula modelo
@@ -111,12 +129,11 @@ void initPhysics(bool interactive)
 		7.0,
 		Vector3(0.0f, 0.0f, 0.0f),
 		Vector3(0.0f, 0.0f, 0.0f),
-		Vector3(0.0f, -9.8f, 0.0f),
+		Vector3(0.0f, 0.0f, 0.0f),
 		0.4f,
 		20.0f,
 		Vector4(0.0, 1.0, 1.0, 1.0),0.02f
 	);
-	//modeloFuente->setGeometry();
 	fuente->setModelo(modeloFuente);
 
 	// Configuración de la fuente
@@ -129,7 +146,6 @@ void initPhysics(bool interactive)
 	fuente->setProbGen(0.2);
 	particlesys->addGenerator(fuente);
 	
-
 	fuego = new GaussianGen();
 
 	//me creo la particula modelo
@@ -137,9 +153,9 @@ void initPhysics(bool interactive)
 		7.0,
 		Vector3(0.0f, 0.0f, 0.0f),
 		Vector3(0.0f, 0.0f, 0.0f),
-		Vector3(0.0f, -9.8f, 0.0f),
+		Vector3(0.0f, 0.0f, 0.0f),
 		0.4f,
-		0.0f,
+		20.0f,
 		Vector4(1.0, 0.0, 0.0, 1.0), 0.2f
 	);
 	//modeloFuente->setGeometry();
@@ -161,9 +177,9 @@ void initPhysics(bool interactive)
 		7.0,
 		Vector3(0.0f, 0.0f, 0.0f),
 		Vector3(0.0f, 0.0f, 0.0f),
-		Vector3(0.0f, -9.8f, 0.0f),
+		Vector3(0.0f, 0.0f, 0.0f),
 		0.4f,
-		0.0f,
+		40.0f,
 		Vector4(1.0, 1.0, 1.0, 1.0), 0.2f
 	);
 	//modeloFuente->setGeometry();
@@ -180,10 +196,6 @@ void initPhysics(bool interactive)
 	particlesys->addGenerator(nieve);
 
 	
-	gravity = new Gravity(Vector3(0.0f, -9.8f, 0.0f));
-	softGravity = new Gravity(Vector3(0.0f, -2.8f, 0.0f));
-
-	registro = new ForceRegistry();
 	}
 
 
@@ -192,7 +204,6 @@ void initPhysics(bool interactive)
 // t: time passed since last call in milliseconds
 void stepPhysics(bool interactive, double t) //ES EL UPDATE
 {
-	
 	registro->updateForces(t);
 	PX_UNUSED(interactive);
 	if (!proyectil->isEmpty())
@@ -201,8 +212,8 @@ void stepPhysics(bool interactive, double t) //ES EL UPDATE
 		
 		proyectil->shot(t);
 	}
-	
 	particlesys->update(t);
+
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 

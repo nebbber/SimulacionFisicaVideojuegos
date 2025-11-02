@@ -265,10 +265,15 @@
     <ClCompile Include="RenderUtils.cpp" />
     <ClCompile Include="Render\Camera.cpp" />
     <ClCompile Include="Render\Render.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="ScenePractica.cpp" />
     <ClCompile Include="UniformGen.cpp" />
     <ClCompile Include="Vector3D.cpp" />
+    <ClCompile Include="Whirlwind.cpp" />
+    <ClCompile Include="WindGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseScene.h" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="core.hpp" />
     <ClInclude Include="ForceGenerator.h" />
@@ -282,8 +287,12 @@
     <ClInclude Include="RenderUtils.hpp" />
     <ClInclude Include="Render\Camera.h" />
     <ClInclude Include="Render\Render.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="ScenePractica.h" />
     <ClInclude Include="UniformGen.h" />
     <ClInclude Include="Vector3D.h" />
+    <ClInclude Include="Whirlwind.h" />
+    <ClInclude Include="WindGenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,13 +1,13 @@
-#include "ScenePractica.h"
+#include "SceneJuego.h"
 #include "Vector3D.h"
 #include "core.hpp"
 #include <iostream>
 
-ScenePractica::ScenePractica(PxPhysics* physics) : BaseScene(physics) {}
+SceneJuego::SceneJuego(PxPhysics* physics) : BaseScene(physics) {}
 
-ScenePractica::~ScenePractica() {}
+SceneJuego::~SceneJuego() {}
 
-void ScenePractica::init() {
+void SceneJuego::init() {
     std::cout << "Inicializando escena práctica..." << std::endl;
 
     // === Crear escena PhysX ===
@@ -20,26 +20,14 @@ void ScenePractica::init() {
     gScene = gPhysics->createScene(sceneDesc);
 
     gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
- 
-    // === Ejes ===
-    PxSphereGeometry geo(2.0f);
-    PxShape* shape = CreateShape(geo, gMaterial);
+
     
-
-    itemX = new RenderItem(shape, new PxTransform(PxVec3(10, 0, 0)), Vector4(1, 0, 0, 1));
-    itemY = new RenderItem(shape, new PxTransform(PxVec3(0, 10, 0)), Vector4(0, 1, 0, 1));
-    itemZ = new RenderItem(shape, new PxTransform(PxVec3(0, 0, 10)), Vector4(0, 0, 1, 1));
-
-    RegisterRenderItem(itemX);
-    RegisterRenderItem(itemY);
-    RegisterRenderItem(itemZ);
-
     // === Fuerzas ===
     gravity = new Gravity(Vector3(0, -9.8f, 0));
     softGravity = new Gravity(Vector3(0, -2.8f, 0));
     wind = new WindGenerator(Vector3(0.0f, 0.0f, 1000.0f), 0.5f, 0.0f);
-   // whirl = nullptr; 
-   // oscillate = new OscillateWind(Vector3(0.0f, 50.0f, .0f), 0.5f, 0.1f, 10.0f, 0.5f);
+    // whirl = nullptr; 
+    // oscillate = new OscillateWind(Vector3(0.0f, 50.0f, .0f), 0.5f, 0.1f, 10.0f, 0.5f);
 
     registry = new ForceRegistry();
 
@@ -93,12 +81,12 @@ void ScenePractica::init() {
     nieve->setDesV(Vector3(5, 5, 5));
     nieve->setProbGen(0.2);
     particleSystem->addGenerator(nieve);
-   
+
 }
 
-void ScenePractica::step( double t) //ES EL UPDATE
+void SceneJuego::step(double t) //ES EL UPDATE
 {
-    
+
     //PX_UNUSED(interactive);
     if (!proyectil->isEmpty())
     {
@@ -115,9 +103,9 @@ void ScenePractica::step( double t) //ES EL UPDATE
 
 }
 
-void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
+void SceneJuego::onKeyPress(unsigned char key, const PxTransform& camera) {
 
-   
+
 
     switch (toupper(key))
     {
@@ -131,15 +119,15 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
     {
         //bala de cañon
 
-        Camera* cam = GetCamera();
+       /* Camera* cam = GetCamera();
         Vector4 color(1, 0, 0, 1);
         //la pos de la camara como pos inicial de la particula
-        proyectil->createBullet(cam->getTransform().p, 300.0, Vector3(0.0f, 250.0f, 0.0f),
+        proyectil->createBullet(Vector3(0.0f,0.0f,0.0f), 300.0, Vector3(0.0f, 250.0f, 0.0f),
             Vector3(0.0f, 0.0f, 0.0f), 0.4f, 15.0f, cam->getDir(), color);
         auto vb = proyectil->getBullets();
         Particle* p = vb[vb.size() - 1];
         registry->setForceActiveForGroup("proyectil", gravity, true);
- 
+        */
         break;
     }
     case 'O':
@@ -154,22 +142,10 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
             Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
         auto vb = proyectil->getBullets();
         Particle* p = vb[vb.size() - 1];
-       // registry->addForceToParticle(gravity, p, "proyectiles");
+        // registry->addForceToParticle(gravity, p, "proyectiles");
         break;
     }
-    case 'I':
-    {
-        //bala de pistola
-
-        Camera* cam = GetCamera();
-        Vector4 color(0, 0, 1, 1);
-        proyectil->createBullet(cam->getTransform().p, 1000.0, Vector3(0.0f, 330.0f, 0.0f),
-            Vector3(0.0f, -9.8f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
-        auto vb = proyectil->getBullets();
-        Particle* p = vb[vb.size() - 1];   
-        //registry->addGeneratorToParticle(nullptr, "proyectiles", gravity, p);
-        break;
-    }
+   
     case 'Y':
     {
         //desactivo fuente
@@ -192,28 +168,25 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
         break;
     }
 }
-void ScenePractica::cleanup() {
-    // === RenderItems ===
-    if (itemX) { DeregisterRenderItem(itemX); delete itemX; itemX = nullptr; }
-    if (itemY) { DeregisterRenderItem(itemY); delete itemY; itemY = nullptr; }
-    if (itemZ) { DeregisterRenderItem(itemZ); delete itemZ; itemZ = nullptr; }
 
-    // === Escena PhysX ===
+void SceneJuego::cleanup() {
+   
+
+    // Primero eliminar todas las partículas y generadores
+    delete particleSystem;
+    particleSystem = nullptr;
+
+    // Limpiar proyectiles si dependen de PhysX
+    delete proyectil;
+    proyectil = nullptr;
+
+    // Limpiar RenderItems
+    DeregisterRenderItem(itemX); delete itemX; itemX = nullptr;
+    DeregisterRenderItem(itemY); delete itemY; itemY = nullptr;
+    DeregisterRenderItem(itemZ); delete itemZ; itemZ = nullptr;
+
+    // Luego liberar PhysX
     if (gScene) { gScene->release(); gScene = nullptr; }
     if (gDispatcher) { gDispatcher->release(); gDispatcher = nullptr; }
     if (gMaterial) { gMaterial->release(); gMaterial = nullptr; }
-
-    // === Proyectiles ===
-    if (proyectil) { delete proyectil; proyectil = nullptr; }
-
-    // === Particle System ===
-    // El ParticleSystem borra sus partículas y generadores internamente
-    if (particleSystem) { delete particleSystem; particleSystem = nullptr; }
-
-    // === Fuerzas ===
-    if (registry) { delete registry; registry = nullptr; }
-    if (gravity) { delete gravity; gravity = nullptr; }
-    if (softGravity) { delete softGravity; softGravity = nullptr; }
-    if (wind) { delete wind; wind = nullptr; }
-    // Si whirl y oscillate no se usan o son nullptr, no hace falta borrarlos
 }

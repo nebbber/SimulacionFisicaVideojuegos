@@ -1,6 +1,6 @@
 #include "ParticleGen.h"
 
-ParticleGen::ParticleGen(): _u(0.0, 1.0), pModelo(nullptr)
+ParticleGen::ParticleGen(std::string nam): _name(nam), _u(0.0, 1.0), pModelo(nullptr)
 {
 	_mt = std::mt19937(std::random_device{}());
 	
@@ -68,4 +68,9 @@ double ParticleGen::getProbGen()
 std::string ParticleGen::getName() const
 {
 	return _name;
+}
+
+void ParticleGen::changeActivation()
+{
+	isActive = !isActive;
 }

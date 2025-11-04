@@ -1,7 +1,7 @@
 #include "Particle.h"
 #include <iostream>
 
-Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color,float size):size(size), masa(m), fuerzaAcum (0,0,0)
+Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color,float size):size(size), masa(1.0f), fuerzaAcum (0,0,0)
 
 {
 	pose = new PxTransform(Pos);
@@ -12,7 +12,7 @@ Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, f
 	initialPose = Pos - Vel;
 	dumping = d;//de 0 a 1
 
-	
+	masa = m;
 	vel = Vel;
 	alive = true;
 	dur = Time;
@@ -101,7 +101,8 @@ Particle::Particle(const Particle& other) :
 	dur(other.dur),
 	renderItem(nullptr),  
 	color(other.color),
-	size(other.size)
+	size(other.size),
+	masa(other.masa)
 {
 	fuerzaAcum = other.fuerzaAcum;
 	masa = other.masa;
@@ -119,10 +120,6 @@ void Particle::setGeometry()
 
 float Particle::getMasa() const
 {
-	if (masa == 0.0f)
-	{
-		std::cout << "MASA 0" << endl;
-	}
 	return masa;
 }
 
@@ -140,4 +137,3 @@ void Particle::addForce(Vector3 f)
 {
 	fuerzaAcum += f;
 }
-

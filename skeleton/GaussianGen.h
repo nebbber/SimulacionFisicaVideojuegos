@@ -17,7 +17,7 @@ private:
 	double time;
 	Particle* modelo;
 public:
-	GaussianGen();
+	GaussianGen(std::string nam);
 	~GaussianGen();
 	void setDesP(Vector3 p);
 	 void setDesV(Vector3 v);

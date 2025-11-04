@@ -1,36 +1,31 @@
-#pragma once
-#include "ForceGenerator.h"
-#include "ParticleSystem.h"
-#include "Particle.h"
+﻿#pragma once
+#include <map>
 #include <vector>
 #include <string>
+#include "Particle.h"
+#include "ForceGenerator.h"
 
-class ForceRegistry
-{
+struct ParticleForceEntry {
+    Particle* particle;
+    ForceGenerator* fg;
+    bool active = true;  // Por defecto, la fuerza está activa
+};
+
+class ForceRegistry {
 private:
-    struct ForceEntry
-    {
-        ForceGenerator* fg;
-        Particle* p;
-    };
-
-    struct ForceGroup
-    {
-        ParticleSystem* system;
-        std::string groupName;  
-        std::vector<ForceEntry> entries;
-    };
-
-    std::vector<ForceGroup> groups;
+    // Map de grupo -> lista de fuerzas y partículas
+    std::map<std::string, std::vector<ParticleForceEntry>> _registries;
 
 public:
-    ForceRegistry();
-    ~ForceRegistry();
+    ForceRegistry() = default;
+    ~ForceRegistry() = default;
 
-    void addGeneratorToParticle(ParticleSystem* sys, const std::string& groupName, ForceGenerator* fg, Particle* p);
-    void removeGeneratorFromParticle(ParticleSystem* sys, const std::string& groupName, ForceGenerator* fg, Particle* p);
+    void addParticle(Particle* p, const std::string& groupName);
+
+    // Nuevo método
+    void addGeneratorToParticle(const std::string& groupName, ForceGenerator* fg, Particle* p);
+
+    void setForceActiveForGroup(const std::string& groupName, ForceGenerator* fg, bool active);
+
     void updateForces(double t);
-    void clearSystem(ParticleSystem* sys);
-    bool isEmpty() const;
-    const std::vector<ForceGroup>& getGroups() const { return groups; }
 };

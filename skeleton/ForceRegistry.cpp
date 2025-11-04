@@ -1,64 +1,30 @@
-#include "ForceRegistry.h"
-#include <algorithm>
+ï»¿#include "ForceRegistry.h"
 
-ForceRegistry::ForceRegistry() = default;
+void ForceRegistry::addGeneratorToParticle(const std::string& groupName, ForceGenerator* fg, Particle* p) {
+    if (!p || !fg) return;
 
-ForceRegistry::~ForceRegistry() {
-    groups.clear();
+    ParticleForceEntry entry;
+    entry.particle = p;
+    entry.fg = fg;
+
+    _registries[groupName].push_back(entry);
 }
-
-// Añadir fuerza a un grupo específico dentro de un sistema de partículas
-void ForceRegistry::addGeneratorToParticle(ParticleSystem* sys, const std::string& groupName, ForceGenerator* fg, Particle* p)
-{
-    for (auto& g : groups) {
-        if (g.system == sys && g.groupName == groupName) {
-            g.entries.push_back({ fg, p });
-            return;
-        }
-    }
-
-    // Si no existe, crear grupo nuevo
-    ForceGroup g;
-    g.system = sys;
-    g.groupName = groupName;
-    g.entries.push_back({ fg, p });
-    groups.push_back(g);
-
-
-}
-
-void ForceRegistry::removeGeneratorFromParticle(ParticleSystem* sys, const std::string& groupName, ForceGenerator* fg, Particle* p)
-{
-    for (auto& g : groups) {
-        if (g.system == sys && g.groupName == groupName) {
-            auto& e = g.entries;
-            e.erase(std::remove_if(e.begin(), e.end(),
-                [fg, p](const ForceEntry& fe) { return fe.fg == fg && fe.p == p; }),
-                e.end());
-            return;
+void ForceRegistry::setForceActiveForGroup(const std::string& groupName, ForceGenerator* fg, bool active) {
+    auto it = _registries.find(groupName);
+    if (it != _registries.end()) {
+        for (auto& entry : it->second) {
+            if (entry.fg == fg) {
+                entry.active = active;
+            }
         }
     }
 }
-
 void ForceRegistry::updateForces(double t) {
-    for (auto& g : groups) {
-        for (auto& e : g.entries) {
-                e.fg->update(t, e.p);
-            
+    for (auto& group : _registries) {
+        for (auto& entry : group.second) {
+            if (entry.active && entry.particle && entry.fg) {
+                entry.fg->update(t,entry.particle);
+            }
         }
     }
-}
-
-void ForceRegistry::clearSystem(ParticleSystem* sys)
-{
-    groups.erase(std::remove_if(groups.begin(), groups.end(),
-        [sys](const ForceGroup& g) { return g.system == sys; }),
-        groups.end());
-}
-
-bool ForceRegistry::isEmpty() const
-{
-    for (const auto& g : groups)
-        if (!g.entries.empty()) return false;
-    return true;
 }

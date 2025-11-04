@@ -24,6 +24,7 @@
     <ClCompile Include="ScenePractica.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="OscillateWind.cpp" />
+    <ClCompile Include="SceneJuego.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -51,6 +52,7 @@
     <ClInclude Include="ScenePractica.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="OscillateWind.h" />
+    <ClInclude Include="SceneJuego.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

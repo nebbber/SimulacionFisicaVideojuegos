@@ -1,6 +1,6 @@
 #include "GaussianGen.h"
 #include <algorithm> // para std::max
-GaussianGen::GaussianGen() : _d(0.0, 1.0) // media 0, desviación 1
+GaussianGen::GaussianGen(std::string nam) : ParticleGen(nam), _d(0.0, 1.0) // media 0, desviación 1
 {
     desvP = { 0.0f,0.0f,0.0f }; 
     desvV = { 0.0f,0.0f,0.0f };
@@ -26,11 +26,12 @@ void GaussianGen::setDesV(Vector3 v)
 list<Particle*> GaussianGen::generateP()
 {
     list<Particle*> newParticles;  // lista para nuevas partículas
-
+    if (!isActive) return newParticles;
     for (int i = 0; i < n_particles; i++)
     {
         if (_u(_mt) <probGen)
         {
+
             modelo = pModelo->clone();
             //la pos es la de la particula que luego tengo que hacer un set
             Vector3 pos,vel;

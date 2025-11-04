@@ -14,12 +14,15 @@ private:
 	Vector3 desvV;
 	double desvD;
 	double time;
+	bool active = true;
 public:
-	UniformGen();
+	UniformGen(std::string nam);
 	~UniformGen();
 	void setDesP(Vector3 p);
 	void setDesV(Vector3 v);
 	list<Particle*> generateP() override;
 	std::list<Particle*> getParticles() const;
+	bool getActive();
+	void changeActive();
 
 };

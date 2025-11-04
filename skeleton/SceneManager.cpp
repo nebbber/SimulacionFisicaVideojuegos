@@ -1,5 +1,6 @@
 ﻿#include "SceneManager.h"
 #include "ScenePractica.h"
+#include "SceneJuego.h"
 
 SceneManager::SceneManager(PxPhysics* physics)
     : gPhysics(physics) {
@@ -24,7 +25,7 @@ void SceneManager::changeScene(int sceneId) {
         break;
     case 1:
        // std::cout << "→ Cargando Escena Proyecto...\n";
-        //currentScene = new SceneProyecto(gPhysics);
+        currentScene = new SceneJuego(gPhysics);
         break;
     default:
        
@@ -46,7 +47,7 @@ void SceneManager::onKeyPress(unsigned char key, const PxTransform& camera) {
         changeScene(0);
     }
     else if (key == '2') {
-        //changeScene(1);
+        changeScene(1);
     }
     else if (currentScene) {
         currentScene->onKeyPress(key, camera);

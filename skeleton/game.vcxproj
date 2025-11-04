@@ -258,6 +258,7 @@
     <ClCompile Include="GaussianGen.cpp" />
     <ClCompile Include="Gravity.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="OscillateWind.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleGen.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
@@ -280,6 +281,7 @@
     <ClInclude Include="ForceRegistry.h" />
     <ClInclude Include="GaussianGen.h" />
     <ClInclude Include="Gravity.h" />
+    <ClInclude Include="OscillateWind.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleGen.h" />
     <ClInclude Include="ParticleSystem.h" />

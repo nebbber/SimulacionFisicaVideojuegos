@@ -7,7 +7,8 @@
 
 #include "Render/Render.h"
 #include "Render/Camera.h"
-
+#include "SceneManager.h"
+extern SceneManager* gSceneManager;
 #include <vector>
 
 using namespace Snippets;

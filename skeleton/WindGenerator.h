@@ -2,7 +2,7 @@
 #include "ForceGenerator.h"
 class WindGenerator:public ForceGenerator
 { 
-	private:
+	protected:
 		Vector3 velViento;
 		float k1;
 		float k2;

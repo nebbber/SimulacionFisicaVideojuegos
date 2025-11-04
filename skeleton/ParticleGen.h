@@ -3,6 +3,7 @@
 #include "core.hpp"
 #include "Particle.h"
 #include <list>
+#include <string>
 class ParticleGen
 {
 private:
@@ -22,9 +23,13 @@ protected:
 	Vector3 velMedia;
 	double durMedia;
 	Particle* pModelo;
-
+	std::string _name;
+	bool active = true;     
+	char keyToggle;
 public:
 	ParticleGen();
+
+	
 	~ParticleGen();
 	virtual list<Particle*> generateP() = 0;
 	void setPosMedia( Vector3 p);
@@ -40,5 +45,6 @@ public:
 	Vector3 getVelMedia();
 	double getDurMedia();
 	double getProbGen();
+	std::string getName() const;
 
 };

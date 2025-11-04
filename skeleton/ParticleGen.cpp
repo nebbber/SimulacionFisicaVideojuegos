@@ -1,8 +1,9 @@
 #include "ParticleGen.h"
 
-ParticleGen::ParticleGen() : _u(0.0, 1.0), pModelo(nullptr)
+ParticleGen::ParticleGen(): _u(0.0, 1.0), pModelo(nullptr)
 {
 	_mt = std::mt19937(std::random_device{}());
+	
 }
 ParticleGen::~ParticleGen()
 {
@@ -62,4 +63,9 @@ double ParticleGen::getDurMedia()
 double ParticleGen::getProbGen()
 {
 	return probGen;
+}
+
+std::string ParticleGen::getName() const
+{
+	return _name;
 }

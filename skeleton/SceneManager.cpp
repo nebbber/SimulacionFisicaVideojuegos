@@ -46,7 +46,7 @@ void SceneManager::onKeyPress(unsigned char key, const PxTransform& camera) {
         changeScene(0);
     }
     else if (key == '2') {
-        changeScene(1);
+        //changeScene(1);
     }
     else if (currentScene) {
         currentScene->onKeyPress(key, camera);
@@ -59,4 +59,8 @@ void SceneManager::cleanup() {
         delete currentScene;
         currentScene = nullptr;
     }
+}
+void SceneManager::onCollision(PxActor* actor1, PxActor* actor2) {
+    if (currentScene)
+        currentScene->onCollision(actor1, actor2);
 }

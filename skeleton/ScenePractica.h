@@ -10,30 +10,32 @@
 #include "Whirlwind.h"
 #include "UniformGen.h"
 #include "GaussianGen.h"
+#include "OscillateWind.h"
 
 class ScenePractica : public BaseScene {
 private:
-    // Elementos PhysX
+    // physX
     PxDefaultCpuDispatcher* gDispatcher = nullptr;
     ContactReportCallback gContactReportCallback;
 
-    // Render items
+    // ejes
     RenderItem* itemX = nullptr;
     RenderItem* itemY = nullptr;
     RenderItem* itemZ = nullptr;
 
-    // Fuerzas y sistemas
+    // fuerzas y el registro
     Gravity* gravity = nullptr;
     Gravity* softGravity = nullptr;
     WindGenerator* wind = nullptr;
     Whirlwind* whirl = nullptr;
     ForceRegistry* registry = nullptr;
+    OscillateWind* oscillate = nullptr;
 
-    // Partículas y proyectiles
+    // particulas y proyectiles
     ParticleSystem* particleSystem = nullptr;
     Proyectil* proyectil = nullptr;
 
-    // Generadores
+    // generadores
     UniformGen* fuente = nullptr;
     GaussianGen* fuego = nullptr;
     GaussianGen* nieve = nullptr;

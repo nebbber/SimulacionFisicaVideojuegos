@@ -7,6 +7,7 @@ class ForceRegistry;
 class Gravity;
 class WindGenerator;
 class Whirlwind;
+class OscillateWind;
 class ParticleSystem
 {
 private:
@@ -17,6 +18,7 @@ private:
 	Gravity* _gravity = nullptr; 
 	WindGenerator* _wind = nullptr;
 	Whirlwind* _whril = nullptr;
+	OscillateWind* _oscillate = nullptr;
 public:
 	ParticleSystem(ForceRegistry* _registry);
 	void update(double t);// te recorres todas y cunado sea no alive la borras
@@ -25,5 +27,8 @@ public:
 	void setGravity(Gravity* g);
 	void setWind(WindGenerator* w);
 	void setWhril(Whirlwind* ww);
+	void setOscillate(OscillateWind* o);
+	void toggleGenerator(char key);
+	//void stopGenerator(ParticleGen* g);
 };
 

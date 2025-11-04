@@ -3,6 +3,7 @@
 Proyectil::Proyectil()
 {
 	empty = false;
+	bullets.reserve(100);
 }
 
 void Proyectil::createBullet(Vector3 Pos, double VelS, Vector3 VelR, Vector3 Acc, float d, float mR, PxVec3 dir, Vector4 color)
@@ -25,9 +26,16 @@ bool Proyectil::isEmpty()
 
 void Proyectil::shot(double t)
 {
-	for (int i = 0; i < bullets.size(); i++)
+	for (int i = bullets.size() - 1; i >= 0; --i)
 	{
 		bullets[i]->integrate(t);
+
+		// si esta a una distancia de mas de x borramos la bala
+		if (bullets[i]->getPos().magnitude() > 500.0)
+		{
+			delete bullets[i];             
+			bullets.erase(bullets.begin() + i); 
+		}
 	}
 }
 

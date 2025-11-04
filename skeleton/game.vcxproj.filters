@@ -23,6 +23,7 @@
     <ClCompile Include="Whirlwind.cpp" />
     <ClCompile Include="ScenePractica.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="OscillateWind.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="BaseScene.h" />
     <ClInclude Include="ScenePractica.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="OscillateWind.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

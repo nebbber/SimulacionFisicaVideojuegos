@@ -70,7 +70,5 @@ std::string ParticleGen::getName() const
 	return _name;
 }
 
-void ParticleGen::changeActivation()
-{
-	isActive = !isActive;
-}
+
+

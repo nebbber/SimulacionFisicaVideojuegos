@@ -29,27 +29,18 @@ std::list<Particle*> UniformGen::getParticles() const
 {
     return particles;
 }
-bool UniformGen::getActive()
-{
-    return active;
-}
-void UniformGen::changeActive()
-{
-    active = !active;
-}
+
 list<Particle*> UniformGen::generateP()
 {
     list<Particle*> newParticles;  // lista para nuevas partículas
 
-    if (!isActive) return newParticles;
+    //if (!isActive) return newParticles;
     for (int i = 0; i < n_particles; i++)
     {
         if (_u(_mt) < probGen)
         {
            Particle* modelo = pModelo->clone();
 
-        
-          
             //la pos es la de la particula que luego tengo que hacer un set
             Vector3 pos, vel;
             double dur;

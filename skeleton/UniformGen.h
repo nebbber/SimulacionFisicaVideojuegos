@@ -14,7 +14,7 @@ private:
 	Vector3 desvV;
 	double desvD;
 	double time;
-	bool active = true;
+	bool isActive = false;
 public:
 	UniformGen(std::string nam);
 	~UniformGen();
@@ -22,7 +22,4 @@ public:
 	void setDesV(Vector3 v);
 	list<Particle*> generateP() override;
 	std::list<Particle*> getParticles() const;
-	bool getActive();
-	void changeActive();
-
 };

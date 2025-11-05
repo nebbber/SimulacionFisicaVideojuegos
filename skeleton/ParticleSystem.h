@@ -16,24 +16,23 @@ protected:
 	std::list<Particle*> _particles;
 	std::list<Particle*> nuevasParticulas;
 	std::list<ParticleGen*> _generators;
-	ForceRegistry* _registry;  
-	std::string name;
+	ForceRegistry* _registry = nullptr;
 	Gravity* _gravity = nullptr;
 	WindGenerator* _wind = nullptr;
-	Whirlwind* _whril = nullptr;
+	//Whirlwind* _whril = nullptr;
 	OscillateWind* _oscillate = nullptr;
-	std::map<std::string, std::vector<ForceGenerator*>> _groupForces;
+	bool active = false;
 public:
-	ParticleSystem(ForceRegistry* _registry);
-	void update(double t);// te recorres todas y cunado sea no alive la borras
-	void addGenerator(ParticleGen* g);
+	ParticleSystem();
+	virtual void update(double t) {};// te recorres todas y cunado sea no alive la borras
 	~ParticleSystem();
-	void setActiveGen(std::string name, bool active);
+	void ActivateParticle(bool a); //para deascituvar particulas 
 
-	void setGravity(Gravity* g);
-	void setWind(WindGenerator* w);
-	void setWhril(Whirlwind* ww);
-	void setOscillate(OscillateWind* o);
-	void addForceToGroup(const std::string& groupName, ForceGenerator* fg);
+	//y 3 para descativar generadores 
+	void ActivateGravity(bool a);
+	void ActivateOscilate(bool a);
+	void ActivateWind(bool a);
+	
+	
 };
 

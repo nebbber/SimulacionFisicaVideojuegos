@@ -1,6 +1,6 @@
 ﻿#include "SceneManager.h"
 #include "ScenePractica.h"
-#include "SceneJuego.h"
+//#include "SceneJuego.h"
 
 SceneManager::SceneManager(PxPhysics* physics)
     : gPhysics(physics) {
@@ -25,7 +25,7 @@ void SceneManager::changeScene(int sceneId) {
         break;
     case 1:
        // std::cout << "→ Cargando Escena Proyecto...\n";
-        currentScene = new SceneJuego(gPhysics);
+       // currentScene = new SceneJuego(gPhysics);
         break;
     default:
        

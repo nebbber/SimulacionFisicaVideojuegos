@@ -24,7 +24,9 @@
     <ClCompile Include="ScenePractica.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="OscillateWind.cpp" />
-    <ClCompile Include="SceneJuego.cpp" />
+    <ClCompile Include="SparkleSystem.cpp" />
+    <ClCompile Include="SnowSystem.cpp" />
+    <ClCompile Include="BulletSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -52,7 +54,9 @@
     <ClInclude Include="ScenePractica.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="OscillateWind.h" />
-    <ClInclude Include="SceneJuego.h" />
+    <ClInclude Include="SparkleSystem.h" />
+    <ClInclude Include="SnowSystem.h" />
+    <ClInclude Include="BulletSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

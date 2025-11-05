@@ -2,7 +2,10 @@
 #include "Vector3D.h"
 #include "core.hpp"
 #include <iostream>
-
+#include "foundation/PxTransform.h"
+#include "SparkleSystem.h"
+#include "BulletSystem.h"
+using namespace physx;
 ScenePractica::ScenePractica(PxPhysics* physics) : BaseScene(physics) {}
 
 ScenePractica::~ScenePractica() {}
@@ -12,7 +15,7 @@ void ScenePractica::init() {
 
     // === Crear escena PhysX ===
     PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-    sceneDesc.gravity = PxVec3(0.0f, -9.8f, 0.0f);
+    sceneDesc.gravity = PxVec3(0.0f, -40.8f, 0.0f);
     gDispatcher = PxDefaultCpuDispatcherCreate(2);
     sceneDesc.cpuDispatcher = gDispatcher;
     sceneDesc.filterShader = contactReportFilterShader;
@@ -22,40 +25,51 @@ void ScenePractica::init() {
     gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
  
     // === Ejes ===
-    PxSphereGeometry geo(2.0f);
+    PxSphereGeometry geo(5.0f); //antes para ejes 2
     PxShape* shape = CreateShape(geo, gMaterial);
     
+    itemX = new RenderItem(shape, new PxTransform(Vector3(50, 40, -80)), Vector4(0, 1, 0, 1));
 
-    itemX = new RenderItem(shape, new PxTransform(PxVec3(10, 0, 0)), Vector4(1, 0, 0, 1));
+    itemY = new RenderItem(shape, new PxTransform(Vector3(00, 0, -80)), Vector4(0, 1, 0, 1));
+
+    itemZ = new RenderItem(shape, new PxTransform(Vector3(-50, -20, -80)), Vector4(0, 1, 0, 1));
+
+
+    //ejes antiguos
+   /* itemX = new RenderItem(shape, new PxTransform(PxVec3(10, 0, 0)), Vector4(1, 0, 0, 1));
     itemY = new RenderItem(shape, new PxTransform(PxVec3(0, 10, 0)), Vector4(0, 1, 0, 1));
     itemZ = new RenderItem(shape, new PxTransform(PxVec3(0, 0, 10)), Vector4(0, 0, 1, 1));
-
+    */
     RegisterRenderItem(itemX);
     RegisterRenderItem(itemY);
     RegisterRenderItem(itemZ);
 
     // === Fuerzas ===
-    gravity = new Gravity(Vector3(0, -9.8f, 0));
-    softGravity = new Gravity(Vector3(0, -2.8f, 0));
-    wind = new WindGenerator(Vector3(0.0f, 0.0f, 1000.0f), 0.5f, 0.0f);
+    gravity = new Gravity(Vector3(0, -90.8f, 0));
+    //softGravity = new Gravity(Vector3(0, -2.8f, 0));
+    wind = new WindGenerator(Vector3(0.0f, 0.0f, 15000.0f), 0.3f, 0.0f);
    // whirl = nullptr; 
-   // oscillate = new OscillateWind(Vector3(0.0f, 50.0f, .0f), 0.5f, 0.1f, 10.0f, 0.5f);
+    oscillate = new OscillateWind(Vector3(0.0f, 20.0f, .0f), 0.5f, 0.1f, 10.0f, 0.5f);
 
     registry = new ForceRegistry();
 
     // === Proyectiles y partículas ===
     proyectil = new Proyectil();
-    particleSystem = new ParticleSystem(registry);
+    particleSystem = new ParticleSystem();
 
-    particleSystem->setGravity(gravity);
-    particleSystem->setWind(wind);
+    sparSys = new SparkleSystem(gravity);
+
+    snowSys = new SnowSystem(gravity,wind);
+
+    bulletSys = new BulletSystem(nullptr,nullptr);
+   
     // === Generadores ===
-    fuente = new UniformGen("fuente");
+    /*fuente = new UniformGen("fuente");
     fuego = new GaussianGen("fuego");
     nieve = new GaussianGen("nieve");
 
     // Modelo fuente
-    Particle* modeloFuente = new Particle(7.0, Vector3(0, 0, 0), Vector3(0, 0, 0),
+    Particle* modeloFuente = new Particle(7.0, Vector3(0, 40, -80), Vector3(0, 0, 0),
         Vector3(0, 0, 0), 0.4f, 20.0f, Vector4(0, 1, 1, 1), 0.02f);
     fuente->setModelo(modeloFuente);
     fuente->setNumParticles(5);
@@ -65,59 +79,49 @@ void ScenePractica::init() {
     fuente->setDesP(Vector3(1, 0, 1));
     fuente->setDesV(Vector3(10, 10, 10));
     fuente->setProbGen(0.2);
-
-    particleSystem->addGenerator(fuente);
-
-    // Modelo fuego
-    Particle* modeloFuego = new Particle(7.0, Vector3(0, 0, 0), Vector3(0, 0, 0),
-        Vector3(0, 0, 0), 0.4f, 20.0f, Vector4(1, 0, 0, 1), 0.2f);
-    fuego->setModelo(modeloFuego);
-    fuego->setNumParticles(20);
-    fuego->setDurMedia(1.0);
-    fuego->setPosMedia(Vector3(-25.0f, 0.0f, 0.0f));
-    fuego->setVelMedia(Vector3(10.0f, 10.0f, 10.0f));
-    fuego->setDesP(Vector3(0.4f, 0, 0.4f));
-    fuego->setDesV(Vector3(20, 20, 20));
-    fuego->setProbGen(0.2);
-    particleSystem->addGenerator(fuego);
-
-    // Modelo nieve
-    Particle* modeloNieve = new Particle(7.0, Vector3(0, 0, 0), Vector3(0, 0, 0),
-        Vector3(0, 0, 0), 0.4f, 40.0f, Vector4(1, 1, 1, 1), 0.2f);
-    nieve->setModelo(modeloNieve);
-    nieve->setNumParticles(5);
-    nieve->setDurMedia(0.2);
-    nieve->setPosMedia(Vector3(0, 0, 0));
-    nieve->setVelMedia(Vector3(1, 1, 1));
-    nieve->setDesP(Vector3(20, 20, 20));
-    nieve->setDesV(Vector3(5, 5, 5));
-    nieve->setProbGen(0.2);
-    particleSystem->addGenerator(nieve);
+    */
    
+ 
 }
 
 void ScenePractica::step( double t) //ES EL UPDATE
 {
-    
+    static bool primeraVez = true;
+
+    if (primeraVez) {
+        Camera* cam = GetCamera();
+        if (cam) {
+            posGanar = cam->getTransform().p;
+            primeraVez = false;
+        }
+    }
+  
     //PX_UNUSED(interactive);
-    if (!proyectil->isEmpty())
+    if (!bulletSys->isEmpty())
     {
         //llamar al integrate de cada bala
 
-        proyectil->shot(t);
+        bulletSys->shot(t);
     }
-
-
-    particleSystem->update(t);
+    registry->update(t);
+    sparSys->update(t);
+    snowSys->update(t);
+    //particleSystem->update(t);
     gScene->simulate(t);
     gScene->fetchResults(true);
 
-
+    Camera* cam = GetCamera();
+    if (cam->getTransform().p.magnitude() > 130.0)
+    {
+        snowSys->ActivateParticle(true);
+    }
+    else 
+    {
+        snowSys->ActivateParticle(false);
+    }
 }
 
 void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
-
-   
 
     switch (toupper(key))
     {
@@ -130,19 +134,22 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
     case 'P':
     {
         //bala de cañon
-
+       // oscillate->setActive(false);
         Camera* cam = GetCamera();
-        Vector4 color(1, 0, 0, 1);
+        Vector4 color(1, 1, 0, 1);
         //la pos de la camara como pos inicial de la particula
-        proyectil->createBullet(cam->getTransform().p, 300.0, Vector3(0.0f, 250.0f, 0.0f),
-            Vector3(0.0f, 0.0f, 0.0f), 0.4f, 15.0f, cam->getDir(), color);
-        auto vb = proyectil->getBullets();
+
+        bulletSys->createBullet(cam->getTransform().p, 200.0, Vector3(0.0f, 1000.0f, 0.0f),
+            Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
+        auto vb = bulletSys->getBullets();
         Particle* p = vb[vb.size() - 1];
-        registry->setForceActiveForGroup("proyectil", gravity, true);
+       // registry->add(p, oscillate);
  
+       // registry->setForceActiveForGroup("proyectil", gravity, true);
+
         break;
     }
-    case 'O':
+    /*case 'O':
     {
         //bala de tanque
 
@@ -156,64 +163,80 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
         Particle* p = vb[vb.size() - 1];
        // registry->addForceToParticle(gravity, p, "proyectiles");
         break;
-    }
+    }*/
     case 'I':
     {
         //bala de pistola
 
         Camera* cam = GetCamera();
-        Vector4 color(0, 0, 1, 1);
-        proyectil->createBullet(cam->getTransform().p, 1000.0, Vector3(0.0f, 330.0f, 0.0f),
+        Vector4 color(0, 1, 1, 1);
+        bulletSys->createBullet(cam->getTransform().p, 400.0, Vector3(0.0f, 330.0f, 0.0f),
             Vector3(0.0f, -9.8f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
-        auto vb = proyectil->getBullets();
-        Particle* p = vb[vb.size() - 1];   
+        auto vb = bulletSys->getBullets();
+        Particle* r = vb[vb.size() - 1];
         //registry->addGeneratorToParticle(nullptr, "proyectiles", gravity, p);
         break;
     }
+    case 'M':
+    {
+        Camera* cam = GetCamera();
+        cam->setTransform(posGanar);
+        showSparkle = !showSparkle;
+        sparSys->ActivateParticle(showSparkle);
+      
+      
+        break;
+    }
+
     case 'Y':
     {
-        //desactivo fuente
-        if (fuente) fuente->changeActivation();
+        boolGravity = !boolGravity;
+        sparSys->ActivateGravity(boolGravity);
+        snowSys->ActivateGravity(boolGravity);
         break;
     }
     case 'T':
     {
+        boolWind = boolWind;
+        snowSys->ActivateWind(boolWind);
+        //sparSys->ActivateOscilate(false);
         //desactivo fuego
-        if (fuego) fuego->changeActivation();
+        //if (fuego) fuego->changeActivation();
         break;
     }
     case 'R':
     {
+        //boolOscilate=!boolOscilate
+           
         //desactivo nieve
-        if (nieve) nieve->changeActivation();
+       // if (nieve) nieve->changeActivation();
         break;
     }
     default:
         break;
     }
+    
+}
+void ScenePractica::Win()
+{
+
+
 }
 void ScenePractica::cleanup() {
-    // === RenderItems ===
-    if (itemX) { DeregisterRenderItem(itemX); delete itemX; itemX = nullptr; }
-    if (itemY) { DeregisterRenderItem(itemY); delete itemY; itemY = nullptr; }
-    if (itemZ) { DeregisterRenderItem(itemZ); delete itemZ; itemZ = nullptr; }
+    DeregisterRenderItem(itemX);
+    DeregisterRenderItem(itemY);
+    DeregisterRenderItem(itemZ);
+    delete itemX; delete itemY; delete itemZ;
 
-    // === Escena PhysX ===
-    if (gScene) { gScene->release(); gScene = nullptr; }
-    if (gDispatcher) { gDispatcher->release(); gDispatcher = nullptr; }
-    if (gMaterial) { gMaterial->release(); gMaterial = nullptr; }
+    if (gScene) gScene->release();
+    if (gDispatcher) gDispatcher->release();
+    if (gMaterial) gMaterial->release();
 
-    // === Proyectiles ===
-    if (proyectil) { delete proyectil; proyectil = nullptr; }
-
-    // === Particle System ===
-    // El ParticleSystem borra sus partículas y generadores internamente
-    if (particleSystem) { delete particleSystem; particleSystem = nullptr; }
-
-    // === Fuerzas ===
-    if (registry) { delete registry; registry = nullptr; }
-    if (gravity) { delete gravity; gravity = nullptr; }
-    if (softGravity) { delete softGravity; softGravity = nullptr; }
-    if (wind) { delete wind; wind = nullptr; }
-    // Si whirl y oscillate no se usan o son nullptr, no hace falta borrarlos
+    delete proyectil;
+    // delete particleSystem;
+    delete registry;
+   // delete gravity;
+   // delete softGravity;
+    // delete wind;
+    // delete whirl;
 }

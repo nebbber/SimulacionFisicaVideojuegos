@@ -16,13 +16,13 @@ private:
 	double desvD;
 	double time;
 	Particle* modelo;
+	bool isActive = false;
 public:
 	GaussianGen(std::string nam);
 	~GaussianGen();
 	void setDesP(Vector3 p);
 	 void setDesV(Vector3 v);
 	list<Particle*> generateP() override;
-
 
 };
 

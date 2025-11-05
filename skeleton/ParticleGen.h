@@ -23,7 +23,7 @@ protected:
 	Vector3 velMedia;
 	double durMedia;
 	Particle* pModelo;
-	bool isActive = true;
+	
 	std::string _name;
 public:
 	ParticleGen(std::string nam);
@@ -44,5 +44,6 @@ public:
 	double getDurMedia();
 	double getProbGen();
 	std::string getName() const;
-	void changeActivation();
+	void setActive(bool a);
+	bool getActive();
 };

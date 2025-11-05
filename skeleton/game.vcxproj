@@ -253,6 +253,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="callbacks.cpp" />
     <ClCompile Include="ForceRegistry.cpp" />
     <ClCompile Include="GaussianGen.cpp" />
@@ -266,9 +267,10 @@
     <ClCompile Include="RenderUtils.cpp" />
     <ClCompile Include="Render\Camera.cpp" />
     <ClCompile Include="Render\Render.cpp" />
-    <ClCompile Include="SceneJuego.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScenePractica.cpp" />
+    <ClCompile Include="SnowSystem.cpp" />
+    <ClCompile Include="SparkleSystem.cpp" />
     <ClCompile Include="UniformGen.cpp" />
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="Whirlwind.cpp" />
@@ -276,6 +278,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseScene.h" />
+    <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="core.hpp" />
     <ClInclude Include="ForceGenerator.h" />
@@ -290,9 +293,10 @@
     <ClInclude Include="RenderUtils.hpp" />
     <ClInclude Include="Render\Camera.h" />
     <ClInclude Include="Render\Render.h" />
-    <ClInclude Include="SceneJuego.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScenePractica.h" />
+    <ClInclude Include="SnowSystem.h" />
+    <ClInclude Include="SparkleSystem.h" />
     <ClInclude Include="UniformGen.h" />
     <ClInclude Include="Vector3D.h" />
     <ClInclude Include="Whirlwind.h" />

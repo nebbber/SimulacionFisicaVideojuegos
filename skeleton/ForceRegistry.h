@@ -1,31 +1,31 @@
 ﻿#pragma once
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <string>
 #include "Particle.h"
 #include "ForceGenerator.h"
 
-struct ParticleForceEntry {
-    Particle* particle;
-    ForceGenerator* fg;
-    bool active = true;  // Por defecto, la fuerza está activa
-};
-
 class ForceRegistry {
 private:
-    // Map de grupo -> lista de fuerzas y partículas
-    std::map<std::string, std::vector<ParticleForceEntry>> _registries;
+    // Mapa: Partícula -> Lista de generadores
+    std::unordered_map<Particle*, std::vector<ForceGenerator*>> particleToGenerators;
+
+    // Mapa: Generador -> Lista de partículas
+    std::unordered_map<ForceGenerator*, std::vector<Particle*>> generatorToParticles;
 
 public:
-    ForceRegistry() = default;
-    ~ForceRegistry() = default;
+    // Añadir relación partícula-generador
+    void add(Particle* p, ForceGenerator* fg);
 
-    void addParticle(Particle* p, const std::string& groupName);
+    // Eliminar una relación específica
+    void remove(Particle* p, ForceGenerator* fg);
 
-    // Nuevo método
-    void addGeneratorToParticle(const std::string& groupName, ForceGenerator* fg, Particle* p);
+    // Eliminar todas las asociaciones de un generador
+    void removeGenerator(ForceGenerator* fg);
 
-    void setForceActiveForGroup(const std::string& groupName, ForceGenerator* fg, bool active);
+    // Eliminar todas las asociaciones de una partícula
+    void removeParticle(Particle* p);
 
-    void updateForces(double t);
+    // Actualizar todas las fuerzas
+    void update(float duration);
 };

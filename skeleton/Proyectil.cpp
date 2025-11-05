@@ -13,7 +13,7 @@ void Proyectil::createBullet(Vector3 Pos, double VelS, Vector3 VelR, Vector3 Acc
 	float masaS = energiaR / pow(VelR.magnitude(), 2) * 2;
 
 	Vector3	vel(dir*VelS);
-	Particle* p= new Particle(0.0,Pos,vel,Acc,d,masaS,color,1.0f);
+	Particle* p= new Particle(0.5,Pos,vel,Acc,d,masaS,color,1.0f);
 	p->setGeometry();
 	bullets.push_back(p);
 
@@ -31,11 +31,13 @@ void Proyectil::shot(double t)
 		bullets[i]->integrate(t);
 
 		// si esta a una distancia de mas de x borramos la bala
-		if (bullets[i]->getPos().magnitude() > 500.0)
+		if (bullets[i]->getPos().magnitude() >125.0)
 		{
+			std::cout << "eliminada" << endl;
 			delete bullets[i];             
 			bullets.erase(bullets.begin() + i); 
 		}
+
 	}
 }
 

@@ -26,7 +26,7 @@ void GaussianGen::setDesV(Vector3 v)
 list<Particle*> GaussianGen::generateP()
 {
     list<Particle*> newParticles;  // lista para nuevas partículas
-    if (!isActive) return newParticles;
+   // if (!isActive) return newParticles;
     for (int i = 0; i < n_particles; i++)
     {
         if (_u(_mt) <probGen)

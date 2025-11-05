@@ -11,7 +11,10 @@
 #include "UniformGen.h"
 #include "GaussianGen.h"
 #include "OscillateWind.h"
+#include "SnowSystem.h"
 
+class BulletSystem;
+class  SparkleSystem;
 class ScenePractica : public BaseScene {
 private:
     // physX
@@ -39,6 +42,17 @@ private:
     UniformGen* fuente = nullptr;
     GaussianGen* fuego = nullptr;
     GaussianGen* nieve = nullptr;
+    bool pressedNieve = false;
+    physx::PxVec3 posGanar;
+    SparkleSystem* sparSys;
+    SnowSystem* snowSys;
+    BulletSystem* bulletSys;
+
+    bool boolGravity=true;
+    bool boolWind = true;
+    bool showSparkle = false;
+    bool boolOscilate = true;
+
 
 public:
     ScenePractica(PxPhysics* physics);
@@ -48,5 +62,5 @@ public:
     void step(double t) override;
     void cleanup() override;
     void onKeyPress(unsigned char key, const PxTransform& camera) override;
-
+    void Win();
 };

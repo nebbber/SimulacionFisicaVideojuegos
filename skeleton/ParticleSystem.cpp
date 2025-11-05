@@ -8,9 +8,9 @@
 #include <iostream>
 using namespace std;
 #include <cmath>
-ParticleSystem::ParticleSystem(ForceRegistry* registry)
+ParticleSystem::ParticleSystem()
 {
-	_registry = registry;
+	//_registry = registry;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -31,72 +31,29 @@ ParticleSystem::~ParticleSystem()
 	_generators.clear();
 	delete _gravity;
 	delete _wind;
-	delete _whril;
+//	delete _whril;
 	delete _oscillate;
 }
 
-void ParticleSystem::setGravity(Gravity* g)
+void ParticleSystem::ActivateParticle(bool a)
 {
-	if (_gravity) delete _gravity;
-	_gravity = g;
+    active = a;
 }
 
-void ParticleSystem::setWind(WindGenerator* w)
+void ParticleSystem::ActivateGravity(bool a)
 {
-	if (_wind) delete _wind;
-	_wind = w;
+    _gravity->setActive(a);
 }
 
-void ParticleSystem::setWhril(Whirlwind* ww)
+void ParticleSystem::ActivateOscilate(bool a)
 {
-	if (_whril) delete _whril;
-	_whril = ww;
+    _oscillate->setActive(a);
 }
 
-void ParticleSystem::setOscillate(OscillateWind* o)
+void ParticleSystem::ActivateWind(bool a)
 {
-	if (_oscillate) delete _oscillate;
-	_oscillate = o;
+	_wind->setActive(a);
 }
 
-void ParticleSystem::update(double t)
-{
-    // Generar nuevas partículas
-    for (ParticleGen* gen : _generators)
-    {
-        auto generatedParticles = gen->generateP();
-        std::string groupName = gen->getName();
-
-        for (Particle* p : generatedParticles)
-        {
-            p->setGeometry();
-            _particles.push_back(p);
-        }
-            
-        
-    }
-
-    // Actualizar fuerzas de todas las partículas registradas
-    _registry->updateForces(t);
-
-    // Integrar partículas y eliminar las muertas
-    auto it = _particles.begin();
-    while (it != _particles.end()) {
-        Particle* p = *it;
-        if (!p->isAlive()) {
-            delete p;
-            it = _particles.erase(it);
-        }
-        else {
-            p->integrate(t);
-            ++it;
-        }
-    }
-}
-
-void ParticleSystem::addGenerator(ParticleGen* g)
-{
-    _generators.push_back(g);
-}
 
 

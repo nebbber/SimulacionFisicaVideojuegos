@@ -16,10 +16,9 @@ void OscillateWind::update(double t, Particle* p)
 {
     accumulatedTime += t; // acumula el tiempo
 
-    // Oscilación en X, Y y Z
     velViento.x = baseVel.x + amplitude * std::sin(frequency * accumulatedTime);
-    velViento.y = baseVel.y + amplitude * std::cos(frequency * accumulatedTime * 0.5); // diferente fase
-    velViento.z = baseVel.z + amplitude * std::sin(frequency * accumulatedTime * 0.7); // diferente fase
+    velViento.y = baseVel.y + amplitude * std::cos(frequency * accumulatedTime * 0.5); 
+    velViento.z = baseVel.z + amplitude * std::sin(frequency * accumulatedTime * 0.7); 
 
     WindGenerator::update(t, p);
 }

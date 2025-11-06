@@ -2,6 +2,7 @@
 #include "ParticleSystem.h"
 class Gravity;
 class WindGenerator;
+class OscillateWind;
 class UniformGen;
 class SnowSystem : public ParticleSystem
 {
@@ -11,7 +12,7 @@ private:
 	
 
 public:
-	SnowSystem(Gravity* g, WindGenerator* o);
+	SnowSystem(Gravity* g, WindGenerator* w, OscillateWind* o);
 
 	void update(double t) override;
 	~SnowSystem();

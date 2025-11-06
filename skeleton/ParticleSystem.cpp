@@ -5,12 +5,13 @@
 #include "Whirlwind.h"
 #include "OscillateWind.h"
 #include "ForceGenerator.h"
+#include "ParticleGen.h"
 #include <iostream>
 using namespace std;
 #include <cmath>
 ParticleSystem::ParticleSystem()
 {
-	//_registry = registry;
+	
 }
 
 ParticleSystem::~ParticleSystem()
@@ -31,7 +32,6 @@ ParticleSystem::~ParticleSystem()
 	_generators.clear();
 	delete _gravity;
 	delete _wind;
-//	delete _whril;
 	delete _oscillate;
 }
 

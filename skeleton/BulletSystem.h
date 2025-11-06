@@ -6,21 +6,17 @@
 #include "OscillateWind.h"
 #include <vector>
 #include <iostream>
-
-class BulletSystem
+#include "ParticleSystem.h"
+class BulletSystem:public ParticleSystem
 {
 private:
     std::vector<Particle*> bullets;
-    Gravity* _gravity;
-    OscillateWind* _oscillate;
     ForceRegistry* _registry;
 
 public:
-    // Constructor y destructor
-    BulletSystem(Gravity* g, OscillateWind*);
+    BulletSystem(Gravity* g, WindGenerator* w, OscillateWind* o);
     ~BulletSystem();
 
-    // Métodos
     void createBullet(Vector3 pos, double velS, Vector3 velR, Vector3 acc, float damping, float massR, PxVec3 dir, Vector4 color);
     bool isEmpty() const;
     void shot(double t);

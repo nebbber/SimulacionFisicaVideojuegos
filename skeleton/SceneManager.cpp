@@ -1,6 +1,5 @@
 ﻿#include "SceneManager.h"
 #include "ScenePractica.h"
-//#include "SceneJuego.h"
 
 SceneManager::SceneManager(PxPhysics* physics)
     : gPhysics(physics) {

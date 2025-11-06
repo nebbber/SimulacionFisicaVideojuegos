@@ -5,13 +5,21 @@
 #include "foundation/PxTransform.h"
 #include "SparkleSystem.h"
 #include "BulletSystem.h"
+#include "ParticleSystem.h"
+#include "ForceRegistry.h"
+#include "Gravity.h"
+#include "WindGenerator.h"
+#include "Whirlwind.h"
+#include "UniformGen.h"
+#include "GaussianGen.h"
+#include "OscillateWind.h"
+#include "SnowSystem.h"
 using namespace physx;
 ScenePractica::ScenePractica(PxPhysics* physics) : BaseScene(physics) {}
 
 ScenePractica::~ScenePractica() {}
 
 void ScenePractica::init() {
-    std::cout << "Inicializando escena práctica..." << std::endl;
 
     // === Crear escena PhysX ===
     PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -24,14 +32,12 @@ void ScenePractica::init() {
 
     gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
  
-    // === Ejes ===
+    // === Dianas ===
     PxSphereGeometry geo(5.0f); //antes para ejes 2
     PxShape* shape = CreateShape(geo, gMaterial);
     
     itemX = new RenderItem(shape, new PxTransform(Vector3(50, 40, -80)), Vector4(0, 1, 0, 1));
-
     itemY = new RenderItem(shape, new PxTransform(Vector3(00, 0, -80)), Vector4(0, 1, 0, 1));
-
     itemZ = new RenderItem(shape, new PxTransform(Vector3(-50, -20, -80)), Vector4(0, 1, 0, 1));
 
 
@@ -46,24 +52,16 @@ void ScenePractica::init() {
 
     // === Fuerzas ===
     gravity = new Gravity(Vector3(0, -90.8f, 0));
-    //softGravity = new Gravity(Vector3(0, -2.8f, 0));
-    wind = new WindGenerator(Vector3(0.0f, 0.0f, 15000.0f), 0.3f, 0.0f);
-   // whirl = nullptr; 
-    oscillate = new OscillateWind(Vector3(0.0f, 20.0f, .0f), 0.5f, 0.1f, 10.0f, 0.5f);
-
-    registry = new ForceRegistry();
+    wind = new WindGenerator(Vector3(0.0f, 0.0f, 20000.0f), 0.3f, 0.0f);
+    oscillate = new OscillateWind(Vector3(0.0f, 100.0f, 0.0f), 0.5f, 0.1f, 300.0f, 3.0f);
 
     // === Proyectiles y partículas ===
-    proyectil = new Proyectil();
     particleSystem = new ParticleSystem();
-
-    sparSys = new SparkleSystem(gravity);
-
-    snowSys = new SnowSystem(gravity,wind);
-
-    bulletSys = new BulletSystem(nullptr,nullptr);
+    sparSys = new SparkleSystem(gravity,nullptr, oscillate);
+    snowSys = new SnowSystem(gravity,wind,nullptr);
+    bulletSys = new BulletSystem(nullptr,nullptr,nullptr);
    
-    // === Generadores ===
+    // antigua fuente sin adapatr a sistema de particulas
     /*fuente = new UniformGen("fuente");
     fuego = new GaussianGen("fuego");
     nieve = new GaussianGen("nieve");
@@ -88,6 +86,7 @@ void ScenePractica::step( double t) //ES EL UPDATE
 {
     static bool primeraVez = true;
 
+    //cogemos la pos inicial de la camara 
     if (primeraVez) {
         Camera* cam = GetCamera();
         if (cam) {
@@ -103,14 +102,14 @@ void ScenePractica::step( double t) //ES EL UPDATE
 
         bulletSys->shot(t);
     }
-    registry->update(t);
     sparSys->update(t);
     snowSys->update(t);
-    //particleSystem->update(t);
     gScene->simulate(t);
     gScene->fetchResults(true);
 
     Camera* cam = GetCamera();
+
+    //aparece "nieve" delimitadora de espacio de disparo
     if (cam->getTransform().p.magnitude() > 130.0)
     {
         snowSys->ActivateParticle(true);
@@ -134,7 +133,6 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
     case 'P':
     {
         //bala de cañon
-       // oscillate->setActive(false);
         Camera* cam = GetCamera();
         Vector4 color(1, 1, 0, 1);
         //la pos de la camara como pos inicial de la particula
@@ -143,9 +141,6 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
             Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
         auto vb = bulletSys->getBullets();
         Particle* p = vb[vb.size() - 1];
-       // registry->add(p, oscillate);
- 
-       // registry->setForceActiveForGroup("proyectil", gravity, true);
 
         break;
     }
@@ -174,7 +169,6 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
             Vector3(0.0f, -9.8f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
         auto vb = bulletSys->getBullets();
         Particle* r = vb[vb.size() - 1];
-        //registry->addGeneratorToParticle(nullptr, "proyectiles", gravity, p);
         break;
     }
     case 'M':
@@ -197,19 +191,14 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
     }
     case 'T':
     {
-        boolWind = boolWind;
+        boolWind = !boolWind;
         snowSys->ActivateWind(boolWind);
-        //sparSys->ActivateOscilate(false);
-        //desactivo fuego
-        //if (fuego) fuego->changeActivation();
         break;
     }
     case 'R':
     {
-        //boolOscilate=!boolOscilate
-           
-        //desactivo nieve
-       // if (nieve) nieve->changeActivation();
+        boolOscilate = !boolOscilate;
+        sparSys->ActivateOscilate(boolOscilate);
         break;
     }
     default:
@@ -232,11 +221,7 @@ void ScenePractica::cleanup() {
     if (gDispatcher) gDispatcher->release();
     if (gMaterial) gMaterial->release();
 
-    delete proyectil;
-    // delete particleSystem;
-    delete registry;
-   // delete gravity;
-   // delete softGravity;
-    // delete wind;
-    // delete whirl;
+    delete gravity;
+    delete wind;
+    delete oscillate;
 }

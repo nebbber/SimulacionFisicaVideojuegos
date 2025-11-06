@@ -2,11 +2,13 @@
 #include "OscillateWind.h"
 #include "Gravity.h"
 #include "ForceRegistry.h"
+#include "GaussianGen.h"
 //poner la gravedad de parametro y asi la tiene
-SparkleSystem::SparkleSystem(Gravity* g):ParticleSystem()
+SparkleSystem::SparkleSystem(Gravity* g, WindGenerator* w, OscillateWind* o):ParticleSystem()
 {
     _gravity = g;
-    //_wind = w;
+    _oscillate = o;
+    _wind = w;
     spark = new GaussianGen("spark");
     _generators.push_back(spark);
  
@@ -52,11 +54,11 @@ void SparkleSystem::update(double t)
                 p->setGeometry();
                 _particles.push_back(p);
 
-                if (_wind && _wind->isActive())
-                    _registry->add(p, _wind);
-                else if (_wind && !_wind->isActive())
+                if (_oscillate && _oscillate->isActive())
+                    _registry->add(p, _oscillate);
+                else if (_oscillate && !_oscillate->isActive())
                 {
-                    _registry->removeGenerator(_wind);
+                    _registry->removeGenerator(_oscillate);
                 }
                 if (_gravity&&_gravity->isActive())
                     _registry->add(p, _gravity);
@@ -64,6 +66,14 @@ void SparkleSystem::update(double t)
                 {
                     _registry->removeGenerator( _gravity);
                 }
+
+                if (_wind && _wind->isActive())
+                    _registry->add(p, _wind);
+                else if (_wind && !_wind->isActive())
+                {
+                    _registry->removeGenerator(_wind);
+                }
+
                 
               
 
@@ -75,7 +85,7 @@ void SparkleSystem::update(double t)
 
     _registry->update(t);
 
-    // Integrar partículas y eliminar las muertas
+    // integrar e ignorar las particulas muertas por si dan error
     auto it = _particles.begin();
     while (it != _particles.end()) {
         Particle* p = *it;

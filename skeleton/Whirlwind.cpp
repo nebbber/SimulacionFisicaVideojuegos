@@ -13,6 +13,8 @@ Whirlwind::~Whirlwind()
 }
 void Whirlwind::update(double t, Particle* p)
 {
+
+    //revisar formula
     Vector3 posPart = p->getPos(); 
     Vector3 dir = posPart - posCentro; 
 

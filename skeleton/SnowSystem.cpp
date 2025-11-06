@@ -5,10 +5,11 @@
 #include "OscillateWind.h"
 #include "UniformGen.h"
 //poner la gravedad de parametro y asi la tiene
-SnowSystem::SnowSystem( Gravity* g,WindGenerator* o) :ParticleSystem()
+SnowSystem::SnowSystem(Gravity* g, WindGenerator* w, OscillateWind* o) :ParticleSystem()
 {
     _gravity = g;
-    _wind = o;
+    _wind = w;
+    _oscillate = o;
     snow = new UniformGen("snow");
     _registry = new ForceRegistry();
     _generators.push_back(snow);
@@ -46,14 +47,21 @@ void SnowSystem::update(double t)
                 p->setGeometry();
                 _particles.push_back(p);
 
-                if (_gravity &&_gravity->isActive())
+
+                if (_oscillate && _oscillate->isActive())
+                    _registry->add(p, _oscillate);
+                else if (_oscillate && !_oscillate->isActive())
+                {
+                    _registry->removeGenerator(_oscillate);
+                }
+                if (_gravity && _gravity->isActive())
                     _registry->add(p, _gravity);
                 else if (_gravity && !_gravity->isActive())
                 {
                     _registry->removeGenerator(_gravity);
                 }
 
-                if (_wind&&_wind->isActive())
+                if (_wind && _wind->isActive())
                     _registry->add(p, _wind);
                 else if (_wind && !_wind->isActive())
                 {
@@ -68,7 +76,7 @@ void SnowSystem::update(double t)
     _registry->update(t);
   
 
-    // Integrar partículas y eliminar las muertas
+    // integrar e ignorar las particulas muertas por si dan error
     auto it = _particles.begin();
     while (it != _particles.end()) {
         Particle* p = *it;

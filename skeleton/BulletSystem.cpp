@@ -1,10 +1,11 @@
 #include "BulletSystem.h"
 #include <cmath> // para pow
 
-BulletSystem::BulletSystem(Gravity* g, OscillateWind* o)
+BulletSystem::BulletSystem(Gravity* g, WindGenerator* w, OscillateWind* o)
 {
-    _oscillate = 0;
+    _oscillate = o;
     _gravity = g;
+    _wind = w;
     _registry = new ForceRegistry();
     bullets.reserve(100);
 }
@@ -28,12 +29,26 @@ void BulletSystem::createBullet(Vector3 pos, double velS, Vector3 velR, Vector3 
     p->setGeometry();
     bullets.push_back(p);
 
-    // Registramos la gravedad para la bala
-    if (_gravity && _gravity->isActive())
-        _registry->add(p, _gravity);
 
     if (_oscillate && _oscillate->isActive())
         _registry->add(p, _oscillate);
+    else if (_oscillate && !_oscillate->isActive())
+    {
+        _registry->removeGenerator(_oscillate);
+    }
+    if (_gravity && _gravity->isActive())
+        _registry->add(p, _gravity);
+    else if (_gravity && !_gravity->isActive())
+    {
+        _registry->removeGenerator(_gravity);
+    }
+
+    if (_wind && _wind->isActive())
+        _registry->add(p, _wind);
+    else if (_wind && !_wind->isActive())
+    {
+        _registry->removeGenerator(_wind);
+    }
 }
 
 bool BulletSystem::isEmpty() const

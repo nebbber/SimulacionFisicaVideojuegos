@@ -63,8 +63,6 @@ void ScenePractica::init() {
    
     // antigua fuente sin adapatr a sistema de particulas
     /*fuente = new UniformGen("fuente");
-    fuego = new GaussianGen("fuego");
-    nieve = new GaussianGen("nieve");
 
     // Modelo fuente
     Particle* modeloFuente = new Particle(7.0, Vector3(0, 40, -80), Vector3(0, 0, 0),
@@ -139,8 +137,6 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
 
         bulletSys->createBullet(cam->getTransform().p, 200.0, Vector3(0.0f, 1000.0f, 0.0f),
             Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
-        auto vb = bulletSys->getBullets();
-        Particle* p = vb[vb.size() - 1];
 
         break;
     }
@@ -154,9 +150,6 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
         //la pos de la camara como pos inicial de la particula
         proyectil->createBullet(cam->getTransform().p, 100.0, Vector3(0.0f, 1800.0f, 0.0f),
             Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
-        auto vb = proyectil->getBullets();
-        Particle* p = vb[vb.size() - 1];
-       // registry->addForceToParticle(gravity, p, "proyectiles");
         break;
     }*/
     case 'I':
@@ -167,8 +160,7 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
         Vector4 color(0, 1, 1, 1);
         bulletSys->createBullet(cam->getTransform().p, 400.0, Vector3(0.0f, 330.0f, 0.0f),
             Vector3(0.0f, -9.8f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
-        auto vb = bulletSys->getBullets();
-        Particle* r = vb[vb.size() - 1];
+   
         break;
     }
     case 'M':

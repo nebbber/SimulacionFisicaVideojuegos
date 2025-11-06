@@ -43,10 +43,10 @@ void SceneManager::step(double t) {
 void SceneManager::onKeyPress(unsigned char key, const PxTransform& camera) {
     // Controlar cambio de escenas
     if (key == '1') {
-        changeScene(0);
+        //changeScene(0);
     }
     else if (key == '2') {
-        changeScene(1);
+        //changeScene(1);
     }
     else if (currentScene) {
         currentScene->onKeyPress(key, camera);

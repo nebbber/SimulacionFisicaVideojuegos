@@ -10,6 +10,10 @@ class ParticleSystem;
 class BulletSystem;
 class SnowSystem;
 class SparkleSystem;
+class Particle;
+class ForceRegistry;
+class SpringForceGenerator;
+class MuellePracticaSystem;
 class ScenePractica : public BaseScene {
 private:
     // physX
@@ -26,6 +30,11 @@ private:
     WindGenerator* wind = nullptr;
     OscillateWind* oscillate = nullptr;
 
+
+    SpringForceGenerator* spring1 = nullptr;
+    SpringForceGenerator* spring2 = nullptr;
+    SpringForceGenerator* spring3 = nullptr;
+
     // particulas 
     ParticleSystem* particleSystem = nullptr;
     // generadores
@@ -34,6 +43,7 @@ private:
     SparkleSystem* sparSys;
     SnowSystem* snowSys;
     BulletSystem* bulletSys;
+    MuellePracticaSystem* muellesys;
 
     //booleanos para activacion/desactivacion de generadores de fuerzas
     bool boolGravity=true;

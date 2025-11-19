@@ -20,10 +20,12 @@ private:
 	Vector4 color;
 	float size;
 	Vector3 fuerzaAcum;
+	int tipo;
 
 public:
 	Particle(const Particle& other);
 	Particle(double time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color, float size);
+	void setShape(int i);
 	~Particle();
 
 	void integrate(double t);

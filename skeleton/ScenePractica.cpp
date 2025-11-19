@@ -14,6 +14,8 @@
 #include "GaussianGen.h"
 #include "OscillateWind.h"
 #include "SnowSystem.h"
+#include "SpringForceGenerator.h"
+#include "MuellePracticaSystem.h"
 using namespace physx;
 ScenePractica::ScenePractica(PxPhysics* physics) : BaseScene(physics) {}
 
@@ -54,13 +56,18 @@ void ScenePractica::init() {
     gravity = new Gravity(Vector3(0, -90.8f, 0));
     wind = new WindGenerator(Vector3(0.0f, 0.0f, 20000.0f), 0.3f, 0.0f);
     oscillate = new OscillateWind(Vector3(0.0f, 100.0f, 0.0f), 0.5f, 0.1f, 300.0f, 3.0f);
+    spring1 = new SpringForceGenerator(10, 2);
+    spring2 = new SpringForceGenerator(1, 10);
+    spring3 = new SpringForceGenerator(1, 10);
 
     // === Proyectiles y partículas ===
     particleSystem = new ParticleSystem();
     sparSys = new SparkleSystem(gravity,nullptr, oscillate);
     snowSys = new SnowSystem(gravity,wind,nullptr);
     bulletSys = new BulletSystem(nullptr,nullptr,nullptr);
+    muellesys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
    
+    muellesys->ActivateSpring(true);
     // antigua fuente sin adapatr a sistema de particulas
     /*fuente = new UniformGen("fuente");
 
@@ -76,6 +83,8 @@ void ScenePractica::init() {
     fuente->setDesV(Vector3(10, 10, 10));
     fuente->setProbGen(0.2);
     */
+   
+
    
  
 }
@@ -102,6 +111,7 @@ void ScenePractica::step( double t) //ES EL UPDATE
     }
     sparSys->update(t);
     snowSys->update(t);
+    muellesys->update(t);
     gScene->simulate(t);
     gScene->fetchResults(true);
 

@@ -9,6 +9,7 @@ class Whirlwind;
 class OscillateWind;
 class ForceGenerator;
 class ParticleGen;
+class SpringForceGenerator;
 class ParticleSystem
 {
 protected:
@@ -20,6 +21,10 @@ protected:
 	WindGenerator* _wind = nullptr;
 	OscillateWind* _oscillate = nullptr;
 	bool active = false;
+
+	SpringForceGenerator* _spring1= nullptr;
+	SpringForceGenerator* _spring2 = nullptr;
+	SpringForceGenerator* _spring3 = nullptr;
 public:
 	ParticleSystem();
 	virtual void update(double t) {};
@@ -29,6 +34,7 @@ public:
 	void ActivateGravity(bool a);
 	void ActivateOscilate(bool a);
 	void ActivateWind(bool a);
+	void ActivateSpring(bool a);
 	
 	
 };

@@ -1,7 +1,7 @@
 #include "Particle.h"
 #include <iostream>
 
-Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color,float size):size(size), masa(1.0f), fuerzaAcum (0,0,0)
+Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color,float size):size(size), masa(1.0f), fuerzaAcum (0,0,0),tipo(1)
 
 {
 	pose = new PxTransform(Pos);
@@ -17,6 +17,11 @@ Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, f
 	alive = true;
 	dur = Time;
 
+}
+
+void Particle::setShape(int i)
+{
+	tipo = i;
 }
 
 Particle::~Particle()
@@ -113,8 +118,18 @@ Particle::Particle(const Particle& other) :
 
 void Particle::setGeometry()
 {
-	PxShape* shShape = CreateShape(PxSphereGeometry(1));
-	renderItem = new RenderItem(shShape, pose, color);
+	if (tipo == 1)
+	{
+		PxShape* shShape = CreateShape(PxSphereGeometry(1));
+		renderItem = new RenderItem(shShape, pose, color);
+	}
+	else
+	{
+		PxShape* shShape = CreateShape(PxBoxGeometry(PxVec3(1.0f, 2.0f, 0.5f)));
+		renderItem = new RenderItem(shShape, pose, color);
+	}
+
+	
 		
 }
 

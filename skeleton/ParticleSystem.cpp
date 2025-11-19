@@ -6,6 +6,7 @@
 #include "OscillateWind.h"
 #include "ForceGenerator.h"
 #include "ParticleGen.h"
+#include "SpringForceGenerator.h"
 #include <iostream>
 using namespace std;
 #include <cmath>
@@ -33,6 +34,9 @@ ParticleSystem::~ParticleSystem()
 	delete _gravity;
 	delete _wind;
 	delete _oscillate;
+	delete _spring1;
+	delete _spring2;
+	delete _spring3;
 }
 
 void ParticleSystem::ActivateParticle(bool a)
@@ -53,6 +57,13 @@ void ParticleSystem::ActivateOscilate(bool a)
 void ParticleSystem::ActivateWind(bool a)
 {
 	_wind->setActive(a);
+}
+
+void ParticleSystem::ActivateSpring(bool a)
+{
+	_spring1->setActive(a);
+	_spring2->setActive(a);
+	_spring3->setActive(a);
 }
 
 

@@ -20,22 +20,23 @@ MuellePracticaSystem::MuellePracticaSystem(Gravity* g,SpringForceGenerator* s1, 
 
     p1Muelles = new Particle(700.0, Vector3(40, 38, 0), Vector3(0, 0, 0), Vector3(0, 0, 0), 0.4f, 1.0f, Vector4(1.0f, 0.0f, 0.5f, 1.0f), 1.0f);
     p1Muelles->setGeometry();
-   // p2Muelles = new Particle(700.0, Vector3(40, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0), 0.4f, 20.0f, Vector4(1.0f, 0.0f, 0.5f, 1.0f), 1.0f);
-    //p2Muelles->setGeometry();
+    p2Muelles = new Particle(700.0, Vector3(40, 37, 0), Vector3(0, 0, 0), Vector3(0, 0, 0), 0.4f, 1.0f, Vector4(1.0f, 0.0f, 0.5f, 1.0f), 1.0f);
+    p2Muelles->setGeometry();
 
 
     _particles.push_back(ptoAnclajeCubo);
     _particles.push_back(p1Muelles);
-   // _particles.push_back(p2Muelles);
+    _particles.push_back(p2Muelles);
 
     _spring1->setParticle(ptoAnclajeCubo);
     _registry->add(p1Muelles, _spring1);
 
-  //  _spring2->setParticle(p1Muelles);
-  //  _registry->add(p1Muelles, _spring2);
+    _spring2->setParticle(p1Muelles);
+    _registry->add(p2Muelles, _spring2);
+
 
     _registry->add(p1Muelles, _gravity);
-
+    _registry->add(p2Muelles, _gravity);
 
 }
 

@@ -57,7 +57,7 @@ void ScenePractica::init() {
     wind = new WindGenerator(Vector3(0.0f, 0.0f, 20000.0f), 0.3f, 0.0f);
     oscillate = new OscillateWind(Vector3(0.0f, 100.0f, 0.0f), 0.5f, 0.1f, 300.0f, 3.0f);
     spring1 = new SpringForceGenerator(10, 2);
-    spring2 = new SpringForceGenerator(1, 10);
+    spring2 = new SpringForceGenerator(5, 2);
     spring3 = new SpringForceGenerator(1, 10);
 
     // === Proyectiles y partículas ===

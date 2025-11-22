@@ -10,6 +10,7 @@ class OscillateWind;
 class ForceGenerator;
 class ParticleGen;
 class SpringForceGenerator;
+class FloatForce;
 class ParticleSystem
 {
 protected:
@@ -25,6 +26,8 @@ protected:
 	SpringForceGenerator* _spring1= nullptr;
 	SpringForceGenerator* _spring2 = nullptr;
 	SpringForceGenerator* _spring3 = nullptr;
+	
+	FloatForce* _float = nullptr;
 public:
 	ParticleSystem();
 	virtual void update(double t) {};
@@ -35,6 +38,7 @@ public:
 	void ActivateOscilate(bool a);
 	void ActivateWind(bool a);
 	void ActivateSpring(bool a);
+	void ActivateFloat(bool a);
 	
 	
 };

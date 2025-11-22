@@ -16,6 +16,8 @@
 #include "SnowSystem.h"
 #include "SpringForceGenerator.h"
 #include "MuellePracticaSystem.h"
+#include "FloatForce.h"
+#include "FlotacionPracticaSystem.h"
 using namespace physx;
 ScenePractica::ScenePractica(PxPhysics* physics) : BaseScene(physics) {}
 
@@ -57,8 +59,9 @@ void ScenePractica::init() {
     wind = new WindGenerator(Vector3(0.0f, 0.0f, 20000.0f), 0.3f, 0.0f);
     oscillate = new OscillateWind(Vector3(0.0f, 100.0f, 0.0f), 0.5f, 0.1f, 300.0f, 3.0f);
     spring1 = new SpringForceGenerator(10, 2);
-    spring2 = new SpringForceGenerator(5, 2);
+    spring2 = new SpringForceGenerator(10, 2);
     spring3 = new SpringForceGenerator(1, 10);
+    floatP = new FloatForce(1,1,1000);
 
     // === Proyectiles y partículas ===
     particleSystem = new ParticleSystem();
@@ -66,8 +69,9 @@ void ScenePractica::init() {
     snowSys = new SnowSystem(gravity,wind,nullptr);
     bulletSys = new BulletSystem(nullptr,nullptr,nullptr);
     muellesys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
-   
-    muellesys->ActivateSpring(true);
+
+    gravity = new Gravity(Vector3(0, -9.8f, 0));
+    floatsys = new FlotacionPracticaSystem(gravity, floatP);
     // antigua fuente sin adapatr a sistema de particulas
     /*fuente = new UniformGen("fuente");
 
@@ -112,6 +116,7 @@ void ScenePractica::step( double t) //ES EL UPDATE
     sparSys->update(t);
     snowSys->update(t);
     muellesys->update(t);
+    floatsys->update(t);
     gScene->simulate(t);
     gScene->fetchResults(true);
 
@@ -189,6 +194,8 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
         boolGravity = !boolGravity;
         sparSys->ActivateGravity(boolGravity);
         snowSys->ActivateGravity(boolGravity);
+        muellesys->ActivateGravity(boolGravity);
+        floatsys->ActivateGravity(boolGravity);
         break;
     }
     case 'T':
@@ -201,6 +208,26 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
     {
         boolOscilate = !boolOscilate;
         sparSys->ActivateOscilate(boolOscilate);
+        break;
+    }
+    case 'B':
+    {
+        boolSpring1 = !boolSpring1;
+        boolSpring2 = !boolSpring2;
+        muellesys->ActivateSpring(boolSpring1);
+        muellesys->ActivateSpring(boolSpring2);
+        break;
+    }
+    case 'K':
+    {
+        
+        muellesys->setK(10);
+        break;
+    }
+    case 'L':
+    {
+
+        muellesys->setK(-10);
         break;
     }
     default:

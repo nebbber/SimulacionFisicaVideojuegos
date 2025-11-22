@@ -16,7 +16,6 @@ public:
 
 	void update(double t) override;
 	~MuellePracticaSystem();
-
-	void addForceGenerator(ForceGenerator* fg);
+	void setK(int K);
 };
 

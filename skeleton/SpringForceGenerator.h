@@ -9,7 +9,7 @@ public:
 
 	 void update(double t, Particle* p) override;
 	void setParticle(Particle* other);
-	inline void setK(double k) { _k = k; }
+	inline void setK(double k) { _k += k; }
 
 	virtual ~SpringForceGenerator() {}
 protected:

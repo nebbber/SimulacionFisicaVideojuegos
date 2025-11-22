@@ -28,6 +28,8 @@
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="SpringForceGenerator.cpp" />
     <ClCompile Include="MuellePracticaSystem.cpp" />
+    <ClCompile Include="FloatForce.cpp" />
+    <ClCompile Include="FlotacionPracticaSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -59,6 +61,8 @@
     <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="SpringForceGenerator.h" />
     <ClInclude Include="MuellePracticaSystem.h" />
+    <ClInclude Include="FloatForce.h" />
+    <ClInclude Include="FlotacionPracticaSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

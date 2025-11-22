@@ -18,13 +18,14 @@ private:
 	bool alive;
 	double dur;
 	Vector4 color;
-	float size;
 	Vector3 fuerzaAcum;
 	int tipo;
+	float size;
+	int h;
 
 public:
 	Particle(const Particle& other);
-	Particle(double time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color, float size);
+	Particle(double time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color, float siz);
 	void setShape(int i);
 	~Particle();
 
@@ -44,4 +45,5 @@ public:
 	void addForce(Vector3 f);
 	Particle* clone() const;
 
+	float getHeight();
 };

@@ -8,6 +8,7 @@ SpringForceGenerator::SpringForceGenerator(double k, double resting_length) :_ot
 
 void SpringForceGenerator::update(double t, Particle* p) {
 	
+	//p es a la que añadimos la fuerza
 	Vector3 relative_pos_vector = _other->getPos() - p->getPos();
 	Vector3 force;
 

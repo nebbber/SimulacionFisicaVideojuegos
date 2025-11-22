@@ -18,6 +18,7 @@
 #include "MuellePracticaSystem.h"
 #include "FloatForce.h"
 #include "FlotacionPracticaSystem.h"
+#include "FontainSystem.h"
 using namespace physx;
 ScenePractica::ScenePractica(PxPhysics* physics) : BaseScene(physics) {}
 
@@ -68,29 +69,12 @@ void ScenePractica::init() {
     sparSys = new SparkleSystem(gravity,nullptr, oscillate);
     snowSys = new SnowSystem(gravity,wind,nullptr);
     bulletSys = new BulletSystem(nullptr,nullptr,nullptr);
-    muellesys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
+    muelleSys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
+    fuenteSys = new FontainSystem(gravity);
 
     gravity = new Gravity(Vector3(0, -9.8f, 0));
-    floatsys = new FlotacionPracticaSystem(gravity, floatP);
-    // antigua fuente sin adapatr a sistema de particulas
-    /*fuente = new UniformGen("fuente");
-
-    // Modelo fuente
-    Particle* modeloFuente = new Particle(7.0, Vector3(0, 40, -80), Vector3(0, 0, 0),
-        Vector3(0, 0, 0), 0.4f, 20.0f, Vector4(0, 1, 1, 1), 0.02f);
-    fuente->setModelo(modeloFuente);
-    fuente->setNumParticles(5);
-    fuente->setDurMedia(1.0);
-    fuente->setPosMedia(Vector3(25.0f, 0.0f, 0.0f));
-    fuente->setVelMedia(Vector3(0.0f, 40.0f, 0.0f));
-    fuente->setDesP(Vector3(1, 0, 1));
-    fuente->setDesV(Vector3(10, 10, 10));
-    fuente->setProbGen(0.2);
-    */
-   
-
-   
- 
+    floatSys = new FlotacionPracticaSystem(gravity, floatP);
+    
 }
 
 void ScenePractica::step( double t) //ES EL UPDATE
@@ -115,8 +99,9 @@ void ScenePractica::step( double t) //ES EL UPDATE
     }
     sparSys->update(t);
     snowSys->update(t);
-    muellesys->update(t);
-    floatsys->update(t);
+    muelleSys->update(t);
+    floatSys->update(t);
+    fuenteSys->update(t);
     gScene->simulate(t);
     gScene->fetchResults(true);
 
@@ -194,8 +179,8 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
         boolGravity = !boolGravity;
         sparSys->ActivateGravity(boolGravity);
         snowSys->ActivateGravity(boolGravity);
-        muellesys->ActivateGravity(boolGravity);
-        floatsys->ActivateGravity(boolGravity);
+        muelleSys->ActivateGravity(boolGravity);
+        floatSys->ActivateGravity(boolGravity);
         break;
     }
     case 'T':
@@ -214,20 +199,26 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
     {
         boolSpring1 = !boolSpring1;
         boolSpring2 = !boolSpring2;
-        muellesys->ActivateSpring(boolSpring1);
-        muellesys->ActivateSpring(boolSpring2);
+        muelleSys->ActivateSpring(boolSpring1);
+        muelleSys->ActivateSpring(boolSpring2);
         break;
     }
     case 'K':
     {
         
-        muellesys->setK(10);
+        muelleSys->setK(10);
         break;
     }
     case 'L':
     {
 
-        muellesys->setK(-10);
+        muelleSys->setK(-10);
+        break;
+    }
+    case 'C':
+    {
+
+        floatSys->setMasa(10.0f);
         break;
     }
     default:
@@ -253,4 +244,8 @@ void ScenePractica::cleanup() {
     delete gravity;
     delete wind;
     delete oscillate;
+    delete floatP;
+    delete spring1;
+    delete spring2;
+    delete spring3;
 }

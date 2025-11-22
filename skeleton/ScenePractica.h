@@ -16,6 +16,7 @@ class SpringForceGenerator;
 class MuellePracticaSystem;
 class FlotacionPracticaSystem;
 class FloatForce;
+class FontainSystem;
 class ScenePractica : public BaseScene {
 private:
     // physX
@@ -47,8 +48,9 @@ private:
     SparkleSystem* sparSys;
     SnowSystem* snowSys;
     BulletSystem* bulletSys;
-    MuellePracticaSystem* muellesys;
-    FlotacionPracticaSystem* floatsys;
+    MuellePracticaSystem* muelleSys;
+    FlotacionPracticaSystem* floatSys;
+    FontainSystem* fuenteSys;
 
     //booleanos para activacion/desactivacion de generadores de fuerzas
     bool boolGravity=true;

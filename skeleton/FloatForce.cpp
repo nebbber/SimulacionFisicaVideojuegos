@@ -26,7 +26,6 @@ void FloatForce::update(double time, Particle* p) {
 
 		p->addForce(f);
 
-		
 	}
 }
 
@@ -34,6 +33,12 @@ void FloatForce::setLiquidParticle(Particle* l)
 {
 	_liquid_particle = l;
 }
+
+void FloatForce::setVol(float v)
+{
+	_volume = v;
+}
+
 
 FloatForce::~FloatForce()
 {

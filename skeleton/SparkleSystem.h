@@ -15,6 +15,5 @@ public:
 	 void update(double t) override;
 	 ~SparkleSystem();
 
-	 void addForceGenerator(ForceGenerator* fg);
 };
 

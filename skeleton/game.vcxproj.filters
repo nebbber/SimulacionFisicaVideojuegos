@@ -30,6 +30,7 @@
     <ClCompile Include="MuellePracticaSystem.cpp" />
     <ClCompile Include="FloatForce.cpp" />
     <ClCompile Include="FlotacionPracticaSystem.cpp" />
+    <ClCompile Include="FontainSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -63,6 +64,7 @@
     <ClInclude Include="MuellePracticaSystem.h" />
     <ClInclude Include="FloatForce.h" />
     <ClInclude Include="FlotacionPracticaSystem.h" />
+    <ClInclude Include="FontainSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

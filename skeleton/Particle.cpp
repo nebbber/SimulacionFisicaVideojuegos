@@ -1,7 +1,7 @@
 #include "Particle.h"
 #include <iostream>
 
-Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color,float siz):size(size), masa(1.0f), fuerzaAcum (0,0,0),tipo(1)
+Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, float m, Vector4 Color,float siz):size(siz), masa(1.0f), fuerzaAcum (0,0,0),tipo(1)
 
 {
 	pose = new PxTransform(Pos);
@@ -16,8 +16,34 @@ Particle::Particle(double Time,Vector3 Pos, Vector3 Vel, Vector3 Acc, float d, f
 	vel = Vel;
 	alive = true;
 	dur = Time;
-	size = siz;
-	h = size / size;
+	h = 1.0f;
+	w = 1.0f;
+	p = 1.0f;
+}
+void Particle::setH(float _h)
+{
+	h = _h;
+}
+void Particle::setW(float _w)
+{
+	w = _w;
+}
+void Particle::setP(float _p)
+{
+	p = _p;
+}
+
+float Particle::getH()
+{
+	return h;
+}
+float Particle::getW()
+{
+	return w;
+}
+float Particle::getP()
+{
+	return p;
 }
 
 void Particle::setShape(int i)
@@ -100,9 +126,9 @@ Particle* Particle::clone() const
 	return new Particle(*this);
 	
 }
-float Particle::getHeight()
+void Particle::setMasa(float m)
 {
-	return h;
+	masa += m;
 }
 Particle::Particle(const Particle& other) :
 	vel(other.vel),
@@ -125,12 +151,12 @@ void Particle::setGeometry()
 {
 	if (tipo == 1)
 	{
-		PxShape* shShape = CreateShape(PxSphereGeometry(1));
+		PxShape* shShape = CreateShape(PxSphereGeometry(size));
 		renderItem = new RenderItem(shShape, pose, color);
 	}
 	else
 	{
-		PxShape* shShape = CreateShape(PxBoxGeometry(PxVec3(size / 2,1 , size/2)));
+		PxShape* shShape = CreateShape(PxBoxGeometry(PxVec3(h,w,p)));
 		renderItem = new RenderItem(shShape, pose, color);
 	}
 

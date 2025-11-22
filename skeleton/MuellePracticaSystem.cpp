@@ -17,6 +17,7 @@ MuellePracticaSystem::MuellePracticaSystem(Gravity* g,SpringForceGenerator* s1, 
     ptoAnclajeCubo = new Particle(700.0, Vector3(40, 40, 0), Vector3(0, 0, 0), Vector3(0, 0, 0), 0.4f, 20.0f, Vector4(1.0f, 0.0f, 0.5f, 1.0f), 1.0f);
     ptoAnclajeCubo->setShape(2);//que sea cubo
     ptoAnclajeCubo->setGeometry();
+  
 
     p1Muelles = new Particle(700.0, Vector3(40, 10, 0), Vector3(20.0f, 0, 0), Vector3(0, 0, 0), 0.4f, 1.0f, Vector4(1.0f, 0.0f, 0.5f, 1.0f), 1.0f);
     p1Muelles->setGeometry();

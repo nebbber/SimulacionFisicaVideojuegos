@@ -10,6 +10,8 @@ public:
 	void update(double time, Particle* p);
 
 	void setLiquidParticle(Particle* l);
+	void setVol(float v);
+	void setH(float h);
 	 ~FloatForce();
 protected:
 	float _height;

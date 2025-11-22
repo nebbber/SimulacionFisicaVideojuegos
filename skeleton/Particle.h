@@ -21,7 +21,11 @@ private:
 	Vector3 fuerzaAcum;
 	int tipo;
 	float size;
+
+	//alto ancho profundidad
 	int h;
+	int w;
+	int p;
 
 public:
 	Particle(const Particle& other);
@@ -45,5 +49,13 @@ public:
 	void addForce(Vector3 f);
 	Particle* clone() const;
 
-	float getHeight();
+	void setMasa(float m);
+
+	void setH(float _h);
+	void setW(float _w);
+	void setP(float _p);
+
+	float getH();
+	float getW();
+	float getP();
 };

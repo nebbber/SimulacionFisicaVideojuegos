@@ -33,10 +33,14 @@ FlotacionPracticaSystem::FlotacionPracticaSystem(Gravity* g, FloatForce* f)
   
 }
 
-void FlotacionPracticaSystem::setMasa(float m)
+void FlotacionPracticaSystem::AddMasa(float m)
 {
     objeto->setMasa(m);
+}
 
+void FlotacionPracticaSystem::AddVolume(float v)
+{
+    _float->addVol(v);
 }
 
 

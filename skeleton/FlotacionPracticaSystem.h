@@ -12,7 +12,8 @@ private:
 public:
 	FlotacionPracticaSystem(Gravity* g, FloatForce* f);
 	
-	void setMasa(float m);
+	void AddMasa(float m);
+	void AddVolume(float v);
 	void update(double t) override;
 	~FlotacionPracticaSystem();
 };

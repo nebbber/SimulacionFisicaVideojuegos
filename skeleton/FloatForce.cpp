@@ -34,9 +34,9 @@ void FloatForce::setLiquidParticle(Particle* l)
 	_liquid_particle = l;
 }
 
-void FloatForce::setVol(float v)
+void FloatForce::addVol(float v)
 {
-	_volume = v;
+	_volume += v;
 }
 
 

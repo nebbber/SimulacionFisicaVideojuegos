@@ -15,5 +15,5 @@ void Gravity::update(double t, Particle* p)
 	//le tengo que pasar una fuerza a la particula x para que le afecte en la acceleracion
 	Vector3 f = p->getMasa() * gravity;
 	p->addForce(f);
-
+	//std::cout << p->getMasa() << endl;
 }

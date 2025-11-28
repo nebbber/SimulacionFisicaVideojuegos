@@ -69,7 +69,7 @@ void ScenePractica::init() {
     sparSys = new SparkleSystem(gravity,nullptr, oscillate);
     snowSys = new SnowSystem(gravity,wind,nullptr);
     bulletSys = new BulletSystem(nullptr,nullptr,nullptr);
-    muelleSys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
+   // muelleSys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
     fuenteSys = new FontainSystem(gravity);
 
     gravity = new Gravity(Vector3(0, -9.8f, 0));
@@ -99,7 +99,7 @@ void ScenePractica::step( double t) //ES EL UPDATE
     }
     sparSys->update(t);
     snowSys->update(t);
-    muelleSys->update(t);
+  //  muelleSys->update(t);
     floatSys->update(t);
     fuenteSys->update(t);
     gScene->simulate(t);
@@ -218,7 +218,7 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
     case 'C':
     {
 
-        floatSys->setMasa(10.0f);
+        floatSys->setMasa(100.0f);
         break;
     }
     default:

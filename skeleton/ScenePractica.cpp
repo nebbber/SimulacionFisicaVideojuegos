@@ -1,291 +1,291 @@
-﻿#include "ScenePractica.h"
-#include "Vector3D.h"
-#include "core.hpp"
-#include <iostream>
-#include "foundation/PxTransform.h"
-#include "SparkleSystem.h"
-#include "BulletSystem.h"
-#include "ParticleSystem.h"
-#include "ForceRegistry.h"
-#include "Gravity.h"
-#include "WindGenerator.h"
-#include "Whirlwind.h"
-#include "UniformGen.h"
-#include "GaussianGen.h"
-#include "OscillateWind.h"
-#include "SnowSystem.h"
-#include "SpringForceGenerator.h"
-#include "MuellePracticaSystem.h"
-#include "FloatForce.h"
-#include "FlotacionPracticaSystem.h"
-#include "FontainSystem.h"
-#include <PxPhysicsAPI.h>
-using namespace physx;
-
-PxDefaultAllocator gAllocator;
-PxDefaultErrorCallback gErrorCallback;
-ScenePractica::ScenePractica() : BaseScene() {}
-
-ScenePractica::~ScenePractica() {}
-
-void ScenePractica::init() {
-
-    // 1️⃣ Foundation
-    gFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gAllocator, gErrorCallback);
-    if (!PX_FOUNDATION_VERSION) { std::cerr << "Error creando Foundation\n"; return; }
-
-    // 2️⃣ PVD
-    gPvd = PxCreatePvd(*gFoundation);
-    PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
-    gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
-
-    // 3️⃣ Physics
-    PxPhysics* gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
-    if (!gPhysics) { std::cerr << "Error creando Physics\n"; return; }
-
-    // === Crear escena PhysX ===
-    PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
-    sceneDesc.gravity = PxVec3(0.0f, -40.8f, 0.0f);
-    gDispatcher = PxDefaultCpuDispatcherCreate(2);
-    sceneDesc.cpuDispatcher = gDispatcher;
-    sceneDesc.filterShader = contactReportFilterShader;
-    sceneDesc.simulationEventCallback = &gContactReportCallback;
-    gScene = gPhysics->createScene(sceneDesc);
-
-    gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
- 
-
-    // Generar suelo
-    PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 50, 40, -80 }));
-    PxShape* shapeSuelo = CreateShape(PxBoxGeometry(100, 0.1, 100));
-    Suelo->attachShape(*shapeSuelo);
-    gScene->addActor(*Suelo);
-
-    // Pintar suelo
-    RenderItem* item;
-    item = new RenderItem(shapeSuelo, Suelo, { 0.8, 0.8,0.8,1 });
-
-
-
-    
-    
-
-
-    // === Dianas ===
-    PxSphereGeometry geo(5.0f); //antes para ejes 2
-    PxShape* shape = CreateShape(geo, gMaterial);
-    
-    itemX = new RenderItem(shape, new PxTransform(Vector3(50, 40, -80)), Vector4(0, 1, 0, 1));
-    itemY = new RenderItem(shape, new PxTransform(Vector3(00, 0, -80)), Vector4(0, 1, 0, 1));
-    itemZ = new RenderItem(shape, new PxTransform(Vector3(-50, -20, -80)), Vector4(0, 1, 0, 1));
-
-
-    //ejes antiguos
-   /* itemX = new RenderItem(shape, new PxTransform(PxVec3(10, 0, 0)), Vector4(1, 0, 0, 1));
-    itemY = new RenderItem(shape, new PxTransform(PxVec3(0, 10, 0)), Vector4(0, 1, 0, 1));
-    itemZ = new RenderItem(shape, new PxTransform(PxVec3(0, 0, 10)), Vector4(0, 0, 1, 1));
-    */
-    RegisterRenderItem(itemX);
-    RegisterRenderItem(itemY);
-    RegisterRenderItem(itemZ);
-
-    // === Fuerzas ===
-    gravity = new Gravity(Vector3(0, -90.8f, 0));
-    wind = new WindGenerator(Vector3(0.0f, 0.0f, 20000.0f), 0.3f, 0.0f);
-    oscillate = new OscillateWind(Vector3(0.0f, 100.0f, 0.0f), 0.5f, 0.1f, 300.0f, 3.0f);
-    spring1 = new SpringForceGenerator(10, 2);
-    spring2 = new SpringForceGenerator(10, 2);
-    spring3 = new SpringForceGenerator(1, 10);
-    floatP = new FloatForce(1,1,1000);
-
-    // === Proyectiles y partículas ===
-    particleSystem = new ParticleSystem();
-    sparSys = new SparkleSystem(gravity,nullptr, oscillate);
-    snowSys = new SnowSystem(gravity,wind,nullptr);
-    bulletSys = new BulletSystem(nullptr,nullptr,nullptr);
-    //muelleSys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
-    fuenteSys = new FontainSystem(gravity);
-
-    gravity = new Gravity(Vector3(0, -9.8f, 0));
-    //floatSys = new FlotacionPracticaSystem(gravity, floatP);
-    
-}
-
-void ScenePractica::step( double t) //ES EL UPDATE
-{
-    static bool primeraVez = true;
-
-    //cogemos la pos inicial de la camara 
-    if (primeraVez) {
-        Camera* cam = GetCamera();
-        if (cam) {
-            posGanar = cam->getTransform().p;
-            primeraVez = false;
-        }
-    }
-  
-    //PX_UNUSED(interactive);
-    if (!bulletSys->isEmpty())
-    {
-        //llamar al integrate de cada bala
-
-        bulletSys->shot(t);
-    }
-    sparSys->update(t);
-    snowSys->update(t);
-   // muelleSys->update(t);
-    //floatSys->update(t);
-    fuenteSys->update(t);
-    gScene->simulate(t);
-    gScene->fetchResults(true);
-
-    Camera* cam = GetCamera();
-
-    //aparece "nieve" delimitadora de espacio de disparo
-    if (cam->getTransform().p.magnitude() > 130.0)
-    {
-        snowSys->ActivateParticle(true);
-    }
-    else 
-    {
-        snowSys->ActivateParticle(false);
-    }
-}
-
-void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
-
-    switch (toupper(key))
-    {
-        //case 'B': break;
-        //case ' ':	break;
-    case ' ':
-    {
-        break;
-    }
-    case 'P':
-    {
-        //bala de cañon
-        Camera* cam = GetCamera();
-        Vector4 color(1, 1, 0, 1);
-        //la pos de la camara como pos inicial de la particula
-
-        bulletSys->createBullet(cam->getTransform().p, 200.0, Vector3(0.0f, 1000.0f, 0.0f),
-            Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
-
-        break;
-    }
-    /*case 'O':
-    {
-        //bala de tanque
-
-        Camera* cam = GetCamera();
-        Vector4 color(0, 1, 0, 1);
-
-        //la pos de la camara como pos inicial de la particula
-        proyectil->createBullet(cam->getTransform().p, 100.0, Vector3(0.0f, 1800.0f, 0.0f),
-            Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
-        break;
-    }*/
-    case 'I':
-    {
-        //bala de pistola
-
-        Camera* cam = GetCamera();
-        Vector4 color(0, 1, 1, 1);
-        bulletSys->createBullet(cam->getTransform().p, 400.0, Vector3(0.0f, 330.0f, 0.0f),
-            Vector3(0.0f, -9.8f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
-   
-        break;
-    }
-    case 'M':
-    {
-        Camera* cam = GetCamera();
-        cam->setTransform(posGanar);
-        showSparkle = !showSparkle;
-        sparSys->ActivateParticle(showSparkle);
-      
-      
-        break;
-    }
-
-    case 'Y':
-    {
-        boolGravity = !boolGravity;
-        sparSys->ActivateGravity(boolGravity);
-        snowSys->ActivateGravity(boolGravity);
-        muelleSys->ActivateGravity(boolGravity);
-        floatSys->ActivateGravity(boolGravity);
-        break;
-    }
-    case 'T':
-    {
-        boolWind = !boolWind;
-        snowSys->ActivateWind(boolWind);
-        break;
-    }
-    case 'R':
-    {
-        boolOscilate = !boolOscilate;
-        sparSys->ActivateOscilate(boolOscilate);
-        break;
-    }
-    case 'B':
-    {
-        boolSpring1 = !boolSpring1;
-        boolSpring2 = !boolSpring2;
-        muelleSys->ActivateSpring(boolSpring1);
-        muelleSys->ActivateSpring(boolSpring2);
-        break;
-    }
-    case 'K':
-    {
-        
-        muelleSys->setK(10);
-        break;
-    }
-    case 'L':
-    {
-
-        muelleSys->setK(-10);
-        break;
-    }
-    case 'C':
-    {
-
-        floatSys->AddMasa(100.0f);
-        break;
-    }
-    case 'V':
-    {
-
-        floatSys->AddVolume(1.0f);
-        break;
-    }
-    default:
-        break;
-    }
-    
-}
-void ScenePractica::Win()
-{
-
-
-}
-void ScenePractica::cleanup() {
-    DeregisterRenderItem(itemX);
-    DeregisterRenderItem(itemY);
-    DeregisterRenderItem(itemZ);
-    delete itemX; delete itemY; delete itemZ;
-
-    if (gScene) gScene->release();
-    if (gDispatcher) gDispatcher->release();
-    if (gMaterial) gMaterial->release();
-
-    delete gravity;
-    delete wind;
-    delete oscillate;
-    delete floatP;
-    delete spring1;
-    delete spring2;
-    delete spring3;
-}
+﻿//#include "ScenePractica.h"
+//#include "Vector3D.h"
+//#include "core.hpp"
+//#include <iostream>
+//#include "foundation/PxTransform.h"
+//#include "SparkleSystem.h"
+//#include "BulletSystem.h"
+//#include "ParticleSystem.h"
+//#include "ForceRegistry.h"
+//#include "Gravity.h"
+//#include "WindGenerator.h"
+//#include "Whirlwind.h"
+//#include "UniformGen.h"
+//#include "GaussianGen.h"
+//#include "OscillateWind.h"
+//#include "SnowSystem.h"
+//#include "SpringForceGenerator.h"
+//#include "MuellePracticaSystem.h"
+//#include "FloatForce.h"
+//#include "FlotacionPracticaSystem.h"
+//#include "FontainSystem.h"
+//#include <PxPhysicsAPI.h>
+//using namespace physx;
+//
+//PxDefaultAllocator gAllocator;
+//PxDefaultErrorCallback gErrorCallback;
+//ScenePractica::ScenePractica() : BaseScene() {}
+//
+//ScenePractica::~ScenePractica() {}
+//
+//void ScenePractica::init() {
+//
+//    // 1️⃣ Foundation
+//    gFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gAllocator, gErrorCallback);
+//    if (!PX_FOUNDATION_VERSION) { std::cerr << "Error creando Foundation\n"; return; }
+//
+//    // 2️⃣ PVD
+//    gPvd = PxCreatePvd(*gFoundation);
+//    PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
+//    gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+//
+//    // 3️⃣ Physics
+//    PxPhysics* gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
+//    if (!gPhysics) { std::cerr << "Error creando Physics\n"; return; }
+//
+//    // === Crear escena PhysX ===
+//    PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
+//    sceneDesc.gravity = PxVec3(0.0f, -40.8f, 0.0f);
+//    gDispatcher = PxDefaultCpuDispatcherCreate(2);
+//    sceneDesc.cpuDispatcher = gDispatcher;
+//    sceneDesc.filterShader = contactReportFilterShader;
+//    sceneDesc.simulationEventCallback = &gContactReportCallback;
+//    gScene = gPhysics->createScene(sceneDesc);
+//
+//    gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+// 
+//
+//    // Generar suelo
+//    PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 50, 40, -80 }));
+//    PxShape* shapeSuelo = CreateShape(PxBoxGeometry(100, 0.1, 100));
+//    Suelo->attachShape(*shapeSuelo);
+//    gScene->addActor(*Suelo);
+//
+//    // Pintar suelo
+//    RenderItem* item;
+//    item = new RenderItem(shapeSuelo, Suelo, { 0.8, 0.8,0.8,1 });
+//
+//
+//
+//    
+//    
+//
+//
+//    // === Dianas ===
+//    PxSphereGeometry geo(5.0f); //antes para ejes 2
+//    PxShape* shape = CreateShape(geo, gMaterial);
+//    
+//    itemX = new RenderItem(shape, new PxTransform(Vector3(50, 40, -80)), Vector4(0, 1, 0, 1));
+//    itemY = new RenderItem(shape, new PxTransform(Vector3(00, 0, -80)), Vector4(0, 1, 0, 1));
+//    itemZ = new RenderItem(shape, new PxTransform(Vector3(-50, -20, -80)), Vector4(0, 1, 0, 1));
+//
+//
+//    //ejes antiguos
+//   /* itemX = new RenderItem(shape, new PxTransform(PxVec3(10, 0, 0)), Vector4(1, 0, 0, 1));
+//    itemY = new RenderItem(shape, new PxTransform(PxVec3(0, 10, 0)), Vector4(0, 1, 0, 1));
+//    itemZ = new RenderItem(shape, new PxTransform(PxVec3(0, 0, 10)), Vector4(0, 0, 1, 1));
+//    */
+//    RegisterRenderItem(itemX);
+//    RegisterRenderItem(itemY);
+//    RegisterRenderItem(itemZ);
+//
+//    // === Fuerzas ===
+//    gravity = new Gravity(Vector3(0, -90.8f, 0));
+//    wind = new WindGenerator(Vector3(0.0f, 0.0f, 20000.0f), 0.3f, 0.0f);
+//    oscillate = new OscillateWind(Vector3(0.0f, 100.0f, 0.0f), 0.5f, 0.1f, 300.0f, 3.0f);
+//    spring1 = new SpringForceGenerator(10, 2);
+//    spring2 = new SpringForceGenerator(10, 2);
+//    spring3 = new SpringForceGenerator(1, 10);
+//    floatP = new FloatForce(1,1,1000);
+//
+//    // === Proyectiles y partículas ===
+//    particleSystem = new ParticleSystem();
+//    sparSys = new SparkleSystem(gravity,nullptr, oscillate);
+//    snowSys = new SnowSystem(gravity,wind,nullptr);
+//    bulletSys = new BulletSystem(nullptr,nullptr,nullptr);
+//    //muelleSys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
+//    fuenteSys = new FontainSystem(gravity);
+//
+//    gravity = new Gravity(Vector3(0, -9.8f, 0));
+//    //floatSys = new FlotacionPracticaSystem(gravity, floatP);
+//    
+//}
+//
+//void ScenePractica::step( double t) //ES EL UPDATE
+//{
+//    static bool primeraVez = true;
+//
+//    //cogemos la pos inicial de la camara 
+//    if (primeraVez) {
+//        Camera* cam = GetCamera();
+//        if (cam) {
+//            posGanar = cam->getTransform().p;
+//            primeraVez = false;
+//        }
+//    }
+//  
+//    //PX_UNUSED(interactive);
+//    if (!bulletSys->isEmpty())
+//    {
+//        //llamar al integrate de cada bala
+//
+//        bulletSys->shot(t);
+//    }
+//    sparSys->update(t);
+//    snowSys->update(t);
+//   // muelleSys->update(t);
+//    //floatSys->update(t);
+//    fuenteSys->update(t);
+//    gScene->simulate(t);
+//    gScene->fetchResults(true);
+//
+//    Camera* cam = GetCamera();
+//
+//    //aparece "nieve" delimitadora de espacio de disparo
+//    if (cam->getTransform().p.magnitude() > 130.0)
+//    {
+//        snowSys->ActivateParticle(true);
+//    }
+//    else 
+//    {
+//        snowSys->ActivateParticle(false);
+//    }
+//}
+//
+//void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
+//
+//    switch (toupper(key))
+//    {
+//        //case 'B': break;
+//        //case ' ':	break;
+//    case ' ':
+//    {
+//        break;
+//    }
+//    case 'P':
+//    {
+//        //bala de cañon
+//        Camera* cam = GetCamera();
+//        Vector4 color(1, 1, 0, 1);
+//        //la pos de la camara como pos inicial de la particula
+//
+//        bulletSys->createBullet(cam->getTransform().p, 200.0, Vector3(0.0f, 1000.0f, 0.0f),
+//            Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
+//
+//        break;
+//    }
+//    /*case 'O':
+//    {
+//        //bala de tanque
+//
+//        Camera* cam = GetCamera();
+//        Vector4 color(0, 1, 0, 1);
+//
+//        //la pos de la camara como pos inicial de la particula
+//        proyectil->createBullet(cam->getTransform().p, 100.0, Vector3(0.0f, 1800.0f, 0.0f),
+//            Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
+//        break;
+//    }*/
+//    case 'I':
+//    {
+//        //bala de pistola
+//
+//        Camera* cam = GetCamera();
+//        Vector4 color(0, 1, 1, 1);
+//        bulletSys->createBullet(cam->getTransform().p, 400.0, Vector3(0.0f, 330.0f, 0.0f),
+//            Vector3(0.0f, -9.8f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
+//   
+//        break;
+//    }
+//    case 'M':
+//    {
+//        Camera* cam = GetCamera();
+//        cam->setTransform(posGanar);
+//        showSparkle = !showSparkle;
+//        sparSys->ActivateParticle(showSparkle);
+//      
+//      
+//        break;
+//    }
+//
+//    case 'Y':
+//    {
+//        boolGravity = !boolGravity;
+//        sparSys->ActivateGravity(boolGravity);
+//        snowSys->ActivateGravity(boolGravity);
+//        muelleSys->ActivateGravity(boolGravity);
+//        floatSys->ActivateGravity(boolGravity);
+//        break;
+//    }
+//    case 'T':
+//    {
+//        boolWind = !boolWind;
+//        snowSys->ActivateWind(boolWind);
+//        break;
+//    }
+//    case 'R':
+//    {
+//        boolOscilate = !boolOscilate;
+//        sparSys->ActivateOscilate(boolOscilate);
+//        break;
+//    }
+//    case 'B':
+//    {
+//        boolSpring1 = !boolSpring1;
+//        boolSpring2 = !boolSpring2;
+//        muelleSys->ActivateSpring(boolSpring1);
+//        muelleSys->ActivateSpring(boolSpring2);
+//        break;
+//    }
+//    case 'K':
+//    {
+//        
+//        muelleSys->setK(10);
+//        break;
+//    }
+//    case 'L':
+//    {
+//
+//        muelleSys->setK(-10);
+//        break;
+//    }
+//    case 'C':
+//    {
+//
+//        floatSys->AddMasa(100.0f);
+//        break;
+//    }
+//    case 'V':
+//    {
+//
+//        floatSys->AddVolume(1.0f);
+//        break;
+//    }
+//    default:
+//        break;
+//    }
+//    
+//}
+//void ScenePractica::Win()
+//{
+//
+//
+//}
+//void ScenePractica::cleanup() {
+//    DeregisterRenderItem(itemX);
+//    DeregisterRenderItem(itemY);
+//    DeregisterRenderItem(itemZ);
+//    delete itemX; delete itemY; delete itemZ;
+//
+//    if (gScene) gScene->release();
+//    if (gDispatcher) gDispatcher->release();
+//    if (gMaterial) gMaterial->release();
+//
+//    delete gravity;
+//    delete wind;
+//    delete oscillate;
+//    delete floatP;
+//    delete spring1;
+//    delete spring2;
+//    delete spring3;
+//}

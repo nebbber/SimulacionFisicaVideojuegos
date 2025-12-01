@@ -20,8 +20,6 @@
     <ClCompile Include="ForceRegistry.cpp" />
     <ClCompile Include="WindGenerator.cpp" />
     <ClCompile Include="Whirlwind.cpp" />
-    <ClCompile Include="ScenePractica.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="OscillateWind.cpp" />
     <ClCompile Include="SparkleSystem.cpp" />
     <ClCompile Include="SnowSystem.cpp" />
@@ -56,9 +54,6 @@
     <ClInclude Include="ForceRegistry.h" />
     <ClInclude Include="WindGenerator.h" />
     <ClInclude Include="Whirlwind.h" />
-    <ClInclude Include="BaseScene.h" />
-    <ClInclude Include="ScenePractica.h" />
-    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="OscillateWind.h" />
     <ClInclude Include="SparkleSystem.h" />
     <ClInclude Include="SnowSystem.h" />

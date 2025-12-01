@@ -1,10 +1,9 @@
 #include "callbacks.hpp"
 #include "SceneManager.h"
 
-extern SceneManager* gSceneManager; // declarado en main.cpp
+extern void onCollision(physx::PxActor* actor1, physx::PxActor* actor2);
 
-physx::PxFilterFlags contactReportFilterShader(
-    physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
+physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes attributes0, physx::PxFilterData filterData0,
     physx::PxFilterObjectAttributes attributes1, physx::PxFilterData filterData1,
     physx::PxPairFlags& pairFlags, const void* constantBlock, physx::PxU32 constantBlockSize)
 {
@@ -24,14 +23,11 @@ physx::PxFilterFlags contactReportFilterShader(
     return physx::PxFilterFlag::eDEFAULT;
 }
 
-void ContactReportCallback::onContact(
-    const physx::PxContactPairHeader& pairHeader,
-    const physx::PxContactPair* pairs,
-    physx::PxU32 nbPairs)
+void ContactReportCallback::onContact(const physx::PxContactPairHeader& pairHeader, const physx::PxContactPair* pairs, physx::PxU32 nbPairs)
 {
     PX_UNUSED(pairs);
     PX_UNUSED(nbPairs);
-
-    if (gSceneManager)
-        gSceneManager->onCollision(pairHeader.actors[0], pairHeader.actors[1]);
+    physx::PxActor* actor1 = pairHeader.actors[0];
+    physx::PxActor* actor2 = pairHeader.actors[1];
+    onCollision(actor1, actor2);
 }

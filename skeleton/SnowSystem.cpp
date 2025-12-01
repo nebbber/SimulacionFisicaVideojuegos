@@ -44,6 +44,7 @@ void SnowSystem::update(double t)
 
             for (Particle* p : generatedParticles)
             {
+                p->setShape(1);
                 p->setGeometry();
                 _particles.push_back(p);
 

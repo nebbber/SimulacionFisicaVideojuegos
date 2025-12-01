@@ -1,8 +1,8 @@
 ﻿#include "SceneManager.h"
 #include "ScenePractica.h"
 
-SceneManager::SceneManager(PxPhysics* physics)
-    : gPhysics(physics) {
+SceneManager::SceneManager()
+    : gPhysics(nullptr) {
 }
 
 SceneManager::~SceneManager() {
@@ -20,7 +20,7 @@ void SceneManager::changeScene(int sceneId) {
     // Crear la nueva escena
     switch (sceneId) {
     case 0:
-        currentScene = new ScenePractica(gPhysics);
+        currentScene = new ScenePractica();
         break;
     case 1:
        // std::cout << "→ Cargando Escena Proyecto...\n";

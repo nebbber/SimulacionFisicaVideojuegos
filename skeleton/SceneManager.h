@@ -8,7 +8,7 @@ private:
     BaseScene* currentScene = nullptr;
 
 public:
-    SceneManager(PxPhysics* physics);
+    SceneManager();
     ~SceneManager();
 
     void changeScene(int sceneId);

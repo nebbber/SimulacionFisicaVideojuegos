@@ -10,7 +10,7 @@ protected:
     PxMaterial* gMaterial = nullptr;
 
 public:
-    BaseScene(PxPhysics* physics) : gPhysics(physics) {}
+    BaseScene() {};
     virtual ~BaseScene() {}
 
     virtual void init() = 0;

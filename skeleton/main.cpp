@@ -110,7 +110,7 @@ int main(int, const char* const*) {
 	}
 
 	// --- Crear SceneManager ---
-	SceneManager sceneManager(gPhysics);
+	SceneManager sceneManager;
 	SetSceneManager(&sceneManager);
 
 	// --- Cargar primera escena (ScenePractica) ---

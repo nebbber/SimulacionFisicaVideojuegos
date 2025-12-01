@@ -60,8 +60,12 @@ private:
     bool boolSpring1 = true;
     bool boolSpring2 = true;
 
+    //crear solidos rígidos
+    PxFoundation* gFoundation = nullptr;
+    PxPvd* gPvd;//debuggear
+
 public:
-    ScenePractica(PxPhysics* physics);
+    ScenePractica();
     ~ScenePractica() override;
 
     void init() override;

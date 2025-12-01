@@ -1,4 +1,5 @@
 ﻿#include "ForceRegistry.h"
+#include "SolidSystem.h"
 
 void ForceRegistry::add(Particle* p, ForceGenerator* fg) {
     particleToGenerators[p].push_back(fg);

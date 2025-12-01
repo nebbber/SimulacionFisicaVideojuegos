@@ -1,4 +1,4 @@
-#include "ScenePractica.h"
+﻿#include "ScenePractica.h"
 #include "Vector3D.h"
 #include "core.hpp"
 #include <iostream>
@@ -19,12 +19,29 @@
 #include "FloatForce.h"
 #include "FlotacionPracticaSystem.h"
 #include "FontainSystem.h"
+#include <PxPhysicsAPI.h>
 using namespace physx;
-ScenePractica::ScenePractica(PxPhysics* physics) : BaseScene(physics) {}
+
+PxDefaultAllocator gAllocator;
+PxDefaultErrorCallback gErrorCallback;
+ScenePractica::ScenePractica() : BaseScene() {}
 
 ScenePractica::~ScenePractica() {}
 
 void ScenePractica::init() {
+
+    // 1️⃣ Foundation
+    gFoundation = PxCreateFoundation(PX_FOUNDATION_VERSION, gAllocator, gErrorCallback);
+    if (!PX_FOUNDATION_VERSION) { std::cerr << "Error creando Foundation\n"; return; }
+
+    // 2️⃣ PVD
+    gPvd = PxCreatePvd(*gFoundation);
+    PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate("127.0.0.1", 5425, 10);
+    gPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+
+    // 3️⃣ Physics
+    PxPhysics* gPhysics = PxCreatePhysics(PX_PHYSICS_VERSION, *gFoundation, PxTolerancesScale(), true, gPvd);
+    if (!gPhysics) { std::cerr << "Error creando Physics\n"; return; }
 
     // === Crear escena PhysX ===
     PxSceneDesc sceneDesc(gPhysics->getTolerancesScale());
@@ -37,6 +54,23 @@ void ScenePractica::init() {
 
     gMaterial = gPhysics->createMaterial(0.5f, 0.5f, 0.6f);
  
+
+    // Generar suelo
+    PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 50, 40, -80 }));
+    PxShape* shapeSuelo = CreateShape(PxBoxGeometry(100, 0.1, 100));
+    Suelo->attachShape(*shapeSuelo);
+    gScene->addActor(*Suelo);
+
+    // Pintar suelo
+    RenderItem* item;
+    item = new RenderItem(shapeSuelo, Suelo, { 0.8, 0.8,0.8,1 });
+
+
+
+    
+    
+
+
     // === Dianas ===
     PxSphereGeometry geo(5.0f); //antes para ejes 2
     PxShape* shape = CreateShape(geo, gMaterial);
@@ -64,16 +98,16 @@ void ScenePractica::init() {
     spring3 = new SpringForceGenerator(1, 10);
     floatP = new FloatForce(1,1,1000);
 
-    // === Proyectiles y part�culas ===
+    // === Proyectiles y partículas ===
     particleSystem = new ParticleSystem();
     sparSys = new SparkleSystem(gravity,nullptr, oscillate);
     snowSys = new SnowSystem(gravity,wind,nullptr);
     bulletSys = new BulletSystem(nullptr,nullptr,nullptr);
-    muelleSys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
+    //muelleSys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
     fuenteSys = new FontainSystem(gravity);
 
     gravity = new Gravity(Vector3(0, -9.8f, 0));
-    floatSys = new FlotacionPracticaSystem(gravity, floatP);
+    //floatSys = new FlotacionPracticaSystem(gravity, floatP);
     
 }
 
@@ -99,8 +133,8 @@ void ScenePractica::step( double t) //ES EL UPDATE
     }
     sparSys->update(t);
     snowSys->update(t);
-    muelleSys->update(t);
-    floatSys->update(t);
+   // muelleSys->update(t);
+    //floatSys->update(t);
     fuenteSys->update(t);
     gScene->simulate(t);
     gScene->fetchResults(true);
@@ -130,7 +164,7 @@ void ScenePractica::onKeyPress(unsigned char key, const PxTransform& camera) {
     }
     case 'P':
     {
-        //bala de ca�on
+        //bala de cañon
         Camera* cam = GetCamera();
         Vector4 color(1, 1, 0, 1);
         //la pos de la camara como pos inicial de la particula

@@ -260,6 +260,7 @@
     <ClCompile Include="FontainSystem.cpp" />
     <ClCompile Include="ForceRegistry.cpp" />
     <ClCompile Include="GaussianGen.cpp" />
+    <ClCompile Include="GaussianSolidGen.cpp" />
     <ClCompile Include="Gravity.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MuellePracticaSystem.cpp" />
@@ -273,6 +274,8 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ScenePractica.cpp" />
     <ClCompile Include="SnowSystem.cpp" />
+    <ClCompile Include="SolidGenerator.cpp" />
+    <ClCompile Include="SolidSystem.cpp" />
     <ClCompile Include="SparkleSystem.cpp" />
     <ClCompile Include="SpringForceGenerator.cpp" />
     <ClCompile Include="UniformGen.cpp" />
@@ -291,6 +294,7 @@
     <ClInclude Include="ForceGenerator.h" />
     <ClInclude Include="ForceRegistry.h" />
     <ClInclude Include="GaussianGen.h" />
+    <ClInclude Include="GaussianSolidGen.h" />
     <ClInclude Include="Gravity.h" />
     <ClInclude Include="MuellePracticaSystem.h" />
     <ClInclude Include="OscillateWind.h" />
@@ -303,6 +307,8 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ScenePractica.h" />
     <ClInclude Include="SnowSystem.h" />
+    <ClInclude Include="SolidGenerator.h" />
+    <ClInclude Include="SolidSystem.h" />
     <ClInclude Include="SparkleSystem.h" />
     <ClInclude Include="SpringForceGenerator.h" />
     <ClInclude Include="UniformGen.h" />

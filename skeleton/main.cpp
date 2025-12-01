@@ -109,6 +109,31 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
+	//Generar suelo
+    PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 50, 0, -80 }));
+    PxShape* shapeSuelo = CreateShape(PxBoxGeometry(100, 0.1, 100));
+    Suelo->attachShape(*shapeSuelo);
+    gScene->addActor(*Suelo);
+
+    // Pintar suelo
+    RenderItem* item;
+    item = new RenderItem(shapeSuelo, Suelo, { 0.8, 0.8,0.8,1 });
+
+	// Anadir un actor dinamico
+	PxRigidDynamic* new_solid;
+	new_solid = gPhysics->createRigidDynamic(PxTransform({ 50,200,-80 }));
+	new_solid->setLinearVelocity({ 0,5,0 });
+	new_solid->setAngularVelocity({ 0,0,0 });
+	PxShape* shape_ad = CreateShape(PxBoxGeometry(5, 5, 5));
+	new_solid->attachShape(*shape_ad);
+
+	PxRigidBodyExt::updateMassAndInertia(*new_solid, 0.15);
+	gScene->addActor(*new_solid);
+
+	// Pintar actor dinamico
+	RenderItem* dynamic_item;
+	dynamic_item = new RenderItem(shape_ad, new_solid, { 0.8, 0.8,0.8,1 });
+
 
 	// === Dianas ===
 	PxSphereGeometry geo(5.0f); //antes para ejes 2
@@ -142,11 +167,11 @@ void initPhysics(bool interactive)
 	sparSys = new SparkleSystem(gravity, nullptr, oscillate);
 	snowSys = new SnowSystem(gravity, wind, nullptr);
 	bulletSys = new BulletSystem(nullptr, nullptr, nullptr);
-	muelleSys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
+	//muelleSys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
 	fuenteSys = new FontainSystem(gravity);
 
 	gravity = new Gravity(Vector3(0, -9.8f, 0));
-	floatSys = new FlotacionPracticaSystem(gravity, floatP);
+	//floatSys = new FlotacionPracticaSystem(gravity, floatP);
 
 }
 
@@ -178,8 +203,8 @@ void stepPhysics(bool interactive, double t)
 	}
 	sparSys->update(t);
 	snowSys->update(t);
-	 muelleSys->update(t);
-	 floatSys->update(t);
+	 //muelleSys->update(t);
+	// floatSys->update(t);
 	fuenteSys->update(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);

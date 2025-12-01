@@ -1,5 +1,4 @@
 #include "callbacks.hpp"
-#include "SceneManager.h"
 
 extern void onCollision(physx::PxActor* actor1, physx::PxActor* actor2);
 

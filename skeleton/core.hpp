@@ -7,7 +7,6 @@
 
 #include "Render/Render.h"
 #include "Render/Camera.h"
-#include "SceneManager.h"
 
 #include <vector>
 

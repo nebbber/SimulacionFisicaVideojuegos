@@ -37,3 +37,21 @@ void Whirlwind::update(double t, Particle* p)
 
     p->addForce(f);
 }
+void Whirlwind::update(double t, PxRigidDynamic* r)
+{
+    PxVec3 posPart = r->getGlobalPose().p;
+    PxVec3 dir = posPart - PxVec3(posCentro.x, posCentro.y, posCentro.z);
+
+    float dist2 = dir.x * dir.x + dir.y * dir.y + dir.z * dir.z;
+    if (dist2 < 0.0001f) return;
+
+    PxVec3 tang(-dir.z, 0, dir.x);
+    float invDist = 1.0f / std::sqrt(dist2);
+
+    PxVec3 force;
+    force.x = K * tang.x * invDist;
+    force.y = K * (posCentro.y - posPart.y) * 0.3f;
+    force.z = K * tang.z * invDist;
+
+    r->addForce(force);
+}

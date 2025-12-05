@@ -1,30 +1,31 @@
 #pragma once
 #include "SolidGenerator.h"
-#include <random>
 #include <vector>
-using namespace std;
+#include <random>
+#include "PxPhysicsAPI.h"
 
-class GaussianRigidGen : public SolidGenerator {
+class GaussianSolidGen : public SolidGenerator {
 private:
     std::normal_distribution<float> _d;
     std::mt19937 _mt;
     int n_bodies;
     float probGen;
 
-    PxVec3 posMedia;
-    PxVec3 velMedia;
-    PxVec3 desvPos;
-    PxVec3 desvVel;
+    physx::PxVec3 posMedia;
+    physx::PxVec3 velMedia;
+    physx::PxVec3 desvPos;
+    physx::PxVec3 desvVel;
 
     float massMedia;
     float desvMass;
 
 public:
-    GaussianRigidGen(PxPhysics* p, PxScene* s, PxMaterial* mat, int n);
-    void setDesvPos(PxVec3 d);
-    void setDesvVel(PxVec3 d);
-    void setPosMedia(PxVec3 p);
-    void setVelMedia(PxVec3 v);
+    GaussianSolidGen(physx::PxPhysics* p, physx::PxScene* s, physx::PxMaterial* mat, int n);
 
-    std::vector<PxRigidDynamic*> generateRigidBodies() override;
+    void setDesvPos(physx::PxVec3 d);
+    void setDesvVel(physx::PxVec3 d);
+    void setPosMedia(physx::PxVec3 p);
+    void setVelMedia(physx::PxVec3 v);
+
+    std::vector<physx::PxRigidDynamic*> generateRigidBodies() override;
 };

@@ -4,17 +4,22 @@ SolidSystem::SolidSystem()
 {
 }
 
+void SolidSystem::ActivateSolid(bool a)
+{
+	active = a;
+}
+
 SolidSystem::~SolidSystem()
 {
+	for (PxRigidActor* actor : bodies)
+	{
+		///scene->removeActor(*actor);  
+		actor->release();             
+	}
+	bodies.clear();
+
+	delete _gravity;
+	
 }
 
-void SolidSystem::update(float dt)
-{
 
-}
-
-
-void SolidSystem::addRigidBody(PxRigidActor* rb)
-{
-	bodies.push_back(rb);
-}

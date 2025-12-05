@@ -6,6 +6,38 @@ void ForceRegistry::add(Particle* p, ForceGenerator* fg) {
     generatorToParticles[fg].push_back(p);
 }
 
+void ForceRegistry::add(PxRigidDynamic* r, ForceGenerator* fg)
+{
+    rigidToGenerators[r].push_back(fg);
+    generatorToRigids[fg].push_back(r);
+}
+void ForceRegistry::remove(PxRigidDynamic* r, ForceGenerator* fg)
+{
+    // Quitar fg de la lista de r
+    auto& genList = rigidToGenerators[r];
+    genList.erase(
+        std::remove(genList.begin(), genList.end(), fg),
+        genList.end()
+    );
+
+    // Quitar r de la lista de fg
+    auto& rList = generatorToRigids[fg];
+    rList.erase(
+        std::remove(rList.begin(), rList.end(), r),
+        rList.end()
+    );
+}
+void ForceRegistry::removeRigid(PxRigidDynamic* r)
+{
+    for (ForceGenerator* fg : rigidToGenerators[r])
+    {
+        auto& list = generatorToRigids[fg];
+        list.erase(std::remove(list.begin(), list.end(), r), list.end());
+    }
+
+    rigidToGenerators.erase(r);
+}
+
 // Eliminar todas las asociaciones de un generador
 void ForceRegistry::removeGenerator(ForceGenerator* fg) {
     if (generatorToParticles.find(fg) != generatorToParticles.end()) {
@@ -40,5 +72,12 @@ void ForceRegistry::update(float duration) {
             if (!fg) continue; // ignorar generadores nulos
             fg->update(duration, p);
         }
+    }
+
+    for (auto& pair : rigidToGenerators)
+    {
+        PxRigidDynamic* r = pair.first;
+        for (ForceGenerator* fg : pair.second)
+            fg->update(duration, r);
     }
 }

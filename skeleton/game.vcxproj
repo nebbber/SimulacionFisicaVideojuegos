@@ -255,6 +255,7 @@
   <ItemGroup>
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="callbacks.cpp" />
+    <ClCompile Include="CubeSolidSystem.cpp" />
     <ClCompile Include="FloatForce.cpp" />
     <ClCompile Include="FlotacionPracticaSystem.cpp" />
     <ClCompile Include="FontainSystem.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="callbacks.hpp" />
     <ClInclude Include="core.hpp" />
+    <ClInclude Include="CubeSolidSystem.h" />
     <ClInclude Include="FloatForce.h" />
     <ClInclude Include="FlotacionPracticaSystem.h" />
     <ClInclude Include="FontainSystem.h" />

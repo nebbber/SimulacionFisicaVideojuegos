@@ -22,3 +22,16 @@ void OscillateWind::update(double t, Particle* p)
 
     WindGenerator::update(t, p);
 }
+
+void OscillateWind::update(double t, PxRigidDynamic* r)
+{
+    accumulatedTime += t;
+
+    // Actualizar velocidad de viento según la oscilación
+    velViento.x = baseVel.x + amplitude * std::sin(frequency * accumulatedTime);
+    velViento.y = baseVel.y + amplitude * std::cos(frequency * accumulatedTime * 0.5);
+    velViento.z = baseVel.z + amplitude * std::sin(frequency * accumulatedTime * 0.7);
+
+    // Reutilizar la lógica de WindGenerator para aplicar la fuerza
+    WindGenerator::update(t, r);
+}

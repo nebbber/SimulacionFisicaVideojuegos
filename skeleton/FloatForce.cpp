@@ -29,6 +29,32 @@ void FloatForce::update(double time, Particle* p) {
 	p->addForce(f);
 }
 
+void FloatForce::update(double time, PxRigidDynamic* r)
+{
+	if (!r || !_liquid_particle) return;
+
+	float h = r->getGlobalPose().p.y;          // posición del rígido
+	float h0 = _liquid_particle->getPos().y;   // superficie del agua
+
+	float immersed = 0.0f;
+
+	if (h - h0 > _height * 0.5f) {
+		immersed = 0.0f;
+	}
+	else if (h0 - h > _height * 0.5f) {
+		immersed = 1.0f;
+	}
+	else {
+		immersed = (h0 - h) / _height + 0.5f;
+	}
+
+	// fuerza de flotación
+	float Fy = _liquid_density * _volume * immersed * 9.8f;
+
+	PxVec3 force(0.0f, Fy, 0.0f);
+	r->addForce(force);
+}
+
 void FloatForce::setLiquidParticle(Particle* l)
 {
 	_liquid_particle = l;

@@ -7,7 +7,8 @@ class FloatForce : public ForceGenerator {
 public:
 	FloatForce(float h, float V, float d);
 
-	void update(double time, Particle* p);
+	void update(double time, Particle* p) override;
+	void update(double time, PxRigidDynamic* r) override;//para solidos
 
 	void setLiquidParticle(Particle* l);
 	void addVol(float v);

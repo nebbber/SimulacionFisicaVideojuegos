@@ -11,6 +11,7 @@ class WindGenerator:public ForceGenerator
 	WindGenerator(Vector3 vel,float ks, float k);
 	~WindGenerator();
 	void update(double t, Particle* p) override;
+	void update(double t, PxRigidDynamic* r) override;
 
 };
 

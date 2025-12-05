@@ -16,4 +16,5 @@ public:
 
    
     virtual void update(double t, Particle* p) override;
+    void update(double t, PxRigidDynamic* r) override;
 };

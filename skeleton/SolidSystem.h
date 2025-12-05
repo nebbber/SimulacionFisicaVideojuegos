@@ -1,23 +1,23 @@
+#pragma once
 #include <PxPhysicsAPI.h>
 #include <vector>
 #include "Gravity.h"
-#include "WindGenerator.h"
-#include "SpringForceGenerator.h"
 #include "ForceRegistry.h"
 using namespace physx;
 class SolidSystem {
-public:
-    
-    std::vector<PxRigidActor*> bodies; 
-    ForceRegistry registry;
+   protected:
+    bool active = false;
 
-    Gravity* gravity;
-    WindGenerator* wind;
-    SpringForceGenerator* spring;
+    std::vector<PxRigidActor*> bodies;
+    ForceRegistry* _registry = nullptr;
+
+    Gravity* _gravity = nullptr;
+public:
+
 
     SolidSystem();
     ~SolidSystem();
 
-    void addRigidBody(PxRigidActor* rb);
-    void update(float dt);
+    virtual void update(double t) {};
+    void ActivateSolid(bool a);
 };

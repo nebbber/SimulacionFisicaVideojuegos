@@ -23,3 +23,18 @@ void WindGenerator::update(double t, Particle* p)
 	p->addForce(f);
 	
 }
+void WindGenerator::update(double t, PxRigidDynamic* r)
+{
+	if (!r) return;
+
+	PxVec3 currentVel = r->getLinearVelocity();
+	PxVec3 targetVel(velViento.x, velViento.y, velViento.z);
+
+	PxVec3 diff = targetVel - currentVel;
+	float v = sqrt(diff.x * diff.x + diff.y * diff.y + diff.z * diff.z);
+
+	PxVec3 force = k1 * diff + k2 * v * diff;
+
+
+	r->addForce(force);
+}

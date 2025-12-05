@@ -26,7 +26,8 @@
 #include "FloatForce.h"
 #include "FlotacionPracticaSystem.h"
 #include "FontainSystem.h"
-
+#include "CubeSolidSystem.h"
+#include "SolidSystem.h"
 
 using namespace physx;
 
@@ -64,17 +65,21 @@ SpringForceGenerator* spring3 = nullptr;
 
 FloatForce* floatP = nullptr;
 
-// particulas 
+// particulas  y solidos
 ParticleSystem* particleSystem = nullptr;
+SolidSystem* solidSystem = nullptr;
+
 // generadores
 bool pressedNieve = false;
 physx::PxVec3 posGanar;
-SparkleSystem* sparSys;
-SnowSystem* snowSys;
-BulletSystem* bulletSys;
-MuellePracticaSystem* muelleSys;
-FlotacionPracticaSystem* floatSys;
-FontainSystem* fuenteSys;
+SparkleSystem* sparSys = nullptr;
+SnowSystem* snowSys = nullptr;
+BulletSystem* bulletSys = nullptr;
+MuellePracticaSystem* muelleSys = nullptr;
+FlotacionPracticaSystem* floatSys = nullptr;
+FontainSystem* fuenteSys = nullptr;
+CubeSolidSystem* cubeSys = nullptr;
+
 
 //booleanos para activacion/desactivacion de generadores de fuerzas
 bool boolGravity = true;
@@ -165,17 +170,23 @@ void initPhysics(bool interactive)
 	whril = new Whirlwind(200.0f, Vector3(25, 0, 0), Vector3(10.0f, 0.0f, 0.0f), 0.5f, 1.2f);
 	gravity2 = new Gravity(Vector3(0, -9.8f, 0));
 
-	// === Proyectiles y partículas ===
+	// ===  partículas y solidos (sistemas) ===
 	particleSystem = new ParticleSystem();
+	solidSystem = new SolidSystem();
 
-
-
+	//sistemas de particulas 
 	bulletSys = new BulletSystem(nullptr, nullptr, nullptr);
-	sparSys = new SparkleSystem(gravity, nullptr, oscillate);
-	snowSys = new SnowSystem(gravity, wind, nullptr);
-	fuenteSys = new FontainSystem(gravity2, whril);
-	muelleSys = new MuellePracticaSystem(gravity2, spring1, spring2, spring3);
-	floatSys = new FlotacionPracticaSystem(gravity2, floatP);
+	//sparSys = new SparkleSystem(gravity, nullptr, oscillate);
+	//snowSys = new SnowSystem(gravity, wind, nullptr);
+	//fuenteSys = new FontainSystem(gravity2, whril);
+	
+	//muelles y flotacion 
+	//muelleSys = new MuellePracticaSystem(gravity2, spring1, spring2, spring3);
+	//floatSys = new FlotacionPracticaSystem(gravity2, floatP);
+
+	//sistemas de solidos
+	cubeSys = new CubeSolidSystem(gPhysics, gScene,gravity2);
+	cubeSys->ActivateSolid(true);
 }
 
 
@@ -204,17 +215,18 @@ void stepPhysics(bool interactive, double t)
 
 		bulletSys->shot(t);
 	}
-	sparSys->update(t);
-	snowSys->update(t);
-	 muelleSys->update(t);
-	 floatSys->update(t);
-	fuenteSys->update(t);
+	//sparSys->update(t);
+	//snowSys->update(t);
+	// muelleSys->update(t);
+	// floatSys->update(t);
+	//fuenteSys->update(t);
+	cubeSys->update(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 
 	Camera* cam = GetCamera();
 
-	//aparece "nieve" delimitadora de espacio de disparo
+	/*//aparece "nieve" delimitadora de espacio de disparo
 	if (cam->getTransform().p.magnitude() > 130.0)
 	{
 		snowSys->ActivateParticle(true);
@@ -222,7 +234,7 @@ void stepPhysics(bool interactive, double t)
 	else
 	{
 		snowSys->ActivateParticle(false);
-	}
+	}*/
 }
 
 // Function to clean data
@@ -271,13 +283,11 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	/*case 'O':
 	{
 		//bala de tanque
-
 		Camera* cam = GetCamera();
-		Vector4 color(0, 1, 0, 1);
+			Vector4 color(0, 1, 0, 1);
 
-		//la pos de la camara como pos inicial de la particula
-		proyectil->createBullet(cam->getTransform().p, 100.0, Vector3(0.0f, 1800.0f, 0.0f),
-			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
+			bulletSys->createBullet(cam->getTransform().p, 150.0, Vector3(0.0f, 1800.0f, 0.0f),
+				Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
 		break;
 	}*/
 	case 'I':

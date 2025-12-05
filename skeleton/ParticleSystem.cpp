@@ -13,7 +13,7 @@ using namespace std;
 #include <cmath>
 ParticleSystem::ParticleSystem()
 {
-	
+
 }
 
 ParticleSystem::~ParticleSystem()
@@ -43,7 +43,12 @@ ParticleSystem::~ParticleSystem()
 
 void ParticleSystem::ActivateParticle(bool a)
 {
-    active = a;
+	active = a;
+}
+
+bool ParticleSystem::isActive()
+{
+	return active;
 }
 
 void ParticleSystem::ActivateGravity(bool a)
@@ -94,6 +99,14 @@ void ParticleSystem::ActivateFloat(bool a)
 	if (_float)
 	{
 		_float->setActive(a);
+	}
+}
+
+void ParticleSystem::ActivateWhril(bool a)
+{
+	if (_whril)
+	{
+		_whril->setActive(a);
 	}
 }
 

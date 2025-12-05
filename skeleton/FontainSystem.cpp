@@ -1,26 +1,29 @@
 #include "FontainSystem.h"
-#include "UniformGen.h"
+#include "GaussianGen.h"
 #include "ForceRegistry.h"
 #include "Gravity.h"
-FontainSystem::FontainSystem(Gravity* g)
+#include "Whirlwind.h"
+FontainSystem::FontainSystem(Gravity* g, Whirlwind* w)
 {
     _gravity = g;
-    fuente = new UniformGen("fuente");
+    _whril = w;
+    fuente = new GaussianGen("fuente");
     _generators.push_back(fuente);
 
     _registry = new ForceRegistry();
 
-  // Modelo fuente
-  Particle* modeloFuente = new Particle(7.0, Vector3(0, 40, -80), Vector3(0, 0, 0),
-      Vector3(0, 0, 0), 0.4f, 20.0f, Vector4(0, 1, 1, 1), 0.02f);
-  fuente->setModelo(modeloFuente);
-  fuente->setNumParticles(5);
-  fuente->setDurMedia(1.0);
-  fuente->setPosMedia(Vector3(25.0f, 0.0f, 0.0f));
-  fuente->setVelMedia(Vector3(0.0f, 40.0f, 0.0f));
-  fuente->setDesP(Vector3(1, 0, 1));
-  fuente->setDesV(Vector3(10, 10, 10));
-  fuente->setProbGen(0.2);
+    // Modelo fuente
+    Particle* modeloFuente = new Particle(7.0, Vector3(0, 0, 0), Vector3(0, 0, 0),
+        Vector3(0, 0, 0), 0.4f, 20.0f, Vector4(0, 0, 1, 1), 1.0f);
+    fuente->setModelo(modeloFuente);
+    fuente->setNumParticles(20);
+    fuente->setDurMedia(1.0);
+    fuente->setPosMedia(Vector3(25.0f, 0.0f, 0.0f));
+    fuente->setVelMedia(Vector3(0.0f, 1.0f, 0.0f));
+    fuente->setDesP(Vector3(1, 0, 1));
+    fuente->setDesV(Vector3(1, 1, 1));
+    fuente->setProbGen(0.2);
+    active = true;
 }
 
 void FontainSystem::update(double t)
@@ -41,13 +44,21 @@ void FontainSystem::update(double t)
                 p->setGeometry();
                 _particles.push_back(p);
 
-               
+
                 if (_gravity && _gravity->isActive())
                     _registry->add(p, _gravity);
                 else if (_gravity && !_gravity->isActive())
                 {
                     _registry->removeGenerator(_gravity);
                 }
+
+                if (_whril && _whril->isActive())
+                    _registry->add(p, _whril);
+                else if (_whril && !_whril->isActive())
+                {
+                    _registry->removeGenerator(_whril);
+                }
+
 
 
             }

@@ -1,5 +1,6 @@
 #pragma once
 #include "WindGenerator.h"
+
 class Whirlwind: public WindGenerator
 {
 private:

@@ -13,16 +13,27 @@ Whirlwind::~Whirlwind()
 }
 void Whirlwind::update(double t, Particle* p)
 {
+    Vector3 posPart = p->getPos();
+    Vector3 dir = posPart - posCentro;
 
-    //revisar formula
-    Vector3 posPart = p->getPos(); 
-    Vector3 dir = posPart - posCentro; 
+    // Distancia al cuadrado
+    float dist2 = dir.x * dir.x + dir.y * dir.y + dir.z * dir.z;
+    if (dist2 < 0.0001f) return; // Evitar división por cero
 
+    // Vector tangencial alrededor del eje Y (torbellino clásico)
+    Vector3 tang;
+    tang.x = -dir.z;
+    tang.y = 0;
+    tang.z = dir.x;
 
+    // No normalizo, solo escalo por 1/distancia
+    float invDist = 1.0f / sqrt(dist2); // si NO tienes sqrt, dime y te doy otra versión
+
+    // Fuerza tangencial (rotación)
     Vector3 f;
-    f.x = -K * dir.z; 
-    f.y = K * (50 - dir.y); 
-    f.z = K * dir.x;  
+    f.x = K * tang.x * invDist;
+    f.y = K * (posCentro.y - posPart.y) * 0.3f; // succión vertical suave
+    f.z = K * tang.z * invDist;
 
     p->addForce(f);
 }

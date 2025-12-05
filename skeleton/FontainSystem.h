@@ -1,20 +1,22 @@
 #pragma once
 #include "ParticleSystem.h"
+#pragma once
+#include "ParticleSystem.h"
 class Gravity;
 class OscillateWind;
-class UniformGen;
+class GaussianGen;
 class FontainSystem : public ParticleSystem
 {
 private:
 
-	UniformGen* fuente;
+	GaussianGen* fuente;
 
 public:
-	FontainSystem(Gravity* g);
+	FontainSystem(Gravity* g, Whirlwind* w);
 
 	void update(double t) override;
 	~FontainSystem();
 
-	
+
 };
 

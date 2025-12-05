@@ -53,9 +53,10 @@ RenderItem* itemZ = nullptr;
 
 // fuerzas y el registro
 Gravity* gravity = nullptr;
+Gravity* gravity2 = nullptr;
 WindGenerator* wind = nullptr;
 OscillateWind* oscillate = nullptr;
-
+Whirlwind* whril = nullptr;
 
 SpringForceGenerator* spring1 = nullptr;
 SpringForceGenerator* spring2 = nullptr;
@@ -82,7 +83,7 @@ bool showSparkle = false;
 bool boolOscilate = true;
 bool boolSpring1 = true;
 bool boolSpring2 = true;
-
+bool boolWhril = true;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -161,18 +162,20 @@ void initPhysics(bool interactive)
 	spring2 = new SpringForceGenerator(10, 2);
 	spring3 = new SpringForceGenerator(1, 10);
 	floatP = new FloatForce(1, 1, 1000);
+	whril = new Whirlwind(200.0f, Vector3(25, 0, 0), Vector3(10.0f, 0.0f, 0.0f), 0.5f, 1.2f);
+	gravity2 = new Gravity(Vector3(0, -9.8f, 0));
 
 	// === Proyectiles y partículas ===
 	particleSystem = new ParticleSystem();
+
+
+
+	bulletSys = new BulletSystem(nullptr, nullptr, nullptr);
 	sparSys = new SparkleSystem(gravity, nullptr, oscillate);
 	snowSys = new SnowSystem(gravity, wind, nullptr);
-	bulletSys = new BulletSystem(nullptr, nullptr, nullptr);
-	//muelleSys = new MuellePracticaSystem(gravity, spring1, spring2, spring3);
-	fuenteSys = new FontainSystem(gravity);
-
-	gravity = new Gravity(Vector3(0, -9.8f, 0));
-	//floatSys = new FlotacionPracticaSystem(gravity, floatP);
-
+	fuenteSys = new FontainSystem(gravity2, whril);
+	muelleSys = new MuellePracticaSystem(gravity2, spring1, spring2, spring3);
+	floatSys = new FlotacionPracticaSystem(gravity2, floatP);
 }
 
 
@@ -203,8 +206,8 @@ void stepPhysics(bool interactive, double t)
 	}
 	sparSys->update(t);
 	snowSys->update(t);
-	 //muelleSys->update(t);
-	// floatSys->update(t);
+	 muelleSys->update(t);
+	 floatSys->update(t);
 	fuenteSys->update(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);

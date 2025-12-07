@@ -34,6 +34,7 @@
     <ClCompile Include="GaussianSolidGen.cpp" />
     <ClCompile Include="CubeSolidSystem.cpp" />
     <ClCompile Include="SphereSolidSystem.cpp" />
+    <ClCompile Include="muelleMovible.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -70,6 +71,7 @@
     <ClInclude Include="GaussianSolidGen.h" />
     <ClInclude Include="CubeSolidSystem.h" />
     <ClInclude Include="SphereSolidSystem.h" />
+    <ClInclude Include="muelleMovible.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

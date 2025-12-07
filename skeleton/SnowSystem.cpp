@@ -16,7 +16,7 @@ SnowSystem::SnowSystem(Gravity* g, WindGenerator* w, OscillateWind* o) :Particle
 
     Particle* modeloNieve = new Particle(
         7.0, Vector3(0, 0, 0), Vector3(0, 0, 0),
-        Vector3(0, 0, 0), 0.4f, 40.0f, Vector4(1, 0, 0, 1), 5.0f // tamaño mayor
+        Vector3(0, 0, 0), 0.4f, 40.0f, Vector4(0.86, 0.07, 0.23, 1), 1.0f 
     );
 
     snow->setModelo(modeloNieve);
@@ -44,7 +44,7 @@ void SnowSystem::update(double t)
 
             for (Particle* p : generatedParticles)
             {
-                p->setShape(1);
+                p->setShape(2);
                 p->setGeometry();
                 _particles.push_back(p);
 

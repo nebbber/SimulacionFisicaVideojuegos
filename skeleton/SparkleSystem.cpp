@@ -14,26 +14,26 @@ SparkleSystem::SparkleSystem(Gravity* g, WindGenerator* w, OscillateWind* o):Par
  
     // Crear el modelo de fuego
     Particle* modeloFuego = new Particle(
-        7.0,
+        700.0,
         Vector3(0, 0, 0),
         Vector3(0, 0, 0),
         Vector3(0, 0, 0),
         0.4f,
         20.0f,
-        Vector4(1.0f, 0.0f, 0.5f, 1.0f),
-        1.0f
+        Vector4(0.0f, 1.0f, 1.0f, 1.0f),
+        0.4f
         
     );
     _registry = new ForceRegistry();
     // Configurar el sistema de partículas
     spark->setModelo(modeloFuego);
-    spark->setNumParticles(20);
-    spark->setDurMedia(1.0);
-    spark->setPosMedia(Vector3(30.0f, 20.0f, -80.0f));
+    spark->setNumParticles(10);
+    spark->setDurMedia(5.0);
+    spark->setPosMedia(Vector3(30.0f, -100.0f, -80.0f));
     spark->setVelMedia(Vector3(10.0f, 10.0f, 10.0f));
-    spark->setDesP(Vector3(0.4f, 0, 0.4f));
+    spark->setDesP(Vector3(100.0f, 0, 100.0f));
     spark->setDesV(Vector3(20, 20, 20));
-    spark->setProbGen(0.2);
+    spark->setProbGen(0.6);
 
 }
 

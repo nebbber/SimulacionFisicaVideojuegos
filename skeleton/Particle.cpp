@@ -156,7 +156,7 @@ void Particle::setGeometry()
 	}
 	else
 	{
-		PxShape* shShape = CreateShape(PxBoxGeometry(PxVec3(w*0.5f,h * 0.5f,p * 0.5f))); //par aque mida exactamente eso *0.5
+		PxShape* shShape = CreateShape(PxBoxGeometry(PxVec3(size*0.5f,size * 0.5f,size * 0.5f))); //par aque mida exactamente eso *0.5
 		renderItem = new RenderItem(shShape, pose, color);
 	}
 

@@ -264,6 +264,7 @@
     <ClCompile Include="GaussianSolidGen.cpp" />
     <ClCompile Include="Gravity.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="muelleMovible.cpp" />
     <ClCompile Include="MuellePracticaSystem.cpp" />
     <ClCompile Include="OscillateWind.cpp" />
     <ClCompile Include="Particle.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="GaussianGen.h" />
     <ClInclude Include="GaussianSolidGen.h" />
     <ClInclude Include="Gravity.h" />
+    <ClInclude Include="muelleMovible.h" />
     <ClInclude Include="MuellePracticaSystem.h" />
     <ClInclude Include="OscillateWind.h" />
     <ClInclude Include="Particle.h" />

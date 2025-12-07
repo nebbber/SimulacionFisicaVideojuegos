@@ -39,6 +39,7 @@ ParticleSystem::~ParticleSystem()
 	delete _spring2;
 	delete _spring3;
 	delete _float;
+	delete _registry;
 }
 
 void ParticleSystem::ActivateParticle(bool a)

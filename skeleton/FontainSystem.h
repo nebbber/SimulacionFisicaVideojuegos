@@ -14,6 +14,7 @@ public:
 
 	void update(double t) override;
 	~FontainSystem();
+	void setPosition(const Vector3& pos);
 
 
 };

@@ -1,0 +1,28 @@
+#pragma once
+#include "ParticleSystem.h"
+class Gravity;
+class OscillateWind;
+class GaussianGen;
+class FontainSystem;
+class muelleMovible : public ParticleSystem
+{
+private:
+	FontainSystem* fuenteSys = nullptr;
+	Particle* particulaMovible;
+	Particle* p2Muelles;
+
+	float speed;
+	float rightLimit;
+	float leftLimit;
+	bool _isMovingRight = true;
+
+public:
+	muelleMovible(Gravity* g, Vector3 startPos);
+
+	void update(double t) override;
+	~muelleMovible();
+	void setPosMovible(Vector3 pos);
+	void setK(int K);
+
+};
+

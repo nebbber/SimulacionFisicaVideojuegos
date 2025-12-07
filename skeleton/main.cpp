@@ -29,6 +29,7 @@
 #include "CubeSolidSystem.h"
 #include "SolidSystem.h"
 #include "SphereSolidSystem.h"
+#include "muelleMovible.h"
 
 using namespace physx;
 
@@ -78,14 +79,15 @@ SnowSystem* snowSys = nullptr;
 BulletSystem* bulletSys = nullptr;
 MuellePracticaSystem* muelleSys = nullptr;
 FlotacionPracticaSystem* floatSys = nullptr;
-FontainSystem* fuenteSys = nullptr;
+//FontainSystem* fuenteSys = nullptr;
 CubeSolidSystem* cubeSys = nullptr;
 SphereSolidSystem* sphereSys = nullptr;
-
+std::vector<muelleMovible*> muellesMovibles;
+muelleMovible* muelleMov = nullptr;
 //booleanos para activacion/desactivacion de generadores de fuerzas
 bool boolGravity = true;
 bool boolWind = true;
-bool showSparkle = false;
+bool showSparkle = true;
 bool boolOscilate = true;
 bool boolSpring1 = true;
 bool boolSpring2 = true;
@@ -116,7 +118,7 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	//Generar suelo
+	/*//Generar suelo
     PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 50,20, -80 }));
     PxShape* shapeSuelo = CreateShape(PxBoxGeometry(100, 0.1, 100));
     Suelo->attachShape(*shapeSuelo);
@@ -125,8 +127,8 @@ void initPhysics(bool interactive)
     // Pintar suelo
     RenderItem* item;
     item = new RenderItem(shapeSuelo, Suelo, { 0.8, 0.8,0.8,1 });
-
-	// Anadir un actor dinamico
+	*/
+	/*// Anadir un actor dinamico
 	PxRigidDynamic* new_solid;
 	new_solid = gPhysics->createRigidDynamic(PxTransform({ 50,200,-80 }));
 	new_solid->setLinearVelocity({ 0,5,0 });
@@ -141,34 +143,34 @@ void initPhysics(bool interactive)
 	RenderItem* dynamic_item;
 	dynamic_item = new RenderItem(shape_ad, new_solid, { 0.8, 0.8,0.8,1 });
 
-
+	*/
 	// === Dianas ===
 	PxSphereGeometry geo(5.0f); //antes para ejes 2
 	PxShape* shape = CreateShape(geo, gMaterial);
 
-	itemX = new RenderItem(shape, new PxTransform(Vector3(50, 40, -80)), Vector4(0, 1, 0, 1));
-	itemY = new RenderItem(shape, new PxTransform(Vector3(00, 0, -80)), Vector4(0, 1, 0, 1));
-	itemZ = new RenderItem(shape, new PxTransform(Vector3(-50, -20, -80)), Vector4(0, 1, 0, 1));
+	//itemX = new RenderItem(shape, new PxTransform(Vector3(50, 40, -80)), Vector4(0, 1, 0, 1));
+	//itemY = new RenderItem(shape, new PxTransform(Vector3(00, 0, -80)), Vector4(0, 1, 0, 1));
+	//itemZ = new RenderItem(shape, new PxTransform(Vector3(-50, -20, -80)), Vector4(0, 1, 0, 1));
 
 
 	//ejes antiguos
    /* itemX = new RenderItem(shape, new PxTransform(PxVec3(10, 0, 0)), Vector4(1, 0, 0, 1));
 	itemY = new RenderItem(shape, new PxTransform(PxVec3(0, 10, 0)), Vector4(0, 1, 0, 1));
 	itemZ = new RenderItem(shape, new PxTransform(PxVec3(0, 0, 10)), Vector4(0, 0, 1, 1));
-	*/
-	RegisterRenderItem(itemX);
-	RegisterRenderItem(itemY);
-	RegisterRenderItem(itemZ);
+	//*/
+	//RegisterRenderItem(itemX);
+	//RegisterRenderItem(itemY);
+	//RegisterRenderItem(itemZ);
 
 	// === Fuerzas ===
 	gravity = new Gravity(Vector3(0, -90.8f, 0));
 	wind = new WindGenerator(Vector3(0.0f, 0.0f, 20000.0f), 0.3f, 0.0f);
 	oscillate = new OscillateWind(Vector3(0.0f, 100.0f, 0.0f), 0.5f, 0.1f, 300.0f, 3.0f);
-	spring1 = new SpringForceGenerator(10, 2);
-	spring2 = new SpringForceGenerator(10, 2);
-	spring3 = new SpringForceGenerator(1, 10);
+	//spring1 = new SpringForceGenerator(10, 2);
+	//spring2 = new SpringForceGenerator(10, 2);
+	//spring3 = new SpringForceGenerator(1, 10);
 	floatP = new FloatForce(1, 1, 1000);
-	whril = new Whirlwind(200.0f, Vector3(25, 0, 0), Vector3(10.0f, 0.0f, 0.0f), 0.5f, 1.2f);
+	//whril = new Whirlwind(200.0f, Vector3(25, 0, 0), Vector3(10.0f, 0.0f, 0.0f), 0.5f, 1.2f);
 	gravity2 = new Gravity(Vector3(0, -9.8f, 0));
 
 	// ===  partículas y solidos (sistemas) ===
@@ -177,20 +179,31 @@ void initPhysics(bool interactive)
 
 	//sistemas de particulas 
 	bulletSys = new BulletSystem(nullptr, nullptr, nullptr);
-	//sparSys = new SparkleSystem(gravity, nullptr, oscillate);
-	//snowSys = new SnowSystem(gravity, wind, nullptr);
+	sparSys = new SparkleSystem(gravity, nullptr, oscillate);
+	sparSys->ActivateParticle(showSparkle);
+	snowSys = new SnowSystem(gravity, nullptr, nullptr);
 	//fuenteSys = new FontainSystem(gravity2, whril);
 	
 	//muelles y flotacion 
 	//muelleSys = new MuellePracticaSystem(gravity2, spring1, spring2, spring3);
 	//floatSys = new FlotacionPracticaSystem(gravity2, floatP);
-	oscillate = new OscillateWind(Vector3(-500, -500, 0), 2.0f, 1.0f, 1.0f, 600.0f);
+	oscillate = new OscillateWind(Vector3(-500, -500, -500), 2.0f, 1.0f, 1.0f, 100.0f);
+	Vector3 pos(40, 10, 0); // posición inicial
+
+	for (int i = 0; i < 4; i++)
+	{
+		muelleMov = new muelleMovible(gravity2,pos); 
+		muellesMovibles.push_back(muelleMov);
+
+		pos.y += 20; 
+		pos.x -= 10;
+	}
 	//sistemas de solidos
 	//cubeSys = new CubeSolidSystem(gPhysics, gScene,gravity2, oscillate);
 	//cubeSys->ActivateSolid(true);
 
-	sphereSys = new SphereSolidSystem(gPhysics, gScene, gravity2, oscillate);
-	sphereSys->ActivateSolid(true);
+	//sphereSys = new SphereSolidSystem(gPhysics, gScene, gravity2, oscillate);
+	//sphereSys->ActivateSolid(true);
 }
 
 
@@ -219,27 +232,33 @@ void stepPhysics(bool interactive, double t)
 
 		bulletSys->shot(t);
 	}
-	//sparSys->update(t);
-	//snowSys->update(t);
+	sparSys->update(t);
+	snowSys->update(t);
 	// muelleSys->update(t);
 	// floatSys->update(t);
-	//fuenteSys->update(t);
+	
 	//cubeSys->update(t);
-	sphereSys->update(t);
+	//sphereSys->update(t);
+	
+	for (auto elem : muellesMovibles)
+	{
+		elem->update(t);
+	}
+	//muelleMov->update(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 
 	Camera* cam = GetCamera();
 
-	/*//aparece "nieve" delimitadora de espacio de disparo
-	if (cam->getTransform().p.magnitude() > 130.0)
+	//aparece "nieve" delimitadora de espacio de disparo
+	if (cam->getTransform().p.magnitude() > 140.0)
 	{
 		snowSys->ActivateParticle(true);
 	}
 	else
 	{
 		snowSys->ActivateParticle(false);
-	}*/
+	}
 }
 
 // Function to clean data
@@ -277,11 +296,11 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{
 		//bala de cañon
 		Camera* cam = GetCamera();
-		Vector4 color(1, 1, 0, 1);
+		Vector4 color(0.5, 0, 0, 1);
 		//la pos de la camara como pos inicial de la particula
 
 		bulletSys->createBullet(cam->getTransform().p, 200.0, Vector3(0.0f, 1000.0f, 0.0f),
-			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
+			Vector3(0.0f, 0.0f, 0.0f), 0.4f, 4.0f, cam->getDir(), color);
 
 		break;
 	}
@@ -300,16 +319,16 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		//bala de pistola
 
 		Camera* cam = GetCamera();
-		Vector4 color(0, 1, 1, 1);
+		Vector4 color(0.63, 0.13, 0.07, 1);
 		bulletSys->createBullet(cam->getTransform().p, 400.0, Vector3(0.0f, 330.0f, 0.0f),
-			Vector3(0.0f, -9.8f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
+			Vector3(0.0f, 0.0f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
 
 		break;
 	}
 	case 'M':
 	{
-		Camera* cam = GetCamera();
-		cam->setTransform(posGanar);
+		//Camera* cam = GetCamera();
+	//	cam->setTransform(posGanar);
 		showSparkle = !showSparkle;
 		sparSys->ActivateParticle(showSparkle);
 

@@ -57,7 +57,6 @@ list<Particle*> UniformGen::generateP()
             modelo->setPos(pos);
             modelo->setDur(dur);
             modelo->setVel(vel);
-
             newParticles.push_back(modelo);
         }
     }

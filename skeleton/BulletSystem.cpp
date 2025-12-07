@@ -63,7 +63,7 @@ void BulletSystem::shot(double t)
         bullets[i]->integrate(t);
 
         // si está a una distancia de más de 125 borramos la bala
-        if (bullets[i]->getPos().magnitude() > 125.0)
+        if (bullets[i]->getPos().magnitude() > 140.0)
         {
             _registry->removeParticle(bullets[i]);
             delete bullets[i];

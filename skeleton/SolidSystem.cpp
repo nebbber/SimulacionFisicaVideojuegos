@@ -1,5 +1,7 @@
 #include "SolidSystem.h"
-
+#include "Gravity.h"
+#include "ForceRegistry.h"
+#include "Whirlwind.h"
 SolidSystem::SolidSystem()
 {
 }
@@ -13,12 +15,13 @@ SolidSystem::~SolidSystem()
 {
 	for (PxRigidActor* actor : bodies)
 	{
-		///scene->removeActor(*actor);  
-		actor->release();             
+		actor->release();
 	}
 	bodies.clear();
 
 	delete _gravity;
+	delete _whril;
+	delete _oscillate;
 	
 }
 

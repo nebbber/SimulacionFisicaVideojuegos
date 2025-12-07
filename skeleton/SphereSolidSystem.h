@@ -6,21 +6,21 @@
 #include "GaussianSolidGen.h"
 #include "OscillateWind.h"
 #include <vector>
-class CubeSolidSystem : public SolidSystem
+class SphereSolidSystem : public SolidSystem
 {
 private:
 
-	GaussianSolidGen* cube;
+	GaussianSolidGen* sphere;
 
 	PxMaterial* defaultMat;
 	PxScene* scene;
 	vector<RenderItem*>renderItems;
 
 public:
-	CubeSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, OscillateWind* w);
+	SphereSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, OscillateWind* w);
 	void removeDeadBodies();
 	void update(double t) override;
-	~CubeSolidSystem();
+	~SphereSolidSystem();
 	void DeregisterRenderItems(PxRigidActor* actor);
 
 };

@@ -1,36 +1,37 @@
-﻿
-#include "CubeSolidSystem.h"
+#include "SphereSolidSystem.h"
+
 #include "ForceRegistry.h"
-CubeSolidSystem::CubeSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, OscillateWind* w):SolidSystem()
+SphereSolidSystem::SphereSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, OscillateWind* w) :SolidSystem()
 {
     _gravity = g;
-   // _oscillate = w;
-     defaultMat = p->createMaterial(0.5f, 0.5f, 0.6f);
-     scene = s;
+     _oscillate = w;
+    defaultMat = p->createMaterial(0.0f, 1.5f, 0.6f);
+    scene = s;
 
-    cube = new GaussianSolidGen(p, s, defaultMat, 1); 
+    sphere = new GaussianSolidGen(p, s, defaultMat, 1);
     _registry = new ForceRegistry();
-    cube->setShapeType(SolidShapeType::BOX); //tambien hay que cambair en el update el tipo
-    cube->setSize(5);
+    sphere->setShapeType(SolidShapeType::SPHERE);
+    sphere->setSize(1);
 
-    cube->setProbGen(0.1);
-    cube->setPosMedia(PxVec3(50, 50, -80)); 
-    cube->setDesvPos(PxVec3(10, 1, 10));
-    cube->setVelMedia(PxVec3(0, 0, 0));
-    cube->setDesvVel(PxVec3(1, 1, 1));
+    sphere->setProbGen(0.1);
+    sphere->setPosMedia(PxVec3(50, 50, -80));
+    sphere->setDesvPos(PxVec3(10, 1, 10));
+    sphere->setVelMedia(PxVec3(0, 0, 0));
+    sphere->setDesvVel(PxVec3(1, 1, 1));
+    sphere->setMassMedia(3.0f);
 
-   
+
 }
-void CubeSolidSystem::update(double t)
+void SphereSolidSystem::update(double t)
 {
     if (!active)
         return;
 
-    auto newBodies = cube->generateRigidBodies();
+    auto newBodies = sphere->generateRigidBodies();
 
     for (auto body : newBodies)
     {
-        
+
         if (_gravity && _gravity->isActive())
             _registry->add(body, _gravity);
 
@@ -40,17 +41,17 @@ void CubeSolidSystem::update(double t)
         if (_oscillate && _oscillate->isActive())
             _registry->add(body, _oscillate);
 
-       
+
         bodies.push_back(body);
 
         // Crear y registrar RenderItem
         PxShape* shape = CreateShape(
-            PxBoxGeometry(cube->getSize(), cube->getSize(), cube->getSize()),
+            PxSphereGeometry(sphere->getSize()),
             defaultMat
         );
 
-        RenderItem* item = new RenderItem(shape, body, Vector4(1, 0, 0, 1));
-        renderItems.push_back(item);     
+        RenderItem* item = new RenderItem(shape, body, Vector4(0, 0, 1, 1));
+        renderItems.push_back(item);
     }
 
     _registry->update(t);
@@ -59,7 +60,7 @@ void CubeSolidSystem::update(double t)
 }
 
 
-void CubeSolidSystem::removeDeadBodies()
+void SphereSolidSystem::removeDeadBodies()
 {
     auto it = bodies.begin();
 
@@ -71,7 +72,7 @@ void CubeSolidSystem::removeDeadBodies()
 
         if (shouldDie)
         {
-            
+
             for (auto& item : renderItems)
             {
                 if (item->actor == actor)
@@ -105,6 +106,6 @@ void CubeSolidSystem::removeDeadBodies()
         renderItems.end()
     );
 }
-CubeSolidSystem::~CubeSolidSystem()
+SphereSolidSystem::~SphereSolidSystem()
 {
 }

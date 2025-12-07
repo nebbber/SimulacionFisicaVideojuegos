@@ -33,6 +33,7 @@
     <ClCompile Include="SolidGenerator.cpp" />
     <ClCompile Include="GaussianSolidGen.cpp" />
     <ClCompile Include="CubeSolidSystem.cpp" />
+    <ClCompile Include="SphereSolidSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -68,6 +69,7 @@
     <ClInclude Include="SolidGenerator.h" />
     <ClInclude Include="GaussianSolidGen.h" />
     <ClInclude Include="CubeSolidSystem.h" />
+    <ClInclude Include="SphereSolidSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

@@ -1,7 +1,5 @@
 #pragma once
 #include "ParticleSystem.h"
-#pragma once
-#include "ParticleSystem.h"
 class Gravity;
 class OscillateWind;
 class GaussianGen;

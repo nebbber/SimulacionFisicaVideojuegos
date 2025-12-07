@@ -12,6 +12,5 @@ public:
 	virtual void update(double t, PxRigidDynamic* r) {}; //para solido rígidos
 	bool isActive() { return active; };
 	void setActive(bool a) { active = a; };
-
 };
 

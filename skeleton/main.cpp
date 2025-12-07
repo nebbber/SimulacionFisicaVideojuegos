@@ -28,6 +28,7 @@
 #include "FontainSystem.h"
 #include "CubeSolidSystem.h"
 #include "SolidSystem.h"
+#include "SphereSolidSystem.h"
 
 using namespace physx;
 
@@ -79,7 +80,7 @@ MuellePracticaSystem* muelleSys = nullptr;
 FlotacionPracticaSystem* floatSys = nullptr;
 FontainSystem* fuenteSys = nullptr;
 CubeSolidSystem* cubeSys = nullptr;
-
+SphereSolidSystem* sphereSys = nullptr;
 
 //booleanos para activacion/desactivacion de generadores de fuerzas
 bool boolGravity = true;
@@ -116,7 +117,7 @@ void initPhysics(bool interactive)
 	gScene = gPhysics->createScene(sceneDesc);
 
 	//Generar suelo
-    PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 50, 0, -80 }));
+    PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 50,20, -80 }));
     PxShape* shapeSuelo = CreateShape(PxBoxGeometry(100, 0.1, 100));
     Suelo->attachShape(*shapeSuelo);
     gScene->addActor(*Suelo);
@@ -183,10 +184,13 @@ void initPhysics(bool interactive)
 	//muelles y flotacion 
 	//muelleSys = new MuellePracticaSystem(gravity2, spring1, spring2, spring3);
 	//floatSys = new FlotacionPracticaSystem(gravity2, floatP);
-
+	oscillate = new OscillateWind(Vector3(-500, -500, 0), 2.0f, 1.0f, 1.0f, 600.0f);
 	//sistemas de solidos
-	cubeSys = new CubeSolidSystem(gPhysics, gScene,gravity2);
-	cubeSys->ActivateSolid(true);
+	//cubeSys = new CubeSolidSystem(gPhysics, gScene,gravity2, oscillate);
+	//cubeSys->ActivateSolid(true);
+
+	sphereSys = new SphereSolidSystem(gPhysics, gScene, gravity2, oscillate);
+	sphereSys->ActivateSolid(true);
 }
 
 
@@ -220,7 +224,8 @@ void stepPhysics(bool interactive, double t)
 	// muelleSys->update(t);
 	// floatSys->update(t);
 	//fuenteSys->update(t);
-	cubeSys->update(t);
+	//cubeSys->update(t);
+	sphereSys->update(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 

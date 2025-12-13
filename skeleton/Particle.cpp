@@ -101,6 +101,10 @@ bool Particle::isAlive()
 	return alive;
 }
 
+void Particle::setAlive(bool a)
+{
+	alive = a;
+}
 void Particle::setColor(Vector4 Color)
 {
 	color = Color;

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "RenderUtils.hpp"
 #include "core.hpp"
 #include <vector>
@@ -37,6 +37,7 @@ public:
 	void semi(double t);
 	void verlet(double t);
 	bool isAlive();
+	void setAlive(bool a);
 	void setColor(Vector4 Color);
 
 	void setPos(Vector3 p);
@@ -58,4 +59,17 @@ public:
 	float getH();
 	float getW();
 	float getP();
+
+	float getRadius() const { return size; }
+	void Particle::hide()
+	{
+		if (renderItem)
+		{
+			DeregisterRenderItem(renderItem);
+			delete renderItem;
+			renderItem = nullptr;
+		}
+	}
+
+	
 };

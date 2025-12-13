@@ -50,7 +50,7 @@ void SphereSolidSystem::update(double t)
             defaultMat
         );
 
-        RenderItem* item = new RenderItem(shape, body, Vector4(0, 0, 1, 1));
+        RenderItem* item = new RenderItem(shape, body, Vector4(0.8f, 0.3f, 0.54f, 1.0f));
         renderItems.push_back(item);
     }
 

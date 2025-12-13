@@ -12,6 +12,7 @@ class BulletSystem:public ParticleSystem
 private:
     std::vector<Particle*> bullets;
     ForceRegistry* _registry;
+    bool active = true;
 
 public:
     BulletSystem(Gravity* g, WindGenerator* w, OscillateWind* o);
@@ -21,4 +22,6 @@ public:
     bool isEmpty() const;
     void shot(double t);
     std::vector<Particle*> getBullets() const;
+    void deactivate() { active = false; }
+    bool isActive() const { return active; }
 };

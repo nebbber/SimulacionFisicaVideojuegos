@@ -14,7 +14,7 @@ FontainSystem::FontainSystem(Gravity* g, Whirlwind* w)
 
     // Modelo fuente
     Particle* modeloFuente = new Particle(700.0, Vector3(0, 0, 0), Vector3(0, 0, 0),
-        Vector3(0, 0, 0), 0.4f, 20.0f, Vector4(0.07, 0.42, 0.64, 1), 1.0f);
+        Vector3(0, 0, 0), 0.4f, 20.0f, Vector4(0, 0, 1, 1), 1.0f);
     fuente->setModelo(modeloFuente);
   
     fuente->setNumParticles(1);

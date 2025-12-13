@@ -17,11 +17,11 @@ private:
 	vector<RenderItem*>renderItems;
 
 public:
-	CubeSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, OscillateWind* w);
+	CubeSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, OscillateWind* w, PxVec3 pos);
 	void removeDeadBodies();
 	void update(double t) override;
 	~CubeSolidSystem();
 	void DeregisterRenderItems(PxRigidActor* actor);
-
+	Vector4 randomColor();
 };
 

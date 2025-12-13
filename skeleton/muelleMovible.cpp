@@ -20,7 +20,7 @@ muelleMovible::muelleMovible(Gravity* g, Vector3 startPos) : ParticleSystem()
 
     // Partícula del extremo del muelle (offset relativo)
     Vector3 p2Pos = startPos + Vector3(0, 40, 0); 
-    Vector3 p2Vel(0, 45, 0); // velocidad inicial distinta si quieres
+    Vector3 p2Vel(0, 5, 0); // velocidad inicial distinta si quieres
     p2Muelles = new Particle(
         700.0, p2Pos, p2Vel, Vector3(0, 0, 0),
         0.4f, 1.0f, Vector4(0.4f, 0.1f, 0.23f, 1.0f), 2.0f
@@ -55,8 +55,7 @@ muelleMovible::muelleMovible(Gravity* g, Vector3 startPos) : ParticleSystem()
 }
 void muelleMovible::update(double t)
 {
-    
-    if (particulaMovible) {
+    if (particulaMovible &&active) {
         Vector3 pos = particulaMovible->getPos();
 
         if (pos.x >= rightLimit) {
@@ -112,6 +111,10 @@ void muelleMovible::update(double t)
 
 muelleMovible::~muelleMovible()
 {
+    if (fuenteSys) {
+        delete fuenteSys;
+        fuenteSys = nullptr;
+    }
 
 }
 
@@ -128,4 +131,20 @@ void muelleMovible::setK(int K)
     _spring2->setK(K);
 }
 
+Vector3 muelleMovible::getPos()
+{
+    return particulaMovible->getPos();
+}
 
+float muelleMovible::getRadius() const 
+{
+    return particulaMovible->getRadius();
+}
+
+void muelleMovible::deactivate()
+{
+    active = false;
+
+    if (particulaMovible) particulaMovible->hide();
+    if (p2Muelles)        p2Muelles->hide();
+}

@@ -22,7 +22,7 @@ protected:
 	Gravity* _gravity = nullptr;
 	WindGenerator* _wind = nullptr;
 	OscillateWind* _oscillate = nullptr;
-	bool active = false;
+	bool active = true;
 
 	SpringForceGenerator* _spring1 = nullptr;
 	SpringForceGenerator* _spring2 = nullptr;

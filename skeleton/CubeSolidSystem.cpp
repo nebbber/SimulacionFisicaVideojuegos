@@ -1,7 +1,8 @@
 ﻿
 #include "CubeSolidSystem.h"
 #include "ForceRegistry.h"
-CubeSolidSystem::CubeSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, OscillateWind* w):SolidSystem()
+#include <random>
+CubeSolidSystem::CubeSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, OscillateWind* w, PxVec3 pos):SolidSystem()
 {
     _gravity = g;
    // _oscillate = w;
@@ -11,16 +12,31 @@ CubeSolidSystem::CubeSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, Oscillate
     cube = new GaussianSolidGen(p, s, defaultMat, 1); 
     _registry = new ForceRegistry();
     cube->setShapeType(SolidShapeType::BOX); //tambien hay que cambair en el update el tipo
-    cube->setSize(5);
+    cube->setSize(2);
 
-    cube->setProbGen(0.1);
-    cube->setPosMedia(PxVec3(50, 50, -80)); 
+    cube->setProbGen(0.04);
+    cube->setPosMedia(pos); 
     cube->setDesvPos(PxVec3(10, 1, 10));
     cube->setVelMedia(PxVec3(0, 0, 0));
     cube->setDesvVel(PxVec3(1, 1, 1));
 
    
 }
+
+Vector4 CubeSolidSystem::randomColor()
+{
+    static std::mt19937 rng(std::random_device{}());
+    static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
+    return Vector4(
+        dist(rng),
+        dist(rng), 
+        dist(rng), 
+        1.0f        
+    );
+}
+
+
 void CubeSolidSystem::update(double t)
 {
     if (!active)
@@ -49,7 +65,7 @@ void CubeSolidSystem::update(double t)
             defaultMat
         );
 
-        RenderItem* item = new RenderItem(shape, body, Vector4(1, 0, 0, 1));
+        RenderItem* item = new RenderItem(shape, body, randomColor());
         renderItems.push_back(item);     
     }
 
@@ -67,7 +83,7 @@ void CubeSolidSystem::removeDeadBodies()
     {
         PxRigidActor* actor = *it;
 
-        bool shouldDie = (actor->getGlobalPose().p.y < -50.0f);
+        bool shouldDie = (actor->getGlobalPose().p.y < -10.0f);
 
         if (shouldDie)
         {

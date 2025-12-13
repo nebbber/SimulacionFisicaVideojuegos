@@ -15,6 +15,7 @@ private:
 	float rightLimit;
 	float leftLimit;
 	bool _isMovingRight = true;
+	bool active = true;
 
 public:
 	muelleMovible(Gravity* g, Vector3 startPos);
@@ -23,6 +24,9 @@ public:
 	~muelleMovible();
 	void setPosMovible(Vector3 pos);
 	void setK(int K);
+	Vector3 getPos();
+	float getRadius() const;
+	void deactivate();
 
 };
 

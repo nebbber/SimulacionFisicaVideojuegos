@@ -92,6 +92,8 @@ bool boolOscilate = true;
 bool boolSpring1 = true;
 bool boolSpring2 = true;
 bool boolWhril = true;
+int pescados = 4;
+bool win = false;
 
 // Initialize physics engine
 void initPhysics(bool interactive)
@@ -199,14 +201,84 @@ void initPhysics(bool interactive)
 		pos.x -= 10;
 	}
 	//sistemas de solidos
-	//cubeSys = new CubeSolidSystem(gPhysics, gScene,gravity2, oscillate);
-	//cubeSys->ActivateSolid(true);
-
-	//sphereSys = new SphereSolidSystem(gPhysics, gScene, gravity2, oscillate);
-	//sphereSys->ActivateSolid(true);
+	
 }
 
+void Win()
+{
+	win = true;
+	PxVec3 posCamara(420, 40, -200);
+	Camera* cam = GetCamera();
+	cam->setTransform(posCamara);
 
+	PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 400, 20, -300 }));
+	PxShape* shapeSuelo = CreateShape(PxBoxGeometry(100, 0.1, 100));
+	Suelo->attachShape(*shapeSuelo);
+	gScene->addActor(*Suelo);
+
+	// Pintar suelo
+	RenderItem* item;
+	item = new RenderItem(shapeSuelo, Suelo, { 0.8, 0.8,0.8,1 });
+
+	PxVec3 posSolidos(400, 80, -300);
+
+	//sistema solidos 
+	cubeSys = new CubeSolidSystem(gPhysics, gScene,gravity2, oscillate, posSolidos);
+	cubeSys->ActivateSolid(true);
+
+	sphereSys = new SphereSolidSystem(gPhysics, gScene, gravity2, oscillate);
+	sphereSys->ActivateSolid(true);
+
+
+
+
+
+}
+
+void checkCollision()
+{
+
+	for (Particle* b : bulletSys->getBullets())
+
+	{
+		for (muelleMovible* m : muellesMovibles)
+		{
+			float dist = (b->getPos() - m->getPos()).magnitude();
+
+			if (dist < b->getRadius() + m->getRadius())
+			{
+				if (m->isActive())
+				{
+					m->deactivate();
+					pescados--;
+					if (pescados == 0)
+					{
+						//hemos ganado
+						Win();
+					}
+				}
+				b->setAlive(false);
+				break;
+			}
+		}
+	}
+}
+void removeDeadMuelles()
+{
+	muellesMovibles.erase(
+		std::remove_if(muellesMovibles.begin(), muellesMovibles.end(),
+			[](muelleMovible* m)
+			{
+				if (!m->isActive())
+				{
+					delete m;
+					return true;
+				}
+				return false;
+			}),
+		muellesMovibles.end()
+	);
+}
 // Function to configure what happens in each step of physics
 // interactive: true if the game is rendering, false if it offline
 // t: time passed since last call in milliseconds
@@ -231,20 +303,27 @@ void stepPhysics(bool interactive, double t)
 		//llamar al integrate de cada bala
 
 		bulletSys->shot(t);
+
+		checkCollision();
+		removeDeadMuelles();
+	
 	}
 	sparSys->update(t);
 	snowSys->update(t);
 	// muelleSys->update(t);
 	// floatSys->update(t);
 	
-	//cubeSys->update(t);
-	//sphereSys->update(t);
+	if (win)
+	{
+		cubeSys->update(t);
+		sphereSys->update(t);
+	}
 	
 	for (auto elem : muellesMovibles)
 	{
+		if(elem->isActive())
 		elem->update(t);
 	}
-	//muelleMov->update(t);
 	gScene->simulate(t);
 	gScene->fetchResults(true);
 
@@ -319,7 +398,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		//bala de pistola
 
 		Camera* cam = GetCamera();
-		Vector4 color(0.63, 0.13, 0.07, 1);
+		Vector4 color(0.0, 0.4, 0.07, 1);
 		bulletSys->createBullet(cam->getTransform().p, 400.0, Vector3(0.0f, 330.0f, 0.0f),
 			Vector3(0.0f, 0.0f, 0.0f), 0.4f, 2.6f, cam->getDir(), color);
 
@@ -329,6 +408,7 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	{
 		//Camera* cam = GetCamera();
 	//	cam->setTransform(posGanar);
+		Win();
 		showSparkle = !showSparkle;
 		sparSys->ActivateParticle(showSparkle);
 

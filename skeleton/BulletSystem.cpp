@@ -55,26 +55,24 @@ bool BulletSystem::isEmpty() const
 {
     return bullets.empty();
 }
-
 void BulletSystem::shot(double t)
 {
     for (int i = bullets.size() - 1; i >= 0; --i)
     {
+        
         bullets[i]->integrate(t);
 
-        // si está a una distancia de más de 125 borramos la bala
-        if (bullets[i]->getPos().magnitude() > 140.0)
+        if (bullets[i]->getPos().magnitude() > 140.0|| !bullets[i]->isAlive())
         {
             _registry->removeParticle(bullets[i]);
             delete bullets[i];
             bullets.erase(bullets.begin() + i);
         }
+       
     }
 
-    // Actualizamos fuerzas de todas las balas registradas
     _registry->update(t);
 }
-
 std::vector<Particle*> BulletSystem::getBullets() const
 {
     return bullets;

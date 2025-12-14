@@ -59,6 +59,7 @@ Gravity* gravity = nullptr;
 Gravity* gravity2 = nullptr;
 WindGenerator* wind = nullptr;
 OscillateWind* oscillate = nullptr;
+OscillateWind* oscillate2 = nullptr;
 Whirlwind* whril = nullptr;
 
 SpringForceGenerator* spring1 = nullptr;
@@ -79,7 +80,7 @@ SnowSystem* snowSys = nullptr;
 BulletSystem* bulletSys = nullptr;
 MuellePracticaSystem* muelleSys = nullptr;
 FlotacionPracticaSystem* floatSys = nullptr;
-//FontainSystem* fuenteSys = nullptr;
+
 CubeSolidSystem* cubeSys = nullptr;
 SphereSolidSystem* sphereSys = nullptr;
 std::vector<muelleMovible*> muellesMovibles;
@@ -120,40 +121,9 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	/*//Generar suelo
-    PxRigidStatic* Suelo = gPhysics->createRigidStatic(PxTransform({ 50,20, -80 }));
-    PxShape* shapeSuelo = CreateShape(PxBoxGeometry(100, 0.1, 100));
-    Suelo->attachShape(*shapeSuelo);
-    gScene->addActor(*Suelo);
-
-    // Pintar suelo
-    RenderItem* item;
-    item = new RenderItem(shapeSuelo, Suelo, { 0.8, 0.8,0.8,1 });
-	*/
-	/*// Anadir un actor dinamico
-	PxRigidDynamic* new_solid;
-	new_solid = gPhysics->createRigidDynamic(PxTransform({ 50,200,-80 }));
-	new_solid->setLinearVelocity({ 0,5,0 });
-	new_solid->setAngularVelocity({ 0,0,0 });
-	PxShape* shape_ad = CreateShape(PxBoxGeometry(5, 5, 5));
-	new_solid->attachShape(*shape_ad);
-
-	PxRigidBodyExt::updateMassAndInertia(*new_solid, 0.15);
-	gScene->addActor(*new_solid);
-
-	// Pintar actor dinamico
-	RenderItem* dynamic_item;
-	dynamic_item = new RenderItem(shape_ad, new_solid, { 0.8, 0.8,0.8,1 });
-
-	*/
 	// === Dianas ===
 	PxSphereGeometry geo(5.0f); //antes para ejes 2
 	PxShape* shape = CreateShape(geo, gMaterial);
-
-	//itemX = new RenderItem(shape, new PxTransform(Vector3(50, 40, -80)), Vector4(0, 1, 0, 1));
-	//itemY = new RenderItem(shape, new PxTransform(Vector3(00, 0, -80)), Vector4(0, 1, 0, 1));
-	//itemZ = new RenderItem(shape, new PxTransform(Vector3(-50, -20, -80)), Vector4(0, 1, 0, 1));
-
 
 	//ejes antiguos
    /* itemX = new RenderItem(shape, new PxTransform(PxVec3(10, 0, 0)), Vector4(1, 0, 0, 1));
@@ -168,9 +138,10 @@ void initPhysics(bool interactive)
 	gravity = new Gravity(Vector3(0, -90.8f, 0));
 	wind = new WindGenerator(Vector3(0.0f, 0.0f, 20000.0f), 0.3f, 0.0f);
 	oscillate = new OscillateWind(Vector3(0.0f, 100.0f, 0.0f), 0.5f, 0.1f, 300.0f, 3.0f);
-	//spring1 = new SpringForceGenerator(10, 2);
-	//spring2 = new SpringForceGenerator(10, 2);
-	//spring3 = new SpringForceGenerator(1, 10);
+	oscillate2 = new OscillateWind(Vector3(0.0f, -50.0f, 0.0f), 0.5f, 0.1f, 100.0f, 3.0f);
+	spring1 = new SpringForceGenerator(10, 2);
+	spring2 = new SpringForceGenerator(10, 2);
+	spring3 = new SpringForceGenerator(1, 10);
 	floatP = new FloatForce(1, 1, 1000);
 	//whril = new Whirlwind(200.0f, Vector3(25, 0, 0), Vector3(10.0f, 0.0f, 0.0f), 0.5f, 1.2f);
 	gravity2 = new Gravity(Vector3(0, -9.8f, 0));
@@ -181,16 +152,16 @@ void initPhysics(bool interactive)
 
 	//sistemas de particulas 
 	bulletSys = new BulletSystem(nullptr, nullptr, nullptr);
-	sparSys = new SparkleSystem(gravity, nullptr, oscillate);
+	sparSys = new SparkleSystem(gravity, wind, oscillate);
 	sparSys->ActivateParticle(showSparkle);
 	snowSys = new SnowSystem(gravity, nullptr, nullptr);
-	//fuenteSys = new FontainSystem(gravity2, whril);
 	
 	//muelles y flotacion 
-	//muelleSys = new MuellePracticaSystem(gravity2, spring1, spring2, spring3);
-	//floatSys = new FlotacionPracticaSystem(gravity2, floatP);
 	oscillate = new OscillateWind(Vector3(-500, -500, -500), 2.0f, 1.0f, 1.0f, 100.0f);
-	Vector3 pos(40, 10, 0); // posición inicial
+
+
+
+	Vector3 pos(40, 10, 0); // posición inicial muelles movibles (los peces)
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -200,7 +171,6 @@ void initPhysics(bool interactive)
 		pos.y += 20; 
 		pos.x -= 10;
 	}
-	//sistemas de solidos
 	
 }
 
@@ -218,18 +188,38 @@ void Win()
 
 	// Pintar suelo
 	RenderItem* item;
-	item = new RenderItem(shapeSuelo, Suelo, { 0.8, 0.8,0.8,1 });
+	item = new RenderItem(shapeSuelo, Suelo, Vector4( 0.6f, 0.4f, 0.2f, 1.0f ));
 
-	PxVec3 posSolidos(400, 80, -300);
+	//crear jugador/capsula
+	PxTransform poseCapsula(
+		PxVec3(400, 30, -300),                 
+		PxQuat(PxPi / 2, PxVec3(0, 0, 1))     
+	);
 
+	PxRigidStatic* capsula = gPhysics->createRigidStatic(poseCapsula);
+
+	PxShape* shapeCapsula = CreateShape(
+		PxCapsuleGeometry(2.0f, 4.0f),
+		gMaterial
+	);
+
+	capsula->attachShape(*shapeCapsula);
+	gScene->addActor(*capsula);
+
+
+	RenderItem* itemCapsula =
+		new RenderItem(shapeCapsula, capsula, Vector4(0, 0, 1, 1));
+
+
+	//crear sistema solidos
+	PxVec3 posCajas(400, 60, -250);
+	PxVec3 posConfetti(440, 100, -300);
 	//sistema solidos 
-	cubeSys = new CubeSolidSystem(gPhysics, gScene,gravity2, oscillate, posSolidos);
+	cubeSys = new CubeSolidSystem(gPhysics, gScene,gravity2, oscillate, posCajas);
 	cubeSys->ActivateSolid(true);
 
-	sphereSys = new SphereSolidSystem(gPhysics, gScene, gravity2, oscillate);
+	sphereSys = new SphereSolidSystem(gPhysics, gScene, gravity2, oscillate, posConfetti);
 	sphereSys->ActivateSolid(true);
-
-
 
 
 
@@ -310,8 +300,13 @@ void stepPhysics(bool interactive, double t)
 	}
 	sparSys->update(t);
 	snowSys->update(t);
-	// muelleSys->update(t);
-	// floatSys->update(t);
+
+
+	if (muelleSys != nullptr && floatSys != nullptr)
+	{
+		muelleSys->update(t);
+		floatSys->update(t);
+	}
 	
 	if (win)
 	{
@@ -369,6 +364,19 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		//case ' ':	break;
 	case ' ':
 	{
+		break;
+	}
+	case 'Z':
+	{
+		PxVec3 posCamara(700, 40, 100);
+		Camera* cam = GetCamera();
+		cam->setTransform(posCamara);
+		if (muelleSys==nullptr&&floatSys==nullptr)
+		{
+			muelleSys = new MuellePracticaSystem(gravity2, spring1, spring2, spring3);
+			floatSys = new FlotacionPracticaSystem(gravity2, floatP);
+		}
+		
 		break;
 	}
 	case 'P':

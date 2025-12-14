@@ -18,12 +18,12 @@ FontainSystem::FontainSystem(Gravity* g, Whirlwind* w)
     fuente->setModelo(modeloFuente);
   
     fuente->setNumParticles(1);
-    fuente->setDurMedia(0.2);
+    fuente->setDurMedia(0.4);
     fuente->setPosMedia(Vector3(25.0f, 0.0f, 0.0f));
     fuente->setVelMedia(Vector3(0.0f, 40.0f, 0.0f)); // velocidad de subida más fuerte
     fuente->setDesV(Vector3(5.0f, 5.0f, 5.0f));      // variación
     fuente->setDesP(Vector3(1, 0, 1));
-    fuente->setProbGen(0.01);
+    fuente->setProbGen(0.05);
     active = true;
 }
 

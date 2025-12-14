@@ -17,11 +17,11 @@ private:
 	vector<RenderItem*>renderItems;
 
 public:
-	SphereSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, OscillateWind* w);
+	SphereSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, OscillateWind* w,PxVec3 pos);
 	void removeDeadBodies();
 	void update(double t) override;
 	~SphereSolidSystem();
 	void DeregisterRenderItems(PxRigidActor* actor);
-
+	Vector4 randomColor();
 };
 

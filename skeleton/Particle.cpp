@@ -142,7 +142,10 @@ Particle::Particle(const Particle& other) :
 	renderItem(nullptr),  
 	color(other.color),
 	size(other.size),
-	masa(other.masa)
+	masa(other.masa),
+	h(other.h),
+	w(other.w),
+	p(other.p)
 {
 	fuerzaAcum = other.fuerzaAcum;
 	masa = other.masa;
@@ -160,7 +163,14 @@ void Particle::setGeometry()
 	}
 	else
 	{
-		PxShape* shShape = CreateShape(PxBoxGeometry(PxVec3(size*0.5f,size * 0.5f,size * 0.5f))); //par aque mida exactamente eso *0.5
+		PxShape* shShape;
+		if(w!=1.0f&&p!=1.0f)
+			shShape = CreateShape(PxBoxGeometry(PxVec3(w * 0.5f, h * 0.5f, p * 0.5f))); //par aque mida exactamente eso *0.5
+		else
+		{
+			shShape = CreateShape(PxBoxGeometry(PxVec3(size * 0.5f, size * 0.5f, size * 0.5f))); //par aque mida exactamente eso *0.5
+			 
+		}
 		renderItem = new RenderItem(shShape, pose, color);
 	}
 

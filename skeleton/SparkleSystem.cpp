@@ -29,7 +29,7 @@ SparkleSystem::SparkleSystem(Gravity* g, WindGenerator* w, OscillateWind* o):Par
     spark->setModelo(modeloFuego);
     spark->setNumParticles(10);
     spark->setDurMedia(5.0);
-    spark->setPosMedia(Vector3(30.0f, -100.0f, -80.0f));
+    spark->setPosMedia(Vector3(30.0f, 0.0f, -80.0f));
     spark->setVelMedia(Vector3(10.0f, 10.0f, 10.0f));
     spark->setDesP(Vector3(100.0f, 0, 100.0f));
     spark->setDesV(Vector3(20, 20, 20));

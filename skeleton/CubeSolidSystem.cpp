@@ -5,7 +5,7 @@
 CubeSolidSystem::CubeSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, OscillateWind* w, PxVec3 pos):SolidSystem()
 {
     _gravity = g;
-   // _oscillate = w;
+    //_oscillate = w;
      defaultMat = p->createMaterial(0.5f, 0.5f, 0.6f);
      scene = s;
 
@@ -22,20 +22,6 @@ CubeSolidSystem::CubeSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, Oscillate
 
    
 }
-
-Vector4 CubeSolidSystem::randomColor()
-{
-    static std::mt19937 rng(std::random_device{}());
-    static std::uniform_real_distribution<float> dist(0.0f, 1.0f);
-
-    return Vector4(
-        dist(rng),
-        dist(rng), 
-        dist(rng), 
-        1.0f        
-    );
-}
-
 
 void CubeSolidSystem::update(double t)
 {
@@ -65,7 +51,7 @@ void CubeSolidSystem::update(double t)
             defaultMat
         );
 
-        RenderItem* item = new RenderItem(shape, body, randomColor());
+        RenderItem* item = new RenderItem(shape, body, Vector4 (1.0f, 1.0f, 0.0f, 1.0f));
         renderItems.push_back(item);     
     }
 

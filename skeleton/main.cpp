@@ -318,17 +318,60 @@ void cleanupPhysics(bool interactive)
 {
 	PX_UNUSED(interactive);
 
-	// Rigid Body ++++++++++++++++++++++++++++++++++++++++++
-	gScene->release();
-	gDispatcher->release();
-	// -----------------------------------------------------
-	gPhysics->release();
-	PxPvdTransport* transport = gPvd->getTransport();
-	gPvd->release();
-	transport->release();
+	
 
-	gFoundation->release();
+	// ===================== Fuerzas =====================
+	delete gravity; gravity = nullptr;
+	delete gravity2; gravity2 = nullptr;
+	delete wind; wind = nullptr;
+	delete oscillate; oscillate = nullptr;
+	delete oscillate2; oscillate2 = nullptr;
+	delete whril; whril = nullptr;
+	delete spring1; spring1 = nullptr;
+	delete spring2; spring2 = nullptr;
+	delete floatP; floatP = nullptr;
 
+	// ===================== Sistemas de partículas =====================
+	// Estos destructores ya borran sus partículas internas y el registry
+	delete particleSystem; particleSystem = nullptr;
+	delete solidSystem; solidSystem = nullptr;
+	delete backWaterSys; backWaterSys = nullptr;
+	delete outRangeSys; outRangeSys = nullptr;
+	delete bulletSys; bulletSys = nullptr;
+	delete muelleSys; muelleSys = nullptr;
+	delete floatSys; floatSys = nullptr;
+	delete fontainSys; fontainSys = nullptr;
+
+	// ===================== Muelles movibles =====================
+	for (auto m : muellesMovibles) delete m;
+	muellesMovibles.clear();
+	muelleMov = nullptr;
+
+	// ===================== Sistemas de sólidos =====================
+	delete cubeSys; cubeSys = nullptr;
+	delete sphereSys; sphereSys = nullptr;
+
+	// ===================== PhysX =====================
+	if (gScene) gScene->release();
+	if (gDispatcher) gDispatcher->release();
+	if (gPhysics) gPhysics->release();
+
+	if (gPvd)
+	{
+		PxPvdTransport* transport = gPvd->getTransport();
+		gPvd->release();
+		if (transport) transport->release();
+	}
+
+	if (gFoundation) gFoundation->release();
+
+
+	gScene = nullptr;
+	gDispatcher = nullptr;
+	gPhysics = nullptr;
+	gPvd = nullptr;
+	gFoundation = nullptr;
+	gMaterial = nullptr;
 }
 
 // Function called when a key is pressed

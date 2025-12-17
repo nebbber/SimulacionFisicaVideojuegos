@@ -62,16 +62,20 @@ void CubeSolidSystem::update(double t)
 void CubeSolidSystem::removeDeadBodies()
 {
     auto it = bodies.begin();
-
     while (it != bodies.end())
     {
         PxRigidActor* actor = *it;
 
-        bool shouldDie = (actor->getGlobalPose().p.y < -10.0f);
+        if (!actor)
+        {
+            it = bodies.erase(it);
+            continue;
+        }
 
+        bool shouldDie = (actor->getGlobalPose().p.y < -10.0f);
         if (shouldDie)
         {
-            
+            // Desregistrar RenderItems
             for (auto& item : renderItems)
             {
                 if (item->actor == actor)
@@ -81,17 +85,19 @@ void CubeSolidSystem::removeDeadBodies()
                 }
             }
 
+            // Remover de _registry si es dinámico
             if (_registry && actor->is<PxRigidDynamic>())
-            {
-                PxRigidDynamic* dyn = static_cast<PxRigidDynamic*>(actor);
-                _registry->removeRigid(dyn);
-            }
+                _registry->removeRigid(static_cast<PxRigidDynamic*>(actor));
 
+            // Remover de la escena
             if (scene)
                 scene->removeActor(*actor);
 
+            // Liberar actor
             actor->release();
 
+            // Marcar como nullptr para que no se vuelva a liberar
+            *it = nullptr;
             it = bodies.erase(it);
         }
         else
@@ -99,6 +105,8 @@ void CubeSolidSystem::removeDeadBodies()
             ++it;
         }
     }
+
+    // Limpiar renderItems nulos
     renderItems.erase(
         std::remove_if(renderItems.begin(), renderItems.end(),
             [](RenderItem* item) { return item->actor == nullptr; }),
@@ -107,4 +115,32 @@ void CubeSolidSystem::removeDeadBodies()
 }
 CubeSolidSystem::~CubeSolidSystem()
 {
+    for (PxRigidActor* actor : bodies)
+    {
+        if (!actor) continue;
+
+        if (_registry && actor->is<PxRigidDynamic>())
+            _registry->removeRigid(static_cast<PxRigidDynamic*>(actor));
+
+        if (scene!=nullptr)
+            scene->removeActor(*actor);
+
+        actor->release();
+    }
+    bodies.clear();
+
+    for (RenderItem* item : renderItems)
+    {
+        if (item)
+        {
+            if (item->shape)
+                item->shape->release();
+            delete item;
+        }
+    }
+    renderItems.clear();
+
+    delete cube;
+    delete _registry;
+
 }

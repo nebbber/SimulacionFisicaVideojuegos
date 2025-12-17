@@ -1,4 +1,4 @@
-#include "SphereSolidSystem.h"
+﻿#include "SphereSolidSystem.h"
 #include <random>
 #include <algorithm> 
 #include "ForceRegistry.h"
@@ -129,4 +129,32 @@ void SphereSolidSystem::removeDeadBodies()
 }
 SphereSolidSystem::~SphereSolidSystem()
 {
+ 
+    for (PxRigidActor* actor : bodies)
+    {
+        if (!actor) continue;
+
+        if (_registry && actor->is<PxRigidDynamic>())
+            _registry->removeRigid(static_cast<PxRigidDynamic*>(actor));
+
+        if (scene != nullptr)
+            scene->removeActor(*actor);
+
+        actor->release();
+    }
+    bodies.clear();
+
+    for (RenderItem* item : renderItems)
+    {
+        if (item)
+        {
+            if (item->shape)
+                item->shape->release();
+            delete item;
+        }
+    }
+    renderItems.clear();
+
+    delete sphere;
+    delete _registry;
 }

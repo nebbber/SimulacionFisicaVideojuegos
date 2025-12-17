@@ -32,12 +32,6 @@ ParticleSystem::~ParticleSystem()
 	}
 
 	_generators.clear();
-	delete _gravity;
-	delete _wind;
-	delete _oscillate;
-	delete _spring1;
-	delete _float;
-	delete _registry;
 }
 
 void ParticleSystem::ActivateParticle(bool a)

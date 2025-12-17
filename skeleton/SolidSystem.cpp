@@ -37,8 +37,6 @@ SolidSystem::~SolidSystem()
 	}
 	bodies.clear();
 
-	delete _gravity;
-	delete _oscillate;
 	
 }
 

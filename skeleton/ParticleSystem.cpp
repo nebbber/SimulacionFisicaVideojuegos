@@ -36,8 +36,6 @@ ParticleSystem::~ParticleSystem()
 	delete _wind;
 	delete _oscillate;
 	delete _spring1;
-	delete _spring2;
-	delete _spring3;
 	delete _float;
 	delete _registry;
 }
@@ -89,10 +87,6 @@ void ParticleSystem::ActivateSpring(bool a)
 		_spring2->setActive(a);
 	}
 
-	if (_spring3)
-	{
-		_spring3->setActive(a);
-	}
 }
 
 void ParticleSystem::ActivateFloat(bool a)

@@ -12,7 +12,7 @@ private:
 	Particle* p2Muelles;
 
 public:
-	MuellePracticaSystem(Gravity* g, SpringForceGenerator* s1, SpringForceGenerator* s2, SpringForceGenerator* s3);
+	MuellePracticaSystem(Gravity* g, SpringForceGenerator* s1, SpringForceGenerator* s2);
 
 	void update(double t) override;
 	~MuellePracticaSystem();

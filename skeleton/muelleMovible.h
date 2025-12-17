@@ -3,11 +3,11 @@
 class Gravity;
 class OscillateWind;
 class GaussianGen;
-class FontainSystem;
+class BreathWater;
 class muelleMovible : public ParticleSystem
 {
 private:
-	FontainSystem* fuenteSys = nullptr;
+	BreathWater* BreathWaterSys = nullptr;
 	Particle* particulaMovible;
 	Particle* p2Muelles;
 

@@ -1,19 +1,19 @@
-#include "SparkleSystem.h"
+#include "BackgroundWaterSystem.h"
 #include "OscillateWind.h"
 #include "Gravity.h"
 #include "ForceRegistry.h"
 #include "GaussianGen.h"
 //poner la gravedad de parametro y asi la tiene
-SparkleSystem::SparkleSystem(Gravity* g, WindGenerator* w, OscillateWind* o):ParticleSystem()
+BackgroundWaterSystem::BackgroundWaterSystem(Gravity* g, WindGenerator* w, OscillateWind* o):ParticleSystem()
 {
     _gravity = g;
     _oscillate = o;
     _wind = w;
-    spark = new GaussianGen("spark");
-    _generators.push_back(spark);
+    p = new GaussianGen("aguaFondo");
+    _generators.push_back(p);
  
     // Crear el modelo de fuego
-    Particle* modeloFuego = new Particle(
+    Particle* modelo = new Particle(
         700.0,
         Vector3(0, 0, 0),
         Vector3(0, 0, 0),
@@ -26,18 +26,18 @@ SparkleSystem::SparkleSystem(Gravity* g, WindGenerator* w, OscillateWind* o):Par
     );
     _registry = new ForceRegistry();
     // Configurar el sistema de partículas
-    spark->setModelo(modeloFuego);
-    spark->setNumParticles(10);
-    spark->setDurMedia(5.0);
-    spark->setPosMedia(Vector3(30.0f, 0.0f, -80.0f));
-    spark->setVelMedia(Vector3(10.0f, 10.0f, 10.0f));
-    spark->setDesP(Vector3(100.0f, 0, 100.0f));
-    spark->setDesV(Vector3(20, 20, 20));
-    spark->setProbGen(0.6);
+    p->setModelo(modelo);
+    p->setNumParticles(10);
+    p->setDurMedia(5.0);
+    p->setPosMedia(Vector3(30.0f, 0.0f, -80.0f));
+    p->setVelMedia(Vector3(10.0f, 10.0f, 10.0f));
+    p->setDesP(Vector3(100.0f, 0, 100.0f));
+    p->setDesV(Vector3(20, 20, 20));
+    p->setProbGen(0.6);
 
 }
 
-void SparkleSystem::update(double t)
+void BackgroundWaterSystem::update(double t)
 {
     // no esta activo no añado particulas 
     if (active)
@@ -105,7 +105,7 @@ void SparkleSystem::update(double t)
 
 
 
-SparkleSystem::~SparkleSystem()
+BackgroundWaterSystem::~BackgroundWaterSystem()
 {
 
 }

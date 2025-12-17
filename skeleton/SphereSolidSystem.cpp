@@ -44,8 +44,8 @@ Vector4 SphereSolidSystem::randomColor()
 }
 void SphereSolidSystem::update(double t)
 {
-    if (!active)
-        return;
+   // if (!active)
+    //    return;
 
     auto newBodies = sphere->generateRigidBodies();
 
@@ -55,12 +55,13 @@ void SphereSolidSystem::update(double t)
         if (_gravity && _gravity->isActive())
             _registry->add(body, _gravity);
 
-        if (_whril && _whril->isActive())
-            _registry->add(body, _whril);
 
         if (_oscillate && _oscillate->isActive())
             _registry->add(body, _oscillate);
-
+        else if (_oscillate && !_oscillate->isActive())
+        {
+            _registry->removeGenerator(_oscillate);
+        }
 
         bodies.push_back(body);
 

@@ -14,26 +14,40 @@ Whirlwind::~Whirlwind()
 void Whirlwind::update(double t, Particle* p)
 {
     Vector3 posPart = p->getPos();
-    Vector3 dir = posPart - posCentro;
+    Vector3 pos = p->getPos();
+    Vector3 dir = pos - posCentro;
 
-    // Distancia al cuadrado
-    float dist2 = dir.x * dir.x + dir.y * dir.y + dir.z * dir.z;
-    if (dist2 < 0.0001f) return; // Evitar división por cero
+    // Solo XZ
+    dir.y = 0.0f;
 
-    // Vector tangencial alrededor del eje Y (torbellino clásico)
-    Vector3 tang;
-    tang.x = -dir.z;
-    tang.y = 0;
-    tang.z = dir.x;
+    float dist2 = dir.x * dir.x + dir.z * dir.z;
+    if (dist2 < 1.0f) return;
 
-    // No normalizo, solo escalo por 1/distancia
-    float invDist = 1.0f / sqrt(dist2); // si NO tienes sqrt, dime y te doy otra versión
+    float dist = sqrt(dist2);
 
-    // Fuerza tangencial (rotación)
+    // Radio máximo
+    float maxRadius = 300.0f;
+    if (dist > maxRadius) return;
+
+    // Tangente (perpendicular perfecta)
+    Vector3 tang(-dir.z, 0.0f, dir.x);
+    tang.normalize();
+
+    // --- FUERZA TANGENCIAL FUERTE ---
+    float tangentialForce = K * 50.0f;
+
+    // --- SUCCIÓN RADIAL ---
+    Vector3 radial = -dir;
+    radial.normalize();
+    float suctionForce = K * 30.0f;
+
+    // --- FUERZA FINAL ---
     Vector3 f;
-    f.x = K * tang.x * invDist;
-    f.y = K * (posCentro.y - posPart.y) * 0.3f; // succión vertical suave
-    f.z = K * tang.z * invDist;
+    f = tang * tangentialForce;
+    f += radial * suctionForce;
+
+    // --- ELEVACIÓN ---
+    f.y = K * 20.0f;
 
     p->addForce(f);
 }

@@ -21,20 +21,20 @@
     <ClCompile Include="WindGenerator.cpp" />
     <ClCompile Include="Whirlwind.cpp" />
     <ClCompile Include="OscillateWind.cpp" />
-    <ClCompile Include="SparkleSystem.cpp" />
-    <ClCompile Include="SnowSystem.cpp" />
+    <ClCompile Include="BackgroundWaterSystem.cpp" />
+    <ClCompile Include="OutOfRangeSystem.cpp" />
     <ClCompile Include="BulletSystem.cpp" />
     <ClCompile Include="SpringForceGenerator.cpp" />
     <ClCompile Include="MuellePracticaSystem.cpp" />
     <ClCompile Include="FloatForce.cpp" />
     <ClCompile Include="FlotacionPracticaSystem.cpp" />
-    <ClCompile Include="FontainSystem.cpp" />
+    <ClCompile Include="BreathWater.cpp" />
     <ClCompile Include="SolidSystem.cpp" />
-    <ClCompile Include="SolidGenerator.cpp" />
     <ClCompile Include="GaussianSolidGen.cpp" />
     <ClCompile Include="CubeSolidSystem.cpp" />
     <ClCompile Include="SphereSolidSystem.cpp" />
     <ClCompile Include="muelleMovible.cpp" />
+    <ClCompile Include="FontainSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -58,20 +58,21 @@
     <ClInclude Include="WindGenerator.h" />
     <ClInclude Include="Whirlwind.h" />
     <ClInclude Include="OscillateWind.h" />
-    <ClInclude Include="SparkleSystem.h" />
-    <ClInclude Include="SnowSystem.h" />
+    <ClInclude Include="BackgroundWaterSystem.h" />
+    <ClInclude Include="OutOfRangeSystem.h" />
     <ClInclude Include="BulletSystem.h" />
     <ClInclude Include="SpringForceGenerator.h" />
     <ClInclude Include="MuellePracticaSystem.h" />
     <ClInclude Include="FloatForce.h" />
     <ClInclude Include="FlotacionPracticaSystem.h" />
-    <ClInclude Include="FontainSystem.h" />
+    <ClInclude Include="BreathWater.h" />
     <ClInclude Include="SolidSystem.h" />
     <ClInclude Include="SolidGenerator.h" />
     <ClInclude Include="GaussianSolidGen.h" />
     <ClInclude Include="CubeSolidSystem.h" />
     <ClInclude Include="SphereSolidSystem.h" />
     <ClInclude Include="muelleMovible.h" />
+    <ClInclude Include="FontainSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

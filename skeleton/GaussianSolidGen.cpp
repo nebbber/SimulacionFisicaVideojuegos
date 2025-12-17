@@ -54,8 +54,6 @@ std::vector<physx::PxRigidDynamic*> GaussianSolidGen::generateRigidBodies()
                 posMedia.z + desvPos.z * _d(_mt)
             );
 
-            // Evitar que el cubo se genere dentro del suelo
-           // float halfExtent = 5.0f; // Igual que tu cubo manual
             if (pos.y < size) pos.y = size;
 
             // Velocidad inicial
@@ -72,11 +70,6 @@ std::vector<physx::PxRigidDynamic*> GaussianSolidGen::generateRigidBodies()
             // Crear cuerpo dinámico
             physx::PxRigidDynamic* body = physics->createRigidDynamic(physx::PxTransform(pos));
 
-            // Geometría del cubo
-           /* physx::PxBoxGeometry geom(size, size, size);
-            physx::PxShape* shape = physics->createShape(geom, *defaultMat);*/
-            // Geometría del cubo
-            
 
             // Crear forma según tipo
             physx::PxShape* shape = nullptr;

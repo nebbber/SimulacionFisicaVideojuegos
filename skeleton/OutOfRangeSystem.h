@@ -4,18 +4,18 @@ class Gravity;
 class WindGenerator;
 class OscillateWind;
 class UniformGen;
-class SnowSystem : public ParticleSystem
+class OutOfRangeSystem : public ParticleSystem
 {
 private:
 
-	UniformGen* snow;
+	UniformGen* p;
 	
 
 public:
-	SnowSystem(Gravity* g, WindGenerator* w, OscillateWind* o);
+	OutOfRangeSystem(Gravity* g, WindGenerator* w, OscillateWind* o);
 
 	void update(double t) override;
-	~SnowSystem();
+	~OutOfRangeSystem();
 
 	void addForceGenerator(ForceGenerator* fg);
 };

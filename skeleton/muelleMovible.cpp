@@ -1,33 +1,33 @@
-#include "muelleMovible.h"
+ï»¿#include "muelleMovible.h"
 #include "OscillateWind.h"
 #include "Gravity.h"
 #include "ForceRegistry.h"
 #include "SpringForceGenerator.h"
 #include "GaussianGen.h"
-#include "FontainSystem.h"
+#include "BreathWater.h"
 #include "Whirlwind.h"
 muelleMovible::muelleMovible(Gravity* g, Vector3 startPos) : ParticleSystem()
 {
     _gravity = g;
     _registry = new ForceRegistry();
 
-    // Partícula principal
+    // PartÃ­cula principal
     particulaMovible = new Particle(
         700.0, startPos, Vector3(0, 0, 0), Vector3(0, 0, 0),
         0.0f, 1.0f, Vector4(0.8f, 0.3f, 0.54f, 1.0f), 4.0f
     );
     particulaMovible->setGeometry();
 
-    // Partícula del extremo del muelle (offset relativo)
+    // PartÃ­cula del extremo del muelle
     Vector3 p2Pos = startPos + Vector3(0, 40, 0); 
-    Vector3 p2Vel(0, 5, 0); // velocidad inicial distinta si quieres
+    Vector3 p2Vel(0, 5, 0); 
     p2Muelles = new Particle(
         700.0, p2Pos, p2Vel, Vector3(0, 0, 0),
         0.4f, 1.0f, Vector4(0.4f, 0.1f, 0.23f, 1.0f), 2.0f
     );
     p2Muelles->setGeometry();
 
-    // Añadir partículas al sistema
+    // AÃ±adir partÃ­culas al sistema
     _particles.push_back(particulaMovible);
     _particles.push_back(p2Muelles);
 
@@ -40,13 +40,13 @@ muelleMovible::muelleMovible(Gravity* g, Vector3 startPos) : ParticleSystem()
     _registry->add(p2Muelles, _gravity);
 
     _whril = new Whirlwind(
-        2.0f,                  // radio más amplio
-        Vector3(0, 0, 0),       // posición inicial
-        Vector3(10.0f, 0, 0), // dirección muy potente
-        1.0f,                    // fuerza 10 veces más fuerte
-        0.5f                     // decay más bajo para que afecte más lejos
+        2.0f,                  
+        Vector3(0, 0, 0),       
+        Vector3(10.0f, 0, 0), 
+        1.0f,                    
+        0.5f                     
     );
-    fuenteSys = new FontainSystem(nullptr, _whril);
+    BreathWaterSys = new BreathWater(nullptr, _whril);
 
     
     speed = 10.0f;     
@@ -59,17 +59,17 @@ void muelleMovible::update(double t)
         Vector3 pos = particulaMovible->getPos();
 
         if (pos.x >= rightLimit) {
-            // Cambiar dirección a izquierda
-            pos.x = rightLimit; // evitar pasar límite
+            // Cambiar direcciÃ³n a izquierda
+            pos.x = rightLimit; // evitar pasar lÃ­mite
             _isMovingRight = false;
         }
         else if (pos.x <= leftLimit) {
-            // Cambiar dirección a derecha
-            pos.x = leftLimit; // evitar pasar límite
+            // Cambiar direcciÃ³n a derecha
+            pos.x = leftLimit; // evitar pasar lÃ­mite
             _isMovingRight = true;
         }
 
-        // Mover según la dirección actual
+        // Mover segÃºn la direcciÃ³n actual
         if (_isMovingRight) {
             pos.x += speed * t;
         }
@@ -79,21 +79,20 @@ void muelleMovible::update(double t)
 
         particulaMovible->setPos(pos);
 
-        if (particulaMovible && fuenteSys)
+        if (particulaMovible && BreathWaterSys)
         {
             Vector3 pos = particulaMovible->getPos();
-            Vector3 fuentePos = pos + Vector3(0, 5, 0); // offset vertical
-            fuenteSys->setPosition(fuentePos);
+            Vector3 fuentePos = pos + Vector3(0, 5, 0); 
+            BreathWaterSys->setPosition(fuentePos);
         }
 
-        // Luego actualizar el sistema de partículas
-        fuenteSys->update(t);
+    }
+    if (BreathWaterSys) {
+        BreathWaterSys->update(t);
     }
 
-    // actualizar fuerzas y registrar integraciones
     _registry->update(t);
 
-    // integrar e ignorar particulas muertas
     auto it = _particles.begin();
     while (it != _particles.end()) {
         Particle* p = *it;
@@ -111,9 +110,9 @@ void muelleMovible::update(double t)
 
 muelleMovible::~muelleMovible()
 {
-    if (fuenteSys) {
-        delete fuenteSys;
-        fuenteSys = nullptr;
+    if (BreathWaterSys) {
+        delete BreathWaterSys;
+        BreathWaterSys = nullptr;
     }
 
 }
@@ -147,4 +146,7 @@ void muelleMovible::deactivate()
 
     if (particulaMovible) particulaMovible->hide();
     if (p2Muelles)        p2Muelles->hide();
+    if (BreathWaterSys) {
+        BreathWaterSys->stopEmission();  
+    }
 }

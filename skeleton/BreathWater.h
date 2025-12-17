@@ -3,19 +3,19 @@
 class Gravity;
 class OscillateWind;
 class GaussianGen;
-class FontainSystem : public ParticleSystem
+class BreathWater : public ParticleSystem
 {
 private:
 
 	GaussianGen* p;
-
+	bool emitting = true;
 public:
-	FontainSystem(Gravity* g, Whirlwind* w);
+	BreathWater(Gravity* g, Whirlwind* w);
 
 	void update(double t) override;
-	~FontainSystem();
+	~BreathWater();
 	void setPosition(const Vector3& pos);
-
+	void stopEmission();
 
 };
 

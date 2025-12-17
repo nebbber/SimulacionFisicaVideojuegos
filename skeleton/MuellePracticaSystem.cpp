@@ -5,12 +5,11 @@
 #include "SpringForceGenerator.h"
 #include "GaussianGen.h"
 //poner la gravedad de parametro y asi la tiene
-MuellePracticaSystem::MuellePracticaSystem(Gravity* g,SpringForceGenerator* s1, SpringForceGenerator* s2, SpringForceGenerator* s3) :ParticleSystem()
+MuellePracticaSystem::MuellePracticaSystem(Gravity* g,SpringForceGenerator* s1, SpringForceGenerator* s2) :ParticleSystem()
 {
     _gravity = g;
     _spring1 = s1;
    _spring2 = s2;
-    _spring3 = s3;
    
     _registry = new ForceRegistry();
   

@@ -11,7 +11,7 @@ CubeSolidSystem::CubeSolidSystem(PxPhysics* p, PxScene* s, Gravity* g, Oscillate
 
     cube = new GaussianSolidGen(p, s, defaultMat, 1); 
     _registry = new ForceRegistry();
-    cube->setShapeType(SolidShapeType::BOX); //tambien hay que cambair en el update el tipo
+    cube->setShapeType(SolidShapeType::BOX); //tambien hay que cambiar en el update el tipo
     cube->setSize(2);
 
     cube->setProbGen(0.04);
@@ -36,8 +36,6 @@ void CubeSolidSystem::update(double t)
         if (_gravity && _gravity->isActive())
             _registry->add(body, _gravity);
 
-        if (_whril && _whril->isActive())
-            _registry->add(body, _whril);
 
         if (_oscillate && _oscillate->isActive())
             _registry->add(body, _oscillate);

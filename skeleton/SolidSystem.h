@@ -13,7 +13,6 @@ protected:
     std::vector<physx::PxRigidActor*> bodies;
     ForceRegistry* _registry = nullptr;
 
-    Whirlwind* _whril = nullptr;
     Gravity* _gravity = nullptr;
     OscillateWind* _oscillate = nullptr;
 
@@ -23,5 +22,8 @@ public:
 
     virtual void update(double t) {};
     void ActivateSolid(bool a);
-  
+
+    bool isActive();
+    void ActivateGravity(bool a);
+    void ActivateOscilate(bool a);
 };

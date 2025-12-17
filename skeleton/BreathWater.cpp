@@ -1,35 +1,40 @@
-#include "FontainSystem.h"
+#include "BreathWater.h"
 #include "GaussianGen.h"
 #include "ForceRegistry.h"
 #include "Gravity.h"
 #include "Whirlwind.h"
-FontainSystem::FontainSystem(Gravity* g, Whirlwind* w)
+BreathWater::BreathWater(Gravity* g, Whirlwind* w)
 {
     _gravity = g;
     _whril = w;
-    p = new GaussianGen("fuente");
+    p = new GaussianGen("aguaRespirar");
     _generators.push_back(p);
 
     _registry = new ForceRegistry();
 
-    // Modelo fuente
-    Particle* modeloFuente = new Particle(7.0, Vector3(0, 0, 0), Vector3(0, 0, 0),
+    
+    Particle* modelo = new Particle(700.0, Vector3(0, 0, 0), Vector3(0, 0, 0),
         Vector3(0, 0, 0), 0.4f, 20.0f, Vector4(0, 0, 1, 1), 1.0f);
-    p->setModelo(modeloFuente);
-    p->setNumParticles(20);
-    p->setDurMedia(1.0);
-    p->setPosMedia(Vector3(600, 00, 0));
-    p->setVelMedia(Vector3(0.0f, 1.0f, 0.0f));
-    p->setDesP(Vector3(10, 0, 10));
-    p->setDesV(Vector3(1, 1, 1));
-    p->setProbGen(0.2);
+    p->setModelo(modelo);
+  
+    p->setNumParticles(1);
+    p->setDurMedia(0.4);
+    p->setPosMedia(Vector3(25.0f, 0.0f, 0.0f));
+    p->setVelMedia(Vector3(0.0f, 40.0f, 0.0f)); // velocidad de subida más fuerte
+    p->setDesV(Vector3(5.0f, 5.0f, 5.0f));      // variación
+    p->setDesP(Vector3(1, 0, 1));
+    p->setProbGen(0.05);
     active = true;
 }
-
-void FontainSystem::update(double t)
+void BreathWater::stopEmission()
 {
+    emitting = false;
+}
+void BreathWater::update(double t)
+{
+    
     // no esta activo no añado particulas 
-    if (active)
+    if (emitting&&active)
     {
         // Generar nuevas partículas
         for (ParticleGen* gen : _generators)
@@ -86,10 +91,10 @@ void FontainSystem::update(double t)
 
 }
 
-FontainSystem::~FontainSystem()
+BreathWater::~BreathWater()
 {
 }
-void FontainSystem::setPosition(const Vector3& pos)
+void BreathWater::setPosition(const Vector3& pos)
 {
     if (p)
     {

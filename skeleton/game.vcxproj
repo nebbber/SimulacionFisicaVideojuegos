@@ -258,6 +258,7 @@
     <ClCompile Include="CubeSolidSystem.cpp" />
     <ClCompile Include="FloatForce.cpp" />
     <ClCompile Include="FlotacionPracticaSystem.cpp" />
+    <ClCompile Include="BreathWater.cpp" />
     <ClCompile Include="FontainSystem.cpp" />
     <ClCompile Include="ForceRegistry.cpp" />
     <ClCompile Include="GaussianGen.cpp" />
@@ -273,10 +274,9 @@
     <ClCompile Include="RenderUtils.cpp" />
     <ClCompile Include="Render\Camera.cpp" />
     <ClCompile Include="Render\Render.cpp" />
-    <ClCompile Include="SnowSystem.cpp" />
-    <ClCompile Include="SolidGenerator.cpp" />
+    <ClCompile Include="OutOfRangeSystem.cpp" />
     <ClCompile Include="SolidSystem.cpp" />
-    <ClCompile Include="SparkleSystem.cpp" />
+    <ClCompile Include="BackgroundWaterSystem.cpp" />
     <ClCompile Include="SphereSolidSystem.cpp" />
     <ClCompile Include="SpringForceGenerator.cpp" />
     <ClCompile Include="UniformGen.cpp" />
@@ -291,6 +291,7 @@
     <ClInclude Include="CubeSolidSystem.h" />
     <ClInclude Include="FloatForce.h" />
     <ClInclude Include="FlotacionPracticaSystem.h" />
+    <ClInclude Include="BreathWater.h" />
     <ClInclude Include="FontainSystem.h" />
     <ClInclude Include="ForceGenerator.h" />
     <ClInclude Include="ForceRegistry.h" />
@@ -306,10 +307,10 @@
     <ClInclude Include="RenderUtils.hpp" />
     <ClInclude Include="Render\Camera.h" />
     <ClInclude Include="Render\Render.h" />
-    <ClInclude Include="SnowSystem.h" />
+    <ClInclude Include="OutOfRangeSystem.h" />
     <ClInclude Include="SolidGenerator.h" />
     <ClInclude Include="SolidSystem.h" />
-    <ClInclude Include="SparkleSystem.h" />
+    <ClInclude Include="BackgroundWaterSystem.h" />
     <ClInclude Include="SphereSolidSystem.h" />
     <ClInclude Include="SpringForceGenerator.h" />
     <ClInclude Include="UniformGen.h" />

@@ -26,7 +26,6 @@ protected:
 
 	SpringForceGenerator* _spring1 = nullptr;
 	SpringForceGenerator* _spring2 = nullptr;
-	SpringForceGenerator* _spring3 = nullptr;
 	Whirlwind* _whril = nullptr;
 
 	FloatForce* _float = nullptr;

@@ -10,7 +10,7 @@
 
 #include <iostream>
 
-#include "SparkleSystem.h"
+#include "BackgroundWaterSystem.h"
 #include "BulletSystem.h"
 #include "ParticleSystem.h"
 #include "ForceRegistry.h"
@@ -20,16 +20,17 @@
 #include "UniformGen.h"
 #include "GaussianGen.h"
 #include "OscillateWind.h"
-#include "SnowSystem.h"
+#include "OutOfRangeSystem.h"
 #include "SpringForceGenerator.h"
 #include "MuellePracticaSystem.h"
 #include "FloatForce.h"
 #include "FlotacionPracticaSystem.h"
-#include "FontainSystem.h"
+#include "BreathWater.h"
 #include "CubeSolidSystem.h"
 #include "SolidSystem.h"
 #include "SphereSolidSystem.h"
 #include "muelleMovible.h"
+#include "FontainSystem.h"
 
 using namespace physx;
 
@@ -49,42 +50,34 @@ PxScene* gScene = NULL;
 ContactReportCallback gContactReportCallback;
 
 
-// dianas
-RenderItem* itemX = nullptr;
-RenderItem* itemY = nullptr;
-RenderItem* itemZ = nullptr;
-
 // fuerzas y el registro
 Gravity* gravity = nullptr;
 Gravity* gravity2 = nullptr;
 WindGenerator* wind = nullptr;
 OscillateWind* oscillate = nullptr;
-OscillateWind* oscillate2 = nullptr;
 Whirlwind* whril = nullptr;
-
 SpringForceGenerator* spring1 = nullptr;
 SpringForceGenerator* spring2 = nullptr;
-SpringForceGenerator* spring3 = nullptr;
-
 FloatForce* floatP = nullptr;
-
+OscillateWind* oscillate2 = nullptr;
 // particulas  y solidos
 ParticleSystem* particleSystem = nullptr;
 SolidSystem* solidSystem = nullptr;
 
-// generadores
-bool pressedNieve = false;
-physx::PxVec3 posGanar;
-SparkleSystem* sparSys = nullptr;
-SnowSystem* snowSys = nullptr;
+// sistemas particulas y solidos
+BackgroundWaterSystem* backWaterSys = nullptr;
+OutOfRangeSystem* outRangeSys = nullptr;
 BulletSystem* bulletSys = nullptr;
 MuellePracticaSystem* muelleSys = nullptr;
 FlotacionPracticaSystem* floatSys = nullptr;
+FontainSystem* fontainSys = nullptr;
+std::vector<muelleMovible*> muellesMovibles;
+muelleMovible* muelleMov = nullptr;
 
 CubeSolidSystem* cubeSys = nullptr;
 SphereSolidSystem* sphereSys = nullptr;
-std::vector<muelleMovible*> muellesMovibles;
-muelleMovible* muelleMov = nullptr;
+
+
 //booleanos para activacion/desactivacion de generadores de fuerzas
 bool boolGravity = true;
 bool boolWind = true;
@@ -121,9 +114,9 @@ void initPhysics(bool interactive)
 	sceneDesc.simulationEventCallback = &gContactReportCallback;
 	gScene = gPhysics->createScene(sceneDesc);
 
-	// === Dianas ===
-	PxSphereGeometry geo(5.0f); //antes para ejes 2
-	PxShape* shape = CreateShape(geo, gMaterial);
+	
+	//PxSphereGeometry geo(5.0f); //antes para ejes 2
+	//PxShape* shape = CreateShape(geo, gMaterial);
 
 	//ejes antiguos
    /* itemX = new RenderItem(shape, new PxTransform(PxVec3(10, 0, 0)), Vector4(1, 0, 0, 1));
@@ -138,13 +131,12 @@ void initPhysics(bool interactive)
 	gravity = new Gravity(Vector3(0, -90.8f, 0));
 	wind = new WindGenerator(Vector3(0.0f, 0.0f, 20000.0f), 0.3f, 0.0f);
 	oscillate = new OscillateWind(Vector3(0.0f, 100.0f, 0.0f), 0.5f, 0.1f, 300.0f, 3.0f);
-	oscillate2 = new OscillateWind(Vector3(0.0f, -50.0f, 0.0f), 0.5f, 0.1f, 100.0f, 3.0f);
 	spring1 = new SpringForceGenerator(10, 2);
 	spring2 = new SpringForceGenerator(10, 2);
-	spring3 = new SpringForceGenerator(1, 10);
 	floatP = new FloatForce(1, 1, 1000);
-	//whril = new Whirlwind(200.0f, Vector3(25, 0, 0), Vector3(10.0f, 0.0f, 0.0f), 0.5f, 1.2f);
+	whril = new Whirlwind(10.0f,Vector3(600, 0, 0),Vector3(0, 0, 0),0.2f,2.0f);
 	gravity2 = new Gravity(Vector3(0, -9.8f, 0));
+	oscillate2 = new OscillateWind(Vector3(-500, -500, -500), 2.0f, 1.0f, 1.0f, 100.0f);
 
 	// ===  partículas y solidos (sistemas) ===
 	particleSystem = new ParticleSystem();
@@ -152,14 +144,10 @@ void initPhysics(bool interactive)
 
 	//sistemas de particulas 
 	bulletSys = new BulletSystem(nullptr, nullptr, nullptr);
-	sparSys = new SparkleSystem(gravity, wind, oscillate);
-	sparSys->ActivateParticle(showSparkle);
-	snowSys = new SnowSystem(gravity, nullptr, nullptr);
+	backWaterSys = new BackgroundWaterSystem(gravity, nullptr, oscillate);
+	backWaterSys->ActivateParticle(showSparkle);
+	outRangeSys = new OutOfRangeSystem(gravity, nullptr, nullptr);
 	
-	//muelles y flotacion 
-	oscillate = new OscillateWind(Vector3(-500, -500, -500), 2.0f, 1.0f, 1.0f, 100.0f);
-
-
 
 	Vector3 pos(40, 10, 0); // posición inicial muelles movibles (los peces)
 
@@ -215,12 +203,11 @@ void Win()
 	PxVec3 posCajas(400, 60, -250);
 	PxVec3 posConfetti(440, 100, -300);
 	//sistema solidos 
-	cubeSys = new CubeSolidSystem(gPhysics, gScene,gravity2, oscillate, posCajas);
+	cubeSys = new CubeSolidSystem(gPhysics, gScene,gravity2, oscillate2, posCajas);
 	cubeSys->ActivateSolid(true);
 
-	sphereSys = new SphereSolidSystem(gPhysics, gScene, gravity2, oscillate, posConfetti);
+	sphereSys = new SphereSolidSystem(gPhysics, gScene, gravity2, oscillate2, posConfetti);
 	sphereSys->ActivateSolid(true);
-
 
 
 }
@@ -276,17 +263,6 @@ void stepPhysics(bool interactive, double t)
 {
 	PX_UNUSED(interactive);
 
-	static bool primeraVez = true;
-
-	//cogemos la pos inicial de la camara 
-	if (primeraVez) {
-		Camera* cam = GetCamera();
-		if (cam) {
-			posGanar = cam->getTransform().p;
-			primeraVez = false;
-		}
-	}
-
 	//PX_UNUSED(interactive);
 	if (!bulletSys->isEmpty())
 	{
@@ -298,14 +274,15 @@ void stepPhysics(bool interactive, double t)
 		removeDeadMuelles();
 	
 	}
-	sparSys->update(t);
-	snowSys->update(t);
+	backWaterSys->update(t);
+	outRangeSys->update(t);
 
 
-	if (muelleSys != nullptr && floatSys != nullptr)
+	if (muelleSys != nullptr && floatSys != nullptr&&fontainSys!= nullptr)
 	{
 		muelleSys->update(t);
 		floatSys->update(t);
+		fontainSys->update(t);
 	}
 	
 	if (win)
@@ -324,14 +301,14 @@ void stepPhysics(bool interactive, double t)
 
 	Camera* cam = GetCamera();
 
-	//aparece "nieve" delimitadora de espacio de disparo
+	//aparecen particulas delimitadora de espacio de disparo
 	if (cam->getTransform().p.magnitude() > 140.0)
 	{
-		snowSys->ActivateParticle(true);
+		outRangeSys->ActivateParticle(true);
 	}
 	else
 	{
-		snowSys->ActivateParticle(false);
+		outRangeSys->ActivateParticle(false);
 	}
 }
 
@@ -351,6 +328,7 @@ void cleanupPhysics(bool interactive)
 	transport->release();
 
 	gFoundation->release();
+
 }
 
 // Function called when a key is pressed
@@ -371,10 +349,13 @@ void keyPress(unsigned char key, const PxTransform& camera)
 		PxVec3 posCamara(700, 40, 100);
 		Camera* cam = GetCamera();
 		cam->setTransform(posCamara);
-		if (muelleSys==nullptr&&floatSys==nullptr)
+		if (muelleSys==nullptr&&floatSys==nullptr&& fontainSys==nullptr)
 		{
-			muelleSys = new MuellePracticaSystem(gravity2, spring1, spring2, spring3);
+			muelleSys = new MuellePracticaSystem(gravity2, spring1,spring2);
 			floatSys = new FlotacionPracticaSystem(gravity2, floatP);
+			fontainSys = new FontainSystem(nullptr,whril);
+			
+
 		}
 		
 		break;
@@ -414,67 +395,106 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	}
 	case 'M':
 	{
-		//Camera* cam = GetCamera();
-	//	cam->setTransform(posGanar);
-		Win();
+		
 		showSparkle = !showSparkle;
-		sparSys->ActivateParticle(showSparkle);
+		backWaterSys->ActivateParticle(showSparkle);
 
+		break;
+	}
+	case 'F':
+	{
+		boolWhril = !boolWhril;
+		if (fontainSys)
+		{
+			fontainSys->ActivateWhril(boolWhril);
+		}
 
+		break;
+	}
+	case 'O':
+	{
+		Win();
 		break;
 	}
 
 	case 'Y':
 	{
 		boolGravity = !boolGravity;
-		sparSys->ActivateGravity(boolGravity);
-		snowSys->ActivateGravity(boolGravity);
-		muelleSys->ActivateGravity(boolGravity);
-		floatSys->ActivateGravity(boolGravity);
+		backWaterSys->ActivateGravity(boolGravity);
+		outRangeSys->ActivateGravity(boolGravity);
+
+		if (muelleSys && floatSys&& fontainSys)
+		{
+			muelleSys->ActivateGravity(boolGravity);
+			floatSys->ActivateGravity(boolGravity);
+			fontainSys->ActivateGravity(boolGravity);
+		}
+
 		break;
 	}
 	case 'T':
 	{
 		boolWind = !boolWind;
-		snowSys->ActivateWind(boolWind);
+		outRangeSys->ActivateWind(boolWind);
+
+		
 		break;
 	}
 	case 'R':
 	{
 		boolOscilate = !boolOscilate;
-		sparSys->ActivateOscilate(boolOscilate);
+		backWaterSys->ActivateOscilate(boolOscilate);
+		if ( sphereSys != nullptr)
+		{
+			sphereSys->ActivateOscilate(boolOscilate);
+		}
 		break;
 	}
 	case 'B':
 	{
-		boolSpring1 = !boolSpring1;
-		boolSpring2 = !boolSpring2;
-		muelleSys->ActivateSpring(boolSpring1);
-		muelleSys->ActivateSpring(boolSpring2);
+		if (muelleSys)
+		{
+			boolSpring1 = !boolSpring1;
+			boolSpring2 = !boolSpring2;
+			muelleSys->ActivateSpring(boolSpring1);
+			muelleSys->ActivateSpring(boolSpring2);
+		}
 		break;
 	}
 	case 'K':
 	{
-
-		muelleSys->setK(10);
+		if (muelleSys)
+		{
+			muelleSys->setK(10);
+		}
+	
 		break;
 	}
 	case 'L':
 	{
-
-		muelleSys->setK(-10);
+		if (muelleSys)
+		{
+			muelleSys->setK(-10);
+		}
+		
 		break;
 	}
 	case 'C':
 	{
-
-		floatSys->AddMasa(100.0f);
+		if (floatSys)
+		{
+			floatSys->AddMasa(100.0f);
+		}
+		
 		break;
 	}
 	case 'V':
 	{
-
-		floatSys->AddVolume(1.0f);
+		if (floatSys)
+		{
+			floatSys->AddVolume(1.0f);
+		}
+		
 		break;
 	}
 	default:

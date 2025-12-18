@@ -81,7 +81,7 @@ SphereSolidSystem* sphereSys = nullptr;
 //booleanos para activacion/desactivacion de generadores de fuerzas
 bool boolGravity = true;
 bool boolWind = true;
-bool showSparkle = true;
+bool showWaterBack = true;
 bool boolOscilate = true;
 bool boolSpring1 = true;
 bool boolSpring2 = true;
@@ -145,8 +145,8 @@ void initPhysics(bool interactive)
 	//sistemas de particulas 
 	bulletSys = new BulletSystem(nullptr, nullptr, nullptr);
 	backWaterSys = new BackgroundWaterSystem(gravity, nullptr, oscillate);
-	backWaterSys->ActivateParticle(showSparkle);
-	outRangeSys = new OutOfRangeSystem(gravity, nullptr, nullptr);
+	backWaterSys->ActivateParticle(showWaterBack);
+	outRangeSys = new OutOfRangeSystem(gravity, wind, nullptr);
 	
 
 	Vector3 pos(40, 10, 0); // posición inicial muelles movibles (los peces)
@@ -439,8 +439,8 @@ void keyPress(unsigned char key, const PxTransform& camera)
 	case 'M':
 	{
 		
-		showSparkle = !showSparkle;
-		backWaterSys->ActivateParticle(showSparkle);
+		showWaterBack = !showWaterBack;
+		backWaterSys->ActivateParticle(showWaterBack);
 
 		break;
 	}
